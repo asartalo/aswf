@@ -1,0 +1,4 @@
+<node name="root" resource="Root" resource-prefix="App\Resource">
+    <node name="foo" resource="Foo" />
+    <node import="file.xml" />
+</node>

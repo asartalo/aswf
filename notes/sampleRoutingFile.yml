@@ -1,0 +1,14 @@
+root:
+    dynamic:
+    resource: App\Resource\Index
+    nodes:
+        foo:
+            resource: App\Resource\Foo
+            nodes:
+                baz:
+                    type: dynamic
+
+
+        bar:
+            resource: App\Resource\Bar
+
