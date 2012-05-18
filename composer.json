@@ -1,0 +1,21 @@
+{
+    "name": "asar/asar-web-framework",
+    "type": "library",
+    "description": "Asar Web Framework is a Resource-Oriented web framework.",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "authors" : [
+        {
+            "name": "Wayne Duran",
+            "email": "asartalo@projectweb.ph",
+            "role": "Developer",
+            "homepage": "http://www.asartalo.org"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Asar": "src"
+        }
+    }
+}
