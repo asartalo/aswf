@@ -15,6 +15,7 @@
     ],
     "autoload": {
         "psr-0": {
+            "Asar\\Tests": "tests",
             "Asar": "src"
         }
     }
