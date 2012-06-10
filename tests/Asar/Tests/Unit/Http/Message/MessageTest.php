@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the Asar Web Framework
+ *
+ * (c) Wayne Duran <asartalo@projectweb.ph>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Asar\Tests\Unit\Http;
 
@@ -31,6 +39,11 @@ class MessageTest extends \Asar\Tests\TestCase {
     public function testMessagReturnsEmptyStringAsContentByDefault()
     {
         $this->assertSame('', $this->M->getContent());
+    }
+
+    public function testGettingUnknownHeaderReturnsNull()
+    {
+        $this->assertNull($this->M->getHeader('foo'));
     }
 
     public function testHeaderFieldNamesShouldBeCaseInsensitive()
