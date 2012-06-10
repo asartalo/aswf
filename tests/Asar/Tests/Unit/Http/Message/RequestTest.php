@@ -7,11 +7,13 @@ use \Asar\Utilities\String;
 
 class RequestTest extends \Asar\Tests\TestCase {
 
-  function setUp() {
+  function setUp()
+  {
     $this->R = new Request;
   }
 
-  function testRequestShouldBeAbleToSetPath() {
+  function testRequestShouldBeAbleToSetPath()
+  {
     $this->R->setPath('/path/to/page');
     $this->assertEquals(
       '/path/to/page', $this->R->getPath(),
@@ -19,14 +21,16 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testRequestDefaultsToIndexPath() {
+  function testRequestDefaultsToIndexPath()
+  {
     $this->assertEquals(
       '/', $this->R->getPath(),
       'Path does not default to index ("/").'
     );
   }
 
-  function testRequestShouldBeAbleToSetMethod() {
+  function testRequestShouldBeAbleToSetMethod()
+  {
     $this->R->setMethod('POST');
     $this->assertEquals(
       'POST', $this->R->getMethod(),
@@ -34,14 +38,16 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testRequestShouldDefaultToGetMethodOnInitialization() {
+  function testRequestShouldDefaultToGetMethodOnInitialization()
+  {
     $this->assertEquals(
       'GET', $this->R->getMethod(),
       'Method does not default to GET on Initialization'
     );
   }
 
-  function testSettingRequestParameters() {
+  function testSettingRequestParameters()
+  {
     $this->R->setParams(array('foo' => 'bar', 'fruit' => 'apple'));
     $params = $this->R->getParams();
     $this->assertEquals(
@@ -54,29 +60,34 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testRequestShouldDefaultToHtmlContentType() {
+  function testRequestShouldDefaultToHtmlContentType()
+  {
     $this->assertEquals(
       'text/html', $this->R->getHeader('Accept'),
       'Content-type does not default to "text/html" on initialization.'
     );
   }
 
-  function testRequestSettingContentOnCreation() {
+  function testRequestSettingContentOnCreation()
+  {
     $R = new Request(array('content' => 'foo bar'));
     $this->assertEquals('foo bar', $R->getContent());
   }
 
-  function testRequestSettingPathOnCreation() {
+  function testRequestSettingPathOnCreation()
+  {
     $R = new Request(array('path' => '/foo'));
     $this->assertEquals('/foo', $R->getPath());
   }
 
-  function testRequestSettingMethodOnCreation() {
+  function testRequestSettingMethodOnCreation()
+  {
     $R = new Request(array('method' => 'PUT'));
     $this->assertEquals('PUT', $R->getMethod());
   }
 
-  function testSettingMultiplePropertiesOnCreation() {
+  function testSettingMultiplePropertiesOnCreation()
+  {
     $R = new Request(array(
       'method' => 'POST',
       'content' => 'churva',
@@ -87,53 +98,62 @@ class RequestTest extends \Asar\Tests\TestCase {
     $this->assertEquals('bar',    $R->getHeader('foo'));
   }
 
-  function testSettingParamsCreation() {
+  function testSettingParamsCreation()
+  {
     $R = new Request(array(
       'params' => array('foo' => 'bar')
     ));
     $this->assertEquals(array('foo' => 'bar'), $R->getParams());
   }
 
-  function testGettingASingleParameter() {
+  function testGettingASingleParameter()
+  {
     $R = new Request(array(
       'params' => array('foo' => 'bar')
     ));
     $this->assertEquals('bar', $R->getParam('foo'));
   }
 
-  function topicSettingUri() {
+  function topicSettingUri()
+  {
     return new Request(array(
       'uri' => 'http://some.domain.on/somewhere/out/there?with=params&other=1'
     ));
   }
 
-  function testSettingUri() {
+  function testSettingUri()
+  {
     $this->assertEquals(
       'http://some.domain.on/somewhere/out/there?with=params&other=1',
       $this->topicSettingUri()->getUri()
     );
   }
 
-  function testSettingUriSetsPath() {
+  function testSettingUriSetsPath()
+  {
     $this->assertEquals(
       '/somewhere/out/there', $this->topicSettingUri()->getPath()
     );
   }
 
-  function testGettingASingleParameterDefaultsToNullForUndefinedValues() {
+  function testGettingASingleParameterDefaultsToNullForUndefinedValues()
+  {
     $R = new Request;
     $this->assertSame(null, $R->getParam('foo'));
   }
 
-  protected function topicExportRawHttpRequestString() {
+  protected function topicExportRawHttpRequestString()
+  {
     $R = new Request(array(
       'path'    => '/a/path/to/a/resource.html',
       'headers' => array('Accept' => 'text/html', 'Connection' => 'Close' )
     ));
+
     return $R->export();
   }
 
-  function testExportRawHttpRequestStringStartsCorrectly() {
+  function testExportRawHttpRequestStringStartsCorrectly()
+  {
     $this->assertStringStartsWith(
       "GET /a/path/to/a/resource.html HTTP/1.1\r\n",
       $this->topicExportRawHttpRequestString(),
@@ -141,14 +161,16 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testExportRawHttpRequestStringEndsCorrectly() {
+  function testExportRawHttpRequestStringEndsCorrectly()
+  {
     $this->assertStringEndsWith(
       "\r\n\r\n", $this->topicExportRawHttpRequestString(),
       'Raw HTTP Request string should end in "\r\n\r\n".'
     );
   }
 
-  function testExportRawHttpRequestStringSetsCorrectHeaders() {
+  function testExportRawHttpRequestStringSetsCorrectHeaders()
+  {
     $this->_testHeaders(
       array('Accept' => 'text/html', 'Connection' => 'Close' ),
       $this->topicExportRawHttpRequestString()
@@ -159,7 +181,8 @@ class RequestTest extends \Asar\Tests\TestCase {
    * Creates a string formatted as HTTP header key used in regular expression
    * @param string $value A string to convert
    */
-  private function createMatchingHeaderKey($key) {
+  private function createMatchingHeaderKey($key)
+  {
     return str_replace(
       array('.', '-'), array('\.', '\-'), String::dashCamelCase($key)
     );
@@ -169,7 +192,8 @@ class RequestTest extends \Asar\Tests\TestCase {
    * Creates a string suitable for regular expression
    * @param string $value A string to convert
    */
-  private function createMatchingHeaderValue($value) {
+  private function createMatchingHeaderValue($value)
+  {
     return str_replace('/', '\/', $value);
   }
 
@@ -178,7 +202,8 @@ class RequestTest extends \Asar\Tests\TestCase {
    * @param array  $headers Header-key value pairs
    * @param string $messageStr The HTTP Message string to test against
    */
-  private function _testHeaders($headers, $messageStr) {
+  private function _testHeaders($headers, $messageStr)
+  {
     foreach ($headers as $key => $value) {
       $this->assertRegExp(
         sprintf(
@@ -191,7 +216,8 @@ class RequestTest extends \Asar\Tests\TestCase {
     }
   }
 
-  private function topicExportWithPostValues() {
+  private function topicExportWithPostValues()
+  {
     $R = new Request(array(
       'method'  => 'POST',
       'path'    => '/post/processor',
@@ -199,10 +225,12 @@ class RequestTest extends \Asar\Tests\TestCase {
         'foo' => 'bar', 'goo[]' => 'jazz', 'good' => 'bad='
       )
     ));
+
     return $R->export();
   }
 
-  function testExportWithPostValuesSetsCorrectRequestLine() {
+  function testExportWithPostValuesSetsCorrectRequestLine()
+  {
     $this->assertStringStartsWith(
       "POST /post/processor HTTP/1.1\r\n",
       $this->topicExportWithPostValues(),
@@ -210,7 +238,8 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testExportWithPostValuesSetsCorrectHeaders() {
+  function testExportWithPostValuesSetsCorrectHeaders()
+  {
     $content = 'foo=bar&goo%5B%5D=jazz&good=bad%3D';
     $headers = array(
       'Content-Type' => 'application/x-www-form-urlencoded',
@@ -219,7 +248,8 @@ class RequestTest extends \Asar\Tests\TestCase {
     $this->_testHeaders($headers, $this->topicExportWithPostValues());
   }
 
-  function testExportWithPostValuesSetsCorrectContent() {
+  function testExportWithPostValuesSetsCorrectContent()
+  {
     $content = 'foo=bar&goo%5B%5D=jazz&good=bad%3D';
     $this->assertStringEndsWith(
       "\r\n\r\n$content", $this->topicExportWithPostValues(),
@@ -227,15 +257,18 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  private function topicExportGet() {
+  private function topicExportGet()
+  {
     $R = new Request(array(
       'path'    => '/a/get/path',
       'content' => array('foo' => 'bar')
     ));
+
     return $R->export();
   }
 
-  function testExportGetShouldHaveNoPostLikeHeader() {
+  function testExportGetShouldHaveNoPostLikeHeader()
+  {
     $str = $this->topicExportGet();
     $notExpected = 'foo=bar';
     $this->assertNotContains(
@@ -246,11 +279,13 @@ class RequestTest extends \Asar\Tests\TestCase {
     );
   }
 
-  function testExportGetShouldHaveNoContent() {
+  function testExportGetShouldHaveNoContent()
+  {
     $this->assertNotContains("foo=bar\r\n\r\n", $this->topicExportGet());
   }
 
-  function testExportRequestWithParamsUrlEncodesParamValues() {
+  function testExportRequestWithParamsUrlEncodesParamValues()
+  {
     $R = new Request(array(
       'path'    => '/handler',
       'params' => array(

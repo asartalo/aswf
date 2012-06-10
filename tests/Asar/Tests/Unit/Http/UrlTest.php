@@ -9,7 +9,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
   /**
    * @dataProvider dataCreatingAUrl
    */
-  function testCreatingAUrl($method, $expected) {
+  function testCreatingAUrl($method, $expected)
+  {
     $url = new Url(
       'http://john:secret@example.com:8042/over/there/index.dtb?' .
       'type=animal&name=narwhal#nose'
@@ -20,7 +21,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
   /**
    * @dataProvider dataCreatingAUrl
    */
-  function testAlternativeCreationOfUrl($method, $expected) {
+  function testAlternativeCreationOfUrl($method, $expected)
+  {
     $url = new Url(array(
       'scheme'   => 'http',
       'username' => 'john',
@@ -34,7 +36,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $url->$method());
   }
 
-  function dataCreatingAUrl() {
+  function dataCreatingAUrl()
+  {
     return array(
       array('getScheme',      'http'),
       array('getUsername',    'john'),
@@ -55,7 +58,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
   /**
    * @dataProvider dataMinimumAUrlForm
    */
-  function testMinimumUrlForm($method, $expected) {
+  function testMinimumUrlForm($method, $expected)
+  {
     $url = new Url(array(
       'host'     => 'example.com',
       'path'     => '/over/there/index.dtb',
@@ -63,7 +67,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $url->$method());
   }
 
-  function dataMinimumAUrlForm() {
+  function dataMinimumAUrlForm()
+  {
     return array(
       array('getScheme',      'http'),
       array('getUsername',    ''),
@@ -77,7 +82,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
     );
   }
 
-  function testDefaultPortForHttpsIs443() {
+  function testDefaultPortForHttpsIs443()
+  {
     $url = new Url('https://example.com');
     $this->assertEquals(443, $url->getPort());
   }

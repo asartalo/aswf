@@ -1,4 +1,13 @@
 <?php
+/**
+ * This file is part of the Asar Web Framework
+ *
+ * (c) Wayne Duran <asartalo@projectweb.ph>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Asar\Http;
 
 /**
@@ -6,167 +15,235 @@ namespace Asar\Http;
  *
  * The url object is immutable.
  */
-class Url {
+class Url
+{
+    private $scheme;
 
-  private
-    $scheme,
-    $user,
-    $pass,
-    $host,
-    $path,
-    $port,
-    $query,
-    $fragment,
-    $urlString,
+    private $user;
+    private $pass;
+    private $host;
+    private $path;
+    private $port;
+    private $query;
+    private $fragment;
+    private $urlString;
 
-    $parts = array(
-      'scheme'   => 'http',
-      'user'     => '',
-      'pass'     => '',
-      'host'     => '',
-      'path'     => '',
-      'port'     => '',
-      'query'    => '',
-      'fragment' => '',
-    ),
-
-    $setters = array(
-      'port' => 'setPort'
-    ),
-
-    $defaultPorts = array(
-      'http' => 80,
-      'https' => 443
+    private $parts = array(
+        'scheme'   => 'http',
+        'user'     => '',
+        'pass'     => '',
+        'host'     => '',
+        'path'     => '',
+        'port'     => '',
+        'query'    => '',
+        'fragment' => '',
     );
 
-  function __construct($data) {
-    if (is_string($data)) {
-      $this->setUrlParts(parse_url($data));
-      $this->urlString = $data;
-    } elseif (is_array($data)) {
-      if (isset($data['username'])) {
-        $data['user']  = $data['username'];
-      }
-      if (isset($data['password'])) {
-        $data['pass']  = $data['password'];
-      }
-      if (isset($data['query'])) {
-        $data['query'] = $this->createQueryString($data['query']);
-      }
-      $this->setUrlParts($data);
-      $this->urlString = $this->constructUrlString();
+    private $setters = array(
+        'port' => 'setPort'
+    );
+
+    private $defaultPorts = array(
+        'http' => 80,
+        'https' => 443
+    );
+
+    /**
+     * @param mixed $data a URI string or an associative array of URI parts
+     */
+    public function __construct($data)
+    {
+        if (is_string($data)) {
+            $this->setUrlParts(parse_url($data));
+            $this->urlString = $data;
+        } elseif (is_array($data)) {
+            if (isset($data['username'])) {
+                $data['user']  = $data['username'];
+            }
+            if (isset($data['password'])) {
+                $data['pass']  = $data['password'];
+            }
+            if (isset($data['query'])) {
+                $data['query'] = $this->createQueryString($data['query']);
+            }
+            $this->setUrlParts($data);
+            $this->urlString = $this->constructUrlString();
+        }
     }
-  }
 
-  private function setUrlParts(array $parsedUrl) {
-    foreach ($this->parts as $part => $default) {
-      $value = isset($parsedUrl[$part]) ? $parsedUrl[$part] : $default;
-      if (isset($this->setters[$part])) {
-        $this->{$this->setters[$part]}($value);
-      } else {
-        $this->{$part} = $value;
-      }
+    private function setUrlParts(array $parsedUrl)
+    {
+        foreach ($this->parts as $part => $default) {
+            $value = isset($parsedUrl[$part]) ? $parsedUrl[$part] : $default;
+            if (isset($this->setters[$part])) {
+                $this->{$this->setters[$part]}($value);
+            } else {
+                $this->{$part} = $value;
+            }
+        }
     }
-  }
 
-  private function createQueryString($query) {
-    $queryJoined = array();
-    foreach ($query as $key => $value) {
-      $queryJoined[] = sprintf('%s=%s', urlencode($key), urlencode($value));
+    private function createQueryString($query)
+    {
+        $queryJoined = array();
+        foreach ($query as $key => $value) {
+            $queryJoined[] = sprintf('%s=%s', urlencode($key), urlencode($value));
+        }
+
+        return implode('&', $queryJoined);
     }
-    return implode('&', $queryJoined);
-  }
 
-  private function setPort($port) {
-    if (!$port && isset($this->defaultPorts[$this->getScheme()])) {
-      $this->port = $this->defaultPorts[$this->getScheme()];
-    } else {
-      $this->port = $port;
+    private function setPort($port)
+    {
+        if (!$port && isset($this->defaultPorts[$this->getScheme()])) {
+            $this->port = $this->defaultPorts[$this->getScheme()];
+        } else {
+            $this->port = $port;
+        }
     }
-  }
 
-  private function constructUrlString() {
-    return
-      $this->getScheme() . '://' .
-      $this->addUsernamePassword() .
-      $this->getHost() .
-      $this->addPort() .
-      $this->getPath() .
-      $this->addParamString() .
-      $this->addFragment();
-  }
-
-  private function addUsernamePassword() {
-    if ($this->user) {
-      return "{$this->user}:{$this->pass}@";
+    private function constructUrlString()
+    {
+        return
+            $this->getScheme() . '://' .
+            $this->addUsernamePassword() .
+            $this->getHost() .
+            $this->addPort() .
+            $this->getPath() .
+            $this->addParamString() .
+            $this->addFragment();
     }
-  }
 
-  private function addPort() {
-    if ($this->getPort() != 80) {
-      return ":{$this->getPort()}";
+    private function addUsernamePassword()
+    {
+        if ($this->user) {
+            return "{$this->user}:{$this->pass}@";
+        }
     }
-  }
 
-  private function addParamString() {
-    if ($this->query) {
-      return "?{$this->getParamString()}";
+    private function addPort()
+    {
+        if ($this->getPort() != 80) {
+            return ":{$this->getPort()}";
+        }
     }
-  }
 
-  private function addFragment() {
-    if ($this->fragment) {
-      return "#{$this->fragment}";
+    private function addParamString()
+    {
+        if ($this->query) {
+            return "?{$this->getParamString()}";
+        }
     }
-  }
 
-  function getScheme() {
-    return $this->scheme;
-  }
+    private function addFragment()
+    {
+        if ($this->fragment) {
+            return "#{$this->fragment}";
+        }
+    }
 
-  function getUsername() {
-    return $this->user;
-  }
+    /**
+     * @return string the URI scheme (e.g. http, ftp)
+     */
+    public function getScheme()
+    {
+        return $this->scheme;
+    }
 
-  function getPassword() {
-    return $this->pass;
-  }
+    /**
+     * @return string the username if specified
+     */
+    public function getUsername()
+    {
+        return $this->user;
+    }
 
-  function getHost() {
-    return $this->host;
-  }
+    /**
+     * @return string the password if specified
+     */
+    public function getPassword()
+    {
+        return $this->pass;
+    }
 
-  function getPort() {
-    return $this->port;
-  }
+    /**
+     * @return string the host
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
 
-  function getPath() {
-    return $this->path;
-  }
+    /**
+     * @return integer the port number
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
 
-  function getQuery() {
-    return $this->getParameters();
-  }
+    /**
+     * @return string the webroot-relative path of the URI
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
 
-  function getQueryString() {
-    return $this->getParamString();
-  }
+    /**
+     * An alias of getParameters()
+     *
+     * @return array an associative array of request parameters
+     */
+    public function getQuery()
+    {
+        return $this->getParameters();
+    }
 
-  function getParameters() {
-    parse_str($this->query, $query);
-    return $query;
-  }
+    /**
+     * An alias of getParamString()
+     *
+     * @return string the request parameters in string form
+     */
+    public function getQueryString()
+    {
+        return $this->getParamString();
+    }
 
-  function getParamString() {
-    return $this->query;
-  }
+    /**
+     * @return array an associative array of request parameters
+     */
+    public function getParameters()
+    {
+        parse_str($this->query, $query);
 
-  function getFragment() {
-    return $this->fragment;
-  }
+        return $query;
+    }
 
-  function __toString() {
-    return $this->urlString;
-  }
+    /**
+     * @return string the request parameters in string form
+     */
+    public function getParamString()
+    {
+        return $this->query;
+    }
+
+    /**
+     * Returns the fragment part of the URL (e.g. #bookmark) minus the hash
+     *
+     * @return string the URL fragment
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @return string the URL in string form
+     */
+    public function __toString()
+    {
+        return $this->urlString;
+    }
 
 }

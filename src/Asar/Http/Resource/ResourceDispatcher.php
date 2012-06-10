@@ -1,56 +1,81 @@
 <?php
+/**
+ * This file is part of the Asar Web Framework
+ *
+ * (c) Wayne Duran <asartalo@projectweb.ph>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Asar\Http\Resource;
 
 use \Asar\Http\Message\Request;
 use \Asar\Http\Message\Response;
 use \Asar\Http\RequestHandlerInterface;
-use \Asar\Utilities\String;
 
-class ResourceDispatcher implements RequestHandlerInterface {
+/**
+ * Dispatches a resource to respond to a request
+ */
+class ResourceDispatcher implements RequestHandlerInterface
+{
+    private $resource;
 
-  private $resource;
+    private $knownMethodInterfaces = array(
+        'GET'    => 'Asar\Http\Resource\GetInterface',
+        'POST'   => 'Asar\Http\Resource\PostInterface',
+        'PUT'    => 'Asar\Http\Resource\PutInterface',
+        'DELETE' => 'Asar\Http\Resource\DeleteInterface',
+    );
 
-  private $knownMethodInterfaces = array(
-    'GET'    => 'Asar\Http\Resource\GetInterface',
-    'POST'   => 'Asar\Http\Resource\PostInterface',
-    'PUT'    => 'Asar\Http\Resource\PutInterface',
-    'DELETE' => 'Asar\Http\Resource\DeleteInterface',
-  );
+    private $specialMethods = array(
+        'HEAD' => 'invokeHeadRequest'
+    );
 
-  private $specialMethods = array(
-    'HEAD' => 'invokeHeadRequest'
-  );
-
-  function __construct($resource = null) {
-    $this->resource = $resource;
-  }
-
-  function handleRequest(Request $request) {
-    if ($this->resource) {
-      return $this->callResourceMethod($request, $request->getMethod());
+    /**
+     * @param mixed $resource a resource
+     */
+    public function __construct($resource = null)
+    {
+        $this->resource = $resource;
     }
-    $response = new Response(array('status' => 404));
-    return $response;
-  }
 
-  protected function callResourceMethod($request, $method) {
-    if (
-      isset($this->knownMethodInterfaces[$method])
-      && $this->resource instanceof $this->knownMethodInterfaces[$method]
-    ) {
-      return $this->resource->$method($request);
-    }
-    if (isset($this->specialMethods[$method])) {
-      return call_user_func(array($this, $this->specialMethods[$method]), $request);
-    }
-    return new Response(array('status' => 405));
-  }
+    /**
+     * @param Request $request a request object
+     *
+     * @return Response a response object
+     */
+    public function handleRequest(Request $request)
+    {
+        if ($this->resource) {
+            return $this->callResourceMethod($request, $request->getMethod());
+        }
+        $response = new Response(array('status' => 404));
 
-  protected function invokeHeadRequest($request) {
-    $response = $this->callResourceMethod($request, 'GET');
-    $response->setContent('');
-    return $response;
-  }
+        return $response;
+    }
+
+    protected function callResourceMethod($request, $method)
+    {
+        if (
+            isset($this->knownMethodInterfaces[$method])
+            && $this->resource instanceof $this->knownMethodInterfaces[$method]
+        ) {
+            return $this->resource->$method($request);
+        }
+        if (isset($this->specialMethods[$method])) {
+            return call_user_func(array($this, $this->specialMethods[$method]), $request);
+        }
+
+        return new Response(array('status' => 405));
+    }
+
+    protected function invokeHeadRequest($request)
+    {
+        $response = $this->callResourceMethod($request, 'GET');
+        $response->setContent('');
+
+        return $response;
+    }
 
 }

@@ -6,11 +6,13 @@ use \Asar\Http\Message\Response;
 
 class ResponseTest extends \Asar\Tests\TestCase {
 
-  function setUp() {
+  function setUp()
+  {
     $this->R = new Response;
   }
 
-  function testAbleToSetStatus() {
+  function testAbleToSetStatus()
+  {
     $this->R->setStatus(404);
     $this->assertEquals(
       404, $this->R->getStatus(),
@@ -21,13 +23,15 @@ class ResponseTest extends \Asar\Tests\TestCase {
   /**
    * @dataProvider dataStatusCodeMessages
    */
-  function testGettingReasonPhrases($status, $reason_phrase) {
+  function testGettingReasonPhrases($status, $reason_phrase)
+  {
     $this->assertEquals(
       $reason_phrase, Response::getReasonPhrase($status)
     );
   }
 
-  function dataStatusCodeMessages() {
+  function dataStatusCodeMessages()
+  {
     return array(
       array(100, 'Continue'),
       array(101, 'Switching Protocols'),
@@ -81,22 +85,26 @@ class ResponseTest extends \Asar\Tests\TestCase {
   /**
    * @dataProvider dataStatusCodeMessages
    */
-  function testGetStatusMessagesFromStatusSummary($status, $reason_phrase) {
+  function testGetStatusMessagesFromStatusSummary($status, $reason_phrase)
+  {
     $R = new Response(array('status' => $status));
     $this->assertEquals($reason_phrase, $R->getStatusReasonPhrase());
   }
 
-  function testSettingStatusOnCreation() {
+  function testSettingStatusOnCreation()
+  {
     $R = new Response(array('status' => 404));
     $this->assertEquals(404, $R->getStatus());
   }
 
-  function testStatusDefaultsTo200OnCreation() {
+  function testStatusDefaultsTo200OnCreation()
+  {
     $R = new Response();
     $this->assertEquals(200, $R->getStatus());
   }
 
-  function testImportingRawHttpResponseString($params = array()) {
+  function testImportingRawHttpResponseString($params = array())
+  {
     $defaults = array(
        'content' => 'Hello World',
        'status'  => 200
@@ -125,14 +133,16 @@ class ResponseTest extends \Asar\Tests\TestCase {
     $this->assertEquals($content, $R->getContent());
   }
 
-  function testImportRawHttpResponseWithContentContainingCrlfSequence() {
+  function testImportRawHttpResponseWithContentContainingCrlfSequence()
+  {
     $params = array(
       'content' => "A Very Dangerous\r\nContent.\r\n\r\nReally."
     );
     $this->testImportingRawHttpResponseString($params);
   }
 
-  function testImportRawHttpResponseWithADifferentStatusCode() {
+  function testImportRawHttpResponseWithADifferentStatusCode()
+  {
     $this->testImportingRawHttpResponseString(array('status' => 201));
   }
 }

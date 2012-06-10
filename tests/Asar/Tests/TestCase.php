@@ -7,34 +7,42 @@ namespace Asar\Tests;
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase {
 
-  protected function quickMock($class, array $methods = array()) {
+  protected function quickMock($class, array $methods = array())
+  {
     return $this->getMock($class, $methods, array(), '', false);
   }
 
-  protected function getTempDir() {
+  protected function getTempDir()
+  {
     return \Asar::getInstance()->getFrameworkTestsDataTempPath();
   }
 
-  function getTFM() {
+  function getTFM()
+  {
     if (!isset($this->_TFM)) {
       $this->_TFM = new TempFilesManager($this->getTempDir());
     }
+
     return $this->_TFM;
   }
 
-  protected function clearTestTempDirectory() {
+  protected function clearTestTempDirectory()
+  {
     $this->getTFM()->clearTempDirectory();
   }
 
-  protected function generateAppName($last) {
+  protected function generateAppName($last)
+  {
     return str_replace('\\', '_', get_class($this)) . $last;
   }
 
-  protected function generateAppNameNew($last) {
+  protected function generateAppNameNew($last)
+  {
     return str_replace('_', '\\', get_class($this) . $last);
   }
 
-  protected function generateUnderscoredName($name) {
+  protected function generateUnderscoredName($name)
+  {
     return str_replace('\\', '_', $name);
   }
 
@@ -43,6 +51,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
   ) {
     $splitname = $this->splitFullClassName($full_classname);
     $extends = $extends ? " extends $extends" : '';
+
     return "
       namespace {$splitname['namespace']} {
         class {$splitname['class']}$extends {
@@ -61,10 +70,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
     eval ($class_def);
   }
 
-  protected function splitFullClassName($full_classname) {
+  protected function splitFullClassName($full_classname)
+  {
     $all = explode('\\', $full_classname);
     $return['class'] = array_pop($all);
     $return['namespace'] = implode('\\', $all);
+
     return $return;
   }
 

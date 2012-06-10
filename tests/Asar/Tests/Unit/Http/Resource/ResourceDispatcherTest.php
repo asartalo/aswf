@@ -8,22 +8,26 @@ use \Asar\Http\Message\Response;
 
 class ResourceDispatcherTest extends \Asar\Tests\TestCase {
 
-  function testDispatcherImplementsRequestHandler() {
+  function testDispatcherImplementsRequestHandler()
+  {
     $this->assertInstanceOf('Asar\Http\RequestHandlerInterface', new ResourceDispatcher);
   }
 
-  function testHandlesRequest() {
+  function testHandlesRequest()
+  {
     $dispatcher = new ResourceDispatcher;
     $this->assertInstanceOf(
       'Asar\Http\Message\Response', $dispatcher->handleRequest(new Request)
     );
   }
-  function testReturns404ResponseWhenThereIsNoResourcePassed() {
+  function testReturns404ResponseWhenThereIsNoResourcePassed()
+  {
     $dispatcher = new ResourceDispatcher;
     $this->assertEquals(404, $dispatcher->handleRequest(new Request)->getStatus());
   }
 
-  function requestMethods() {
+  function requestMethods()
+  {
     return array(
       array('GET'),
       array('POST'),
@@ -35,7 +39,8 @@ class ResourceDispatcherTest extends \Asar\Tests\TestCase {
   /**
    * @dataProvider requestMethods
    */
-  function testDelegatesToResourceMthodWhenPassedARequest($method) {
+  function testDelegatesToResourceMthodWhenPassedARequest($method)
+  {
     $request = new Request;
     $request->setMethod($method);
     $methodCapitalized = ucfirst(strtolower($method));
@@ -50,7 +55,8 @@ class ResourceDispatcherTest extends \Asar\Tests\TestCase {
   /**
    * @dataProvider requestMethods
    */
-  function testUsesResponseFromResource($method) {
+  function testUsesResponseFromResource($method)
+  {
     $request = new Request;
     $response = new Response;
     $request->setMethod($method);
@@ -63,13 +69,15 @@ class ResourceDispatcherTest extends \Asar\Tests\TestCase {
     $this->assertSame($response, $dispatcher->handleRequest($request));
   }
 
-  function testReturnsStatus405WhenResourceDoesNotHaveMethod() {
+  function testReturnsStatus405WhenResourceDoesNotHaveMethod()
+  {
     $resource = new \stdClass;
     $dispatcher = new ResourceDispatcher($resource);
     $this->assertEquals(405, $dispatcher->handleRequest(new Request)->getStatus());
   }
 
-  function testUsesGetMethodFromResourceWhenItsAHeadRequest() {
+  function testUsesGetMethodFromResourceWhenItsAHeadRequest()
+  {
     $request = new Request(array('method' => 'HEAD'));
     $resource = $this->quickMock('Asar\Http\Resource\GetInterface');
     $resource->expects($this->once())
@@ -80,7 +88,8 @@ class ResourceDispatcherTest extends \Asar\Tests\TestCase {
     $dispatcher->handleRequest($request);
   }
 
-  function testResponseFromResourceWhenHeadRequestMustHaveNoContent() {
+  function testResponseFromResourceWhenHeadRequestMustHaveNoContent()
+  {
     $request = new Request(array('method' => 'HEAD'));
     $resource = $this->quickMock('Asar\Http\Resource\GetInterface');
     $resource->expects($this->once())

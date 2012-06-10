@@ -2,11 +2,12 @@
 
 namespace Asar\Tests;
 
-class TempFilesManager {
-
+class TempFilesManager
+{
   private $temp_dir;
 
-  function __construct($dir) {
+  function __construct($dir)
+  {
     if (!file_exists($dir)) {
       throw new TempFilesManagerException(
         "The directory specified ($dir) as temporary directory " .
@@ -16,15 +17,18 @@ class TempFilesManager {
     $this->temp_dir = $dir;
   }
 
-  function getPath($file_name) {
+  function getPath($file_name)
+  {
     return $this->temp_dir . DIRECTORY_SEPARATOR . $file_name;
   }
 
-  function getTempDirectory() {
+  function getTempDirectory()
+  {
     return $this->temp_dir;
   }
 
-  function newFile($file_name, $contents) {
+  function newFile($file_name, $contents)
+  {
     if ($this->isfileNameInDirectory($file_name)) {
       $this->createDirectoriesFirst($file_name);
     }
@@ -34,15 +38,18 @@ class TempFilesManager {
     fclose($file);
   }
 
-  function newDir($dir_name) {
+  function newDir($dir_name)
+  {
     $this->createDirectoriesFirst($dir_name, true);
   }
 
-  private function isFileNameInDirectory($file_name) {
+  private function isFileNameInDirectory($file_name)
+  {
     return strpos($file_name, '/') > -1;
   }
 
-  private function createDirectoriesFirst($file_name, $include_tail = false) {
+  private function createDirectoriesFirst($file_name, $include_tail = false)
+  {
     $dirs = explode('/', $file_name);
     if (!$include_tail) {
       array_pop($dirs);
@@ -56,15 +63,18 @@ class TempFilesManager {
     }
   }
 
-  function removeFile($file_name) {
+  function removeFile($file_name)
+  {
     unlink($this->getPath($file_name));
   }
 
-  function clearTempDirectory() {
+  function clearTempDirectory()
+  {
     $this->recursiveDelete($this->temp_dir, false);
   }
 
-  private function recursiveDelete($directory, $this_too = true) {
+  private function recursiveDelete($directory, $this_too = true)
+  {
     if (file_exists($directory) && is_dir($directory)) {
       $contents = scandir($directory);
       foreach ($contents as $value) {
