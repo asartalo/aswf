@@ -22,7 +22,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
 
     protected function getTempDir()
     {
-        return \Asar::getInstance()->getFrameworkTestsDataTempPath();
+        return realpath(__DIR__ . '/../../') . '/data/temp';
+    }
+
+    protected function getFixturesDir()
+    {
+        return realpath(__DIR__ . '/../../') . '/data/fixtures';
     }
 
     public function getTFM()

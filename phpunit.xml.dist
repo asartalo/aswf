@@ -5,7 +5,7 @@
          backupGlobals="false"
          backupStaticAttributes="false"
          strict="false"
-         stopOnFailure="true"
+         stopOnFailure="false"
          verbose="true">
   <testsuites>
     <testsuite name="Asar">

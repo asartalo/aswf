@@ -17,7 +17,7 @@ use \Asar\Http\RequestHandlerInterface;
 /**
  * Dispatches a resource to respond to a request
  */
-class ResourceDispatcher implements RequestHandlerInterface
+class Dispatcher implements RequestHandlerInterface
 {
     private $resource;
 
@@ -38,6 +38,16 @@ class ResourceDispatcher implements RequestHandlerInterface
     public function __construct($resource = null)
     {
         $this->resource = $resource;
+    }
+
+    /**
+     * Returns resource
+     *
+     * @return mixed the resource
+     */
+    public function getResource()
+    {
+        return $this->resource;
     }
 
     /**

@@ -10,9 +10,10 @@
 
 namespace Asar\Tests\Unit\Utility;
 
-use \Asar\Utilities\String;
+use Asar\Utilities\String;
+use Asar\Tests\TestCase;
 
-class StringTest extends \Asar\Tests\TestCase
+class StringTest extends TestCase
 {
 
     private function _testFunction($method, $test_data)

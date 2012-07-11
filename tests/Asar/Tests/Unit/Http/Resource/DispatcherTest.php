@@ -10,32 +10,62 @@
 
 namespace Asar\Tests\Unit\Http\Resource;
 
-use Asar\Http\Resource\ResourceDispatcher;
+use Asar\Http\Resource\Dispatcher;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
 use Asar\Tests\TestCase;
 
-class ResourceDispatcherTest extends TestCase
+/**
+ * Specification for Asar\Http\Resource\Dispatcher
+ */
+class DispatcherTest extends TestCase
 {
 
-    public function testDispatcherImplementsRequestHandler()
+    /**
+     * Can obtain resource
+     */
+    public function testCanObtainResource()
     {
-        $this->assertInstanceOf('Asar\Http\RequestHandlerInterface', new ResourceDispatcher);
+        $resource = new \stdClass;
+        $dispatcher = new Dispatcher($resource);
+        $this->assertSame($resource, $dispatcher->getResource());
     }
 
+    /**
+     * Dispatcher is a RequestHandler
+     */
+    public function testDispatcherImplementsRequestHandler()
+    {
+        $this->assertInstanceOf('Asar\Http\RequestHandlerInterface', new Dispatcher);
+    }
+
+    /**
+     * Dispatcher can handle requests
+     */
     public function testHandlesRequest()
     {
-        $dispatcher = new ResourceDispatcher;
+        $dispatcher = new Dispatcher;
         $this->assertInstanceOf(
             'Asar\Http\Message\Response', $dispatcher->handleRequest(new Request)
         );
     }
+
+    /**
+     * Returns 404 response for empty dispatchers
+     */
     public function testReturns404ResponseWhenThereIsNoResourcePassed()
     {
-        $dispatcher = new ResourceDispatcher;
+        $dispatcher = new Dispatcher;
         $this->assertEquals(404, $dispatcher->handleRequest(new Request)->getStatus());
     }
 
+    /**
+     * Available request methods
+     *
+     * These are common HTTP methods and are used in the tests.
+     *
+     * @return array
+     */
     public function requestMethods()
     {
         return array(
@@ -47,6 +77,10 @@ class ResourceDispatcherTest extends TestCase
     }
 
     /**
+     * Delegates to resource method when handling requests
+     *
+     * @param string $method
+     *
      * @dataProvider requestMethods
      */
     public function testDelegatesToResourceMthodWhenPassedARequest($method)
@@ -58,11 +92,15 @@ class ResourceDispatcherTest extends TestCase
         $resource->expects($this->once())
             ->method($method)
             ->with($request);
-        $dispatcher = new ResourceDispatcher($resource);
+        $dispatcher = new Dispatcher($resource);
         $dispatcher->handleRequest($request);
     }
 
     /**
+     * Uses response from resource
+     *
+     * @param string $method
+     *
      * @dataProvider requestMethods
      */
     public function testUsesResponseFromResource($method)
@@ -75,17 +113,23 @@ class ResourceDispatcherTest extends TestCase
         $resource->expects($this->once())
             ->method($method)
             ->will($this->returnValue($response));
-        $dispatcher = new ResourceDispatcher($resource);
+        $dispatcher = new Dispatcher($resource);
         $this->assertSame($response, $dispatcher->handleRequest($request));
     }
 
+    /**
+     * Returns 405 status when resource does not implement method
+     */
     public function testReturnsStatus405WhenResourceDoesNotHaveMethod()
     {
         $resource = new \stdClass;
-        $dispatcher = new ResourceDispatcher($resource);
+        $dispatcher = new Dispatcher($resource);
         $this->assertEquals(405, $dispatcher->handleRequest(new Request)->getStatus());
     }
 
+    /**
+     * Uses GET method for HEAD requests
+     */
     public function testUsesGetMethodFromResourceWhenItsAHeadRequest()
     {
         $request = new Request(array('method' => 'HEAD'));
@@ -94,10 +138,13 @@ class ResourceDispatcherTest extends TestCase
             ->method('GET')
             ->with($request)
             ->will($this->returnValue(new Response(array('content' => 'foo'))));
-        $dispatcher = new ResourceDispatcher($resource);
+        $dispatcher = new Dispatcher($resource);
         $dispatcher->handleRequest($request);
     }
 
+    /**
+     * Removes content of GET method return for HEAD requests
+     */
     public function testResponseFromResourceWhenHeadRequestMustHaveNoContent()
     {
         $request = new Request(array('method' => 'HEAD'));
@@ -106,7 +153,7 @@ class ResourceDispatcherTest extends TestCase
             ->method('GET')
             ->with($request)
             ->will($this->returnValue(new Response(array('content' => 'foo'))));
-        $dispatcher = new ResourceDispatcher($resource);
+        $dispatcher = new Dispatcher($resource);
         $this->assertEquals('', $dispatcher->handleRequest($request)->getContent());
     }
 

@@ -1,0 +1,21 @@
+parameters:
+    application.routes: []
+    asar.application.class: Asar\Application
+    asar.router.class: Asar\Routing\Router
+    asar.resourceFactory.class: Asar\Http\Resource\ResourceFactory
+
+services:
+    asar.application:
+        class: %asar.application.class%
+        scope: application
+        arguments: [@asar.router]
+
+    asar.router:
+        class: %asar.router.class%
+        arguments: [@application.routes, @asar.resourceFactory]
+        scope: application
+
+    asar.resourceFactory:
+        class: %asar.resourceFactory.class%
+        scope: application
+

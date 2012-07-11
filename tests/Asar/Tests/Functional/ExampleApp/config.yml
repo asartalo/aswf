@@ -1,0 +1,20 @@
+name: 'ExampleApp'
+
+namespace: 'Asar\Tests\Functional\ExampleApp'
+
+services: 'Services...'
+
+routes:
+    root:
+        resourceName: 'Index'
+        nodes:
+            blog:
+                resourceName: 'Blog'
+                nodes:
+                    archive:
+                        resourceName: 'BlogArchive'
+                        nodes:
+                            year:
+                                resourceName: 'BlogArchive\Year'
+                                require: '/\d{4}/'
+
