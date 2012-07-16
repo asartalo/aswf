@@ -11,7 +11,9 @@
 namespace Asar\Tests\Unit\Config;
 
 use Asar\Tests\TestCase;
+
 use Asar\Config\YamlImporter;
+use Asar\FileSystem\File;
 
 /**
  * Tests Asar\Config\YamlImporter
@@ -43,10 +45,12 @@ class YamlImporterTest extends TestCase
      */
     public function testUsesYamlParser()
     {
+        $file = new File;
+        $file->write('foo');
         $this->parser->expects($this->once())
             ->method('parse')
-            ->with('foo.yml');
-        $this->importer->import('foo.yml');
+            ->with('foo');
+        $this->importer->import($file);
     }
 
     /**
@@ -58,7 +62,7 @@ class YamlImporterTest extends TestCase
         $this->parser->expects($this->once())
             ->method('parse')
             ->will($this->returnValue($data));
-        $this->assertEquals($data, $this->importer->import('foo.yml'));
+        $this->assertEquals($data, $this->importer->import(new File));
     }
 
 }

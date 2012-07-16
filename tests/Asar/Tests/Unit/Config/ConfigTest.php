@@ -12,6 +12,7 @@ namespace Asar\Tests\Unit\Config;
 
 use Asar\Tests\TestCase;
 use Asar\Config\Config;
+use Asar\FileSystem\File;
 
 /**
  * Tests Asar\Config\Config
@@ -97,18 +98,33 @@ class ConfigTest extends TestCase
      */
     public function testCanImportOtherConfigurations()
     {
+        $data = array('foo' => 'bar');
         $importer = $this->quickMock(
             'Asar\Config\ImporterInterface'
         );
         $importer->expects($this->any())
             ->method('type')
             ->will($this->returnValue('foo'));
-        $data = array('foo' => 'bar');
         $importer->expects($this->once())
             ->method('import')
-            ->will($this->returnValue($data));
+            ->will($this->returnCallback(array($this, 'checkImporterImport')));
         $config = new Config('bar.foo', array($importer));
         $this->assertEquals($data, $config->getRaw());
+    }
+
+    /**
+     * Test importer import
+     *
+     * @param mixed $file
+     *
+     * @return array test data
+     */
+    public function checkImporterImport($file)
+    {
+        $this->assertInstanceOf('Asar\FileSystem\File', $file);
+        $this->assertEquals('bar.foo', $file->getFileName());
+
+        return array('foo' => 'bar');
     }
 
 }

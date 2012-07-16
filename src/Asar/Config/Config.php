@@ -11,6 +11,7 @@
 namespace Asar\Config;
 
 use Asar\Config\ImporterInterface as Importer;
+use Asar\FileSystem\File;
 
 /**
  * A configuration
@@ -49,7 +50,7 @@ class Config
     {
         foreach ($this->importers as $type => $importer) {
             if (preg_match("/\.$type\$/", $config)) {
-                $this->data = $importer->import($config);
+                $this->data = $importer->import(new File($config));
             }
         }
     }

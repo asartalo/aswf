@@ -8,6 +8,6 @@
  * file that was distributed with this source code.
  */
 
-$src_path = realpath(__DIR__ . '/../src');
-$vendor_path = realpath(__DIR__ . '/../vendor');
-require_once $vendor_path . '/autoload.php';
+$srcPath = realpath(__DIR__ . '/../src');
+$vendorPath = realpath(__DIR__ . '/../vendor');
+require_once $vendorPath . '/autoload.php';

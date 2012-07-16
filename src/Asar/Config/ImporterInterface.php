@@ -10,6 +10,8 @@
 
 namespace Asar\Config;
 
+use Asar\FileSystem\File;
+
 /**
  * Imports a supported file's data for use in configurations
  */
@@ -22,10 +24,10 @@ interface ImporterInterface
     public function type();
 
     /**
-     * @param string $config the config yaml file to import
+     * @param File $config the config file to import
      *
      * @return array the raw config data imported from the supported file
      */
-    public function import($config);
+    public function import(File $config);
 
 }

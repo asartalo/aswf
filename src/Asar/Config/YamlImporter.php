@@ -10,6 +10,8 @@
 
 namespace Asar\Config;
 
+use Asar\FileSystem\File;
+
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -39,13 +41,15 @@ class YamlImporter implements ImporterInterface
     /**
      * Imports a yaml configuration file
      *
-     * @param string $config the yaml config file
+     * @param File $config the yaml config file
      *
      * @return array config data
      */
-    public function import($config)
+    public function import(File $config)
     {
-        return $this->parser->parse($config);
+        return $this->parser->parse(
+            $config->getContents()
+        );
     }
 
 }

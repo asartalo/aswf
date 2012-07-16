@@ -43,6 +43,7 @@ class Router implements RouterInterface
     public function route($path)
     {
         $route = $this->navigator->find($path);
+
         return $this->resourceFactory->getResource($route);
     }
 

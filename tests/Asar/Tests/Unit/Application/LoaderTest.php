@@ -11,8 +11,8 @@
 namespace Asar\Tests\Unit\Application;
 
 use Asar\Application\Loader;
-use Asar\Application\Application;
 use Asar\Tests\TestCase;
+use Asar\Config\Config;
 
 /**
  * Application Loader tests
@@ -24,24 +24,16 @@ class LoaderTest extends TestCase
      */
     public function setUp()
     {
-        $this->config = array(
+        $this->configData = array(
             'routes' => array(
                 'root' => array(
                     'resourceName' => 'RootResource'
                 )
             )
         );
-    }
-
-    /**
-     * Test loading an application from a configuration
-     */
-    public function testLoadsAnApplication()
-    {
-        $this->markTestIncomplete();
-        $this->assertInstanceOf(
-            'Asar\Application\Application',
-            Loader::load('')
+        $this->config = new Config($this->configData);
+        $this->container = $this->quickMock(
+            'Asar\Application\Container', array('offsetGet')
         );
     }
 
@@ -50,8 +42,14 @@ class LoaderTest extends TestCase
      */
     public function testInstantiateAnApplication()
     {
-        $loader = new Loader($this->config);
-        $this->markTestIncomplete();
+        $app = $this->quickMock('Asar\Application\Application');
+        $this->container->expects($this->atLeastOnce())
+            ->method('offsetGet')
+            ->with('asar.application')
+            ->will($this->returnValue($app));
+
+        $loader = new Loader($this->container);
+        $this->assertSame($app, $loader->loadApplication($this->config));
     }
 
 }

@@ -14,6 +14,8 @@ use Asar\Routing\Router;
 use Asar\Http\Resource\ResourceFactory;
 use Asar\Application\Container;
 use Asar\Config\Config;
+use Asar\Config\YamlImporter;
+
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 
@@ -44,29 +46,26 @@ class Loader
     public static function load($configFile)
     {
         $configFile = realpath($configFile);
-        $yamlParser = new YamlParser;
-        $config = new Config($yamlParser->parse(
-            file_get_contents($configFile)
-        ));
+        $importer = new YamlImporter(new YamlParser);
+        $config = new Config(
+            $configFile, array($importer)
+        );
+        //var_dump($config->getRaw());exit;
         $loader = new self(
             new Container($config, dirname($configFile))
         );
 
-        return $loader->loadApplication($config);
+        return $loader->loadApplication();
     }
 
     /**
-     * Bootstraps an application based on the configuration
-     *
-     * @param array $config application configuration
+     * Bootstraps an application
      *
      * @return Asar\Application\Application;
      */
-    public function loadApplication($config = array())
+    public function loadApplication()
     {
-        $application = $this->container['asar.application'];
-
-        return $application;
+        return $this->container['asar.application'];
     }
 
 }
