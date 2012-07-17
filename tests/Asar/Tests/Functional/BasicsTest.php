@@ -36,6 +36,6 @@ class BasicsTest extends TestCase
     {
         $response = $this->client->get($this->app, '/');
         $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('Hello World!', $response->getContent());
+        $this->assertContains('Hello World!', $response->getContent());
     }
 }
