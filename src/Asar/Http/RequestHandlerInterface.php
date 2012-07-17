@@ -17,9 +17,9 @@ interface RequestHandlerInterface
 {
 
     /**
-     * @param Asar\Http\Request $request A request object
+     * @param Request $request A request object
      *
-     * @return Asar\Http\Response A response object
+     * @return Response A response object
      */
     public function handleRequest(Message\Request $request);
 }

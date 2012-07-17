@@ -21,7 +21,7 @@ class Client
 {
 
     /**
-     * Sends an GET request to an application or request handler
+     * Send a GET request to an application or request handler
      *
      * @param RequestHandler $app  an application or any request handler
      * @param string         $path the path to a resource

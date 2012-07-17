@@ -18,7 +18,7 @@ use Asar\Http\Resource\ResourceFactory;
 use Composer\Autoload\ClassLoader;
 
 /**
- * Asar Application DI Container
+ * Application Dependency Injection container
  */
 class Container extends Pimple
 {

@@ -17,7 +17,7 @@ use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
 
 /**
- * A (web) application
+ * A web application
  */
 class Application implements RequestHandler
 {

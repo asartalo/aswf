@@ -11,7 +11,7 @@
 namespace Asar;
 
 /**
- * All Asar Exceptions extend from this
+ * Asar Exception super class
  */
 class Exception extends \Exception
 {

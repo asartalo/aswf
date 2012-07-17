@@ -92,7 +92,7 @@ class Node
     }
 
     /**
-     * Returns a child node based on it's node name
+     * Returns a child node based on its node name
      *
      * @param string $name the child node's name
      *
@@ -130,7 +130,7 @@ class Node
     }
 
     /**
-     * Finds child nodes that matchs against string
+     * Finds child nodes that match against string
      *
      * @param string $toMatch the string to match against
      *

@@ -25,7 +25,8 @@ class Config
     private $importers = array();
 
     /**
-     * @param mixed $config    the path to a config file or raw data
+     * @param mixed $config    the path to a configuration file or an array of
+     *                         configuration data
      * @param array $importers a collection of config importers
      *                         that implement Asar\ConfigImporterInterface
      */
