@@ -26,7 +26,9 @@ class ApplicationTest extends TestCase
      */
     public function setUp()
     {
-        $this->router = $this->quickMock('Asar\Routing\Router', array('route'));
+        $this->router = $this->quickMock(
+            'Asar\Routing\RouterInterface', array('route')
+        );
         $this->app = new Application($this->router);
     }
 

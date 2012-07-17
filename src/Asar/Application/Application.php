@@ -11,7 +11,7 @@
 namespace Asar\Application;
 
 use Asar\Http\RequestHandlerInterface as RequestHandler;
-use Asar\Routing\Router;
+use Asar\Routing\RouterInterface;
 use Asar\Http\Resource\Dispatcher;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
@@ -28,7 +28,7 @@ class Application implements RequestHandler
     /**
      * @param Router $router a request router
      */
-    public function __construct(Router $router)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }
