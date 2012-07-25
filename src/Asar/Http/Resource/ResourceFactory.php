@@ -22,22 +22,17 @@ class ResourceFactory
 
     private $appPath;
 
-    private $classLoader;
-
     private $config;
 
     /**
      * Constructor
      *
-     * @param string $appPath     the path to the application
-     * @param object $classLoader a classloader that implements loadClass()
-     *                            and follows the PSR-0 convention
-     * @param Config $config      an application configuration
+     * @param string $appPath the path to the application
+     * @param Config $config  an application configuration
      */
-    public function __construct($appPath, $classLoader, Config $config)
+    public function __construct($appPath, Config $config)
     {
         $this->appPath = $appPath;
-        $this->classLoader = $classLoader;
         $this->config = $config;
     }
 
@@ -50,11 +45,10 @@ class ResourceFactory
      */
     public function getResource(Route $route)
     {
-        $resourceName = $this->config->get('name')
+        $resourceName = $this->config->get('namespace')
             . '\\Resource\\' . $route->getName();
-
         $resource = null;
-        if ($this->classLoader->loadClass($resourceName)) {
+        if (class_exists($resourceName)) {
             $resource = new $resourceName;
         }
 

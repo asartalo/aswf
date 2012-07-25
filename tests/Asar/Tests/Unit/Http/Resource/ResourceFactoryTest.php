@@ -29,25 +29,13 @@ class ResourceFactoryTest extends TestCase
         if (!class_exists('ExampleApp\Resource\FooResource')) {
             $this->createClassDefinition('ExampleApp\Resource\FooResource');
         }
-        $this->classLoader = $this->quickMock(
-            'Composer\Autoload\ClassLoader', array('loadClass')
-        );
         $this->appPath = '/path/to/application';
-        $this->config  = new Config(array('name' => 'ExampleApp'));
-        $this->factory = new ResourceFactory(
-            $this->appPath, $this->classLoader, $this->config
+        $this->config  = new Config(
+            array('name' => 'ExampleApp', 'namespace' => 'ExampleApp')
         );
-    }
-
-    /**
-     * Uses classloader to load resource
-     */
-    public function testUsesClassLoaderToLoadResource()
-    {
-        $this->classLoader->expects($this->once())
-            ->method('loadClass')
-            ->with('ExampleApp\Resource\FooResource');
-        $this->factory->getResource(new Route('FooResource', array()));
+        $this->factory = new ResourceFactory(
+            $this->appPath, $this->config
+        );
     }
 
     /**
@@ -66,9 +54,6 @@ class ResourceFactoryTest extends TestCase
      */
     public function testCreatesDispatcherThatWrapsResource()
     {
-        $this->classLoader->expects($this->once())
-            ->method('loadClass')
-            ->will($this->returnValue(true));
         $dispatcher = $this->factory->getResource(
             new Route('FooResource', array())
         );
@@ -82,11 +67,8 @@ class ResourceFactoryTest extends TestCase
      */
     public function testCreatesEmptyDispatcherWhenThereIsNoResourceFound()
     {
-        $this->classLoader->expects($this->once())
-            ->method('loadClass')
-            ->will($this->returnValue(false));
         $dispatcher = $this->factory->getResource(
-            new Route('FooResource', array())
+            new Route('BarResource', array())
         );
         $this->assertNull($dispatcher->getResource());
     }

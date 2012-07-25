@@ -43,20 +43,6 @@ class Container extends Pimple
             return $builder->build($c['application.routes']);
         };
 
-        $this['classLoader'] = function($c) {
-            /**
-             * @todo refactor
-             */
-            $loader = new ClassLoader;
-            $config = $c['application.config'];
-
-            $loader->add(
-                $config->get('name'), dirname($c['application.path'])
-            );
-
-            return $loader;
-        };
-
         $this['asar.application'] = function($c) {
             return new Application($c['asar.router']);
         };
@@ -80,7 +66,7 @@ class Container extends Pimple
 
         $this['asar.resourceFactory'] = function($c) {
             return new ResourceFactory(
-                $c['application.path'], $c['classLoader'],
+                $c['application.path'],
                 $c['application.config']
             );
         };
