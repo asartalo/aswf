@@ -73,11 +73,11 @@ class NodeTest extends TestCase
     }
 
     /**
-     * Has a ResourceName
+     * Has a class reference
      */
-    public function testGetResourceName()
+    public function testGetClassReference()
     {
-        $this->assertEquals('FooResource', $this->node->getResourceName());
+        $this->assertEquals('FooResource', $this->node->getClassReference());
     }
 
     /**

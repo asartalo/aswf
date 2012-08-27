@@ -54,7 +54,7 @@ class NodeNavigator
             }
         }
 
-        return new Route($currentNode->getResourceName(), $pathValues);
+        return new Route($currentNode->getClassReference(), $pathValues);
     }
 
 }

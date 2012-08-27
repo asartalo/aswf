@@ -18,7 +18,7 @@ class Node
 
     private $name;
 
-    private $resourceName;
+    private $classReference;
 
     private $requires;
 
@@ -31,11 +31,11 @@ class Node
      * 'requires' regular expression to match against without the '/'
      * delimiters
      *
-     * @param string $name         the node name
-     * @param string $resourceName the nodes' resourceName
-     * @param array  $options      an array of options
+     * @param string $name           the node name
+     * @param string $classReference the nodes' classReference
+     * @param array  $options        an array of options
      */
-    public function __construct($name, $resourceName, array $options = array())
+    public function __construct($name, $classReference, array $options = array())
     {
         if (strpos($name, '/') > 0) {
             throw new InvalidNodeNameException(
@@ -43,7 +43,7 @@ class Node
             );
         }
         $this->name = $name;
-        $this->resourceName = $resourceName;
+        $this->classReference = $classReference;
         if (isset($options['require']) && is_string($options['require'])) {
             $this->requires = '/' . $options['require'] . '/';
         }
@@ -104,13 +104,13 @@ class Node
     }
 
     /**
-     * Return's the node's resource name
+     * Return's the node's class reference
      *
-     * @return string the resource name
+     * @return string the class reference
      */
-    public function getResourceName()
+    public function getClassReference()
     {
-        return $this->resourceName;
+        return $this->classReference;
     }
 
     /**

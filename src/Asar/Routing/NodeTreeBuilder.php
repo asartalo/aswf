@@ -39,12 +39,12 @@ class NodeTreeBuilder
             if (isset($properties['require'])) {
                 $options['require'] = $properties['require'];
             }
-            if (!isset($properties['resourceName'])) {
-                throw new NoResourceNameException(
-                    "The node '$nodeName' does not include a resourceName."
+            if (!isset($properties['classRef'])) {
+                throw new NoclassReferenceException(
+                    "The node '$nodeName' does not include a classRef."
                 );
             }
-            $node = new Node($nodeName, $properties['resourceName'], $options);
+            $node = new Node($nodeName, $properties['classRef'], $options);
             if (isset($properties['nodes'])) {
                 $subNodes = $properties['nodes'];
                 $node->addNodes($this->_buildNodes($subNodes));

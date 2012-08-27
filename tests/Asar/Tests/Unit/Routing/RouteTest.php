@@ -29,7 +29,7 @@ class RouteTest extends TestCase
             'bar' => 'Bar',
             'baz' => 'EndPoint'
         );
-        $this->route = new Route('ResourceName', $this->pathValues);
+        $this->route = new Route('ResourceClassReference', $this->pathValues);
     }
 
 
@@ -46,7 +46,7 @@ class RouteTest extends TestCase
      */
     public function testGetName()
     {
-        $this->assertEquals('ResourceName', $this->route->getName());
+        $this->assertEquals('ResourceClassReference', $this->route->getName());
     }
 
 }

@@ -37,7 +37,7 @@ class ResourceFactory
     }
 
     /**
-     * Gets resource based on resource name
+     * Gets resource based on class reference
      *
      * @param Route $route the route to the resource
      *
@@ -45,11 +45,11 @@ class ResourceFactory
      */
     public function getResource(Route $route)
     {
-        $resourceName = $this->config->get('namespace')
+        $classReference = $this->config->get('namespace')
             . '\\Resource\\' . $route->getName();
         $resource = null;
-        if (class_exists($resourceName)) {
-            $resource = new $resourceName;
+        if (class_exists($classReference)) {
+            $resource = new $classReference;
         }
 
         return new ResourceDispatcher($resource);

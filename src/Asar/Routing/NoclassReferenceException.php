@@ -11,9 +11,9 @@
 namespace Asar\Routing;
 
 /**
- * Exception thrown when routes spec has a node with no name
+ * Thrown when routes spec has a node with no class reference
  */
-class NoResourceNameException extends Exception
+class NoclassReferenceException extends Exception
 {
 
 }

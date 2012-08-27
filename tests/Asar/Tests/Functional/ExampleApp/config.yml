@@ -6,15 +6,15 @@ services: 'Services...'
 
 routes:
     root:
-        resourceName: 'Index'
+        classRef: 'Index'
         nodes:
             blog:
-                resourceName: 'Blog'
+                classRef: 'Blog'
                 nodes:
                     archive:
-                        resourceName: 'BlogArchive'
+                        classRef: 'BlogArchive'
                         nodes:
                             year:
-                                resourceName: 'BlogArchive\Year'
+                                classRef: 'BlogArchive\Year'
                                 require: '/\d{4}/'
 

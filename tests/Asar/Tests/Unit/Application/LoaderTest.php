@@ -27,7 +27,7 @@ class LoaderTest extends TestCase
         $this->configData = array(
             'routes' => array(
                 'root' => array(
-                    'resourceName' => 'RootResource'
+                    'classRef' => 'RootResource'
                 )
             )
         );

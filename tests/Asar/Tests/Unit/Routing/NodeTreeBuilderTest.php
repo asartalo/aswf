@@ -28,14 +28,14 @@ class NodeTreeBuilderTest extends TestCase
         $this->builder = new NodeTreeBuilder;
         $this->nodeArray = array(
             'root' => array(
-                'resourceName' => 'RootResource',
+                'classRef' => 'RootResource',
                 'nodes' => array(
                     'foo' => array(
-                        'resourceName' => 'FooResource',
+                        'classRef' => 'FooResource',
                         'require'      => '^\d+$',
                     ),
                     'bar' => array(
-                        'resourceName' => 'BarResource'
+                        'classRef' => 'BarResource'
                     )
                 )
             )
@@ -57,7 +57,7 @@ class NodeTreeBuilderTest extends TestCase
     public function testBuiltTreeHasProperRootNode()
     {
         $this->assertEquals('root', $this->rootNode->getName());
-        $this->assertEquals('RootResource', $this->rootNode->getResourceName());
+        $this->assertEquals('RootResource', $this->rootNode->getClassReference());
     }
 
     /**
@@ -66,10 +66,10 @@ class NodeTreeBuilderTest extends TestCase
     public function testBuiltTreeWithCorrectChildNodes()
     {
         $this->assertEquals(
-            'FooResource', $this->rootNode->get('foo')->getResourceName()
+            'FooResource', $this->rootNode->get('foo')->getClassReference()
         );
         $this->assertEquals(
-            'BarResource', $this->rootNode->get('bar')->getResourceName()
+            'BarResource', $this->rootNode->get('bar')->getClassReference()
         );
     }
 
@@ -86,14 +86,14 @@ class NodeTreeBuilderTest extends TestCase
     /**
      * Will throw an exception if node did not include resource name
      */
-    public function testThrowExceptionWhenNodeDoesNotIncludeResourceName()
+    public function testThrowExceptionWhenNodeDoesNotIncludeclassRef()
     {
         $this->setExpectedException(
-            'Asar\Routing\NoResourceNameException'
+            'Asar\Routing\NoclassReferenceException'
         );
         $nodeArray = array(
             'root' => array(
-                'resourceName' => 'RootResource',
+                'classRef' => 'RootResource',
                 'nodes' => array(
                     'foo' => array(),
                 )

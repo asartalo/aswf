@@ -29,7 +29,7 @@ class ConfigTest extends TestCase
             'name' => 'ExampleApp',
             'routes' => array(
                 'root' => array(
-                    'resourceName' => 'Index'
+                    'classRef' => 'Index'
                 )
             )
         );
@@ -63,7 +63,7 @@ class ConfigTest extends TestCase
     public function testGettingNestedData()
     {
         $this->assertEquals(
-            'Index', $this->config->get('routes.root.resourceName')
+            'Index', $this->config->get('routes.root.classRef')
         );
     }
 
