@@ -33,7 +33,7 @@ class LoaderTest extends TestCase
         );
         $this->config = new Config($this->configData);
         $this->container = $this->quickMock(
-            'Asar\Application\Container', array('offsetGet')
+            'Symfony\Component\DependencyInjection\ContainerInterface'
         );
     }
 
@@ -44,12 +44,15 @@ class LoaderTest extends TestCase
     {
         $app = $this->quickMock('Asar\Application\Application');
         $this->container->expects($this->atLeastOnce())
-            ->method('offsetGet')
-            ->with('asar.application')
+            ->method('get')
+            ->with('application')
             ->will($this->returnValue($app));
 
         $loader = new Loader($this->container);
-        $this->assertSame($app, $loader->loadApplication($this->config));
+        $this->assertInstanceOf(
+            'Asar\Application\Application',
+            $loader->loadApplication($this->config)
+        );
     }
 
 }

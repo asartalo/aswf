@@ -1,0 +1,66 @@
+parameters:
+  application.config.file: ''
+  application.path: ''
+
+  application.class: Asar\Application\Application
+  application.router.class: Asar\Routing\Router
+  application.routeNodes.class: Asar\Routing\Node
+  application.nodeNavigator.class: Asar\Routing\NodeNavigator
+  application.resourceFactory.class: Asar\Http\Resource\ResourceFactory
+
+  asar.config.yamlImporter.class: Asar\Config\YamlImporter
+  asar.config.config.class: Asar\Config\Config
+
+  asar.routing.nodesBuilder.class: Asar\Routing\NodeTreeBuilder
+
+services:
+  yaml.parser:
+    class: Symfony\Component\Yaml\Parser
+
+  asar.config.yamlImporter:
+    class: %asar.config.yamlImporter.class%
+    arguments: [@yaml.parser]
+
+  asar.routing.nodesBuilder:
+    class: %asar.routing.nodesBuilder.class%
+
+  application.config:
+    class: %asar.config.config.class%
+    scope: application
+    arguments:
+      - %application.config.file%
+      - [@asar.config.yamlImporter]
+
+  application.routes:
+    scope: application
+    factory_service: application.config
+    factory_method: get
+    arguments: ['routes']
+
+  application.routeNodes:
+    class: %application.routeNodes.class%
+    scope: application
+    factory_service:  asar.routing.nodesBuilder
+    factory_method:   build
+    arguments: [@application.routes]
+
+  application.nodeNavigator:
+    class: %application.nodeNavigator.class%
+    scope: application
+    arguments: [@application.routeNodes]
+
+  application:
+    class: %application.class%
+    scope: application
+    arguments: [@application.router]
+
+  application.router:
+    class: %application.router.class%
+    scope: application
+    arguments: [@application.nodeNavigator, @application.resourceFactory]
+
+  application.resourceFactory:
+    class: %application.resourceFactory.class%
+    scope: application
+    arguments: [%application.path%, @application.config]
+

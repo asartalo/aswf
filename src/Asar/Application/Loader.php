@@ -10,14 +10,11 @@
 
 namespace Asar\Application;
 
-use Asar\Routing\Router;
-use Asar\Http\Resource\ResourceFactory;
-use Asar\Application\Container;
-use Asar\Config\Config;
-use Asar\Config\YamlImporter;
-
-
-use Symfony\Component\Yaml\Parser as YamlParser;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Scope;
 
 /**
  * A loader for Asar applications bootstrapping them to life
@@ -29,9 +26,9 @@ class Loader
     /**
      * Constructor
      *
-     * @param ContainerBuilder $container DI container
+     * @param ContainerInterface $container the DI container
      */
-    public function __construct($container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -45,17 +42,17 @@ class Loader
      */
     public static function load($configFile)
     {
-        $configFile = realpath($configFile);
-        $importer = new YamlImporter(new YamlParser);
-        $config = new Config(
-            $configFile, array($importer)
-        );
-        //var_dump($config->getRaw());exit;
-        $loader = new self(
-            new Container($config, dirname($configFile))
-        );
+        $container = new ContainerBuilder();
 
-        return $loader->loadApplication();
+        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
+        $loader->load('services.yml');
+
+        $container->setParameter('application.config.file', $configFile);
+        $container->addScope(new Scope('application'));
+
+        $appLoader = new self($container);
+
+        return $appLoader->loadApplication();
     }
 
     /**
@@ -65,7 +62,8 @@ class Loader
      */
     public function loadApplication()
     {
-        return $this->container['asar.application'];
+        $this->container->enterScope('application');
+        return $this->container->get('application');
     }
 
 }
