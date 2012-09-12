@@ -63,6 +63,7 @@ class Loader
     public function loadApplication()
     {
         $this->container->enterScope('application');
+
         return $this->container->get('application');
     }
 
