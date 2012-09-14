@@ -49,6 +49,11 @@ class Loader
 
         $container->setParameter('application.config.file', $configFile);
         $container->addScope(new Scope('application'));
+        if (!$container->hasScope('request')) {
+            $container->addScope(new Scope('request', 'application'));
+        }
+
+        // $container->register('container', $container);
 
         $appLoader = new self($container);
 
@@ -63,8 +68,9 @@ class Loader
     public function loadApplication()
     {
         $this->container->enterScope('application');
+        $application = $this->container->get('application');
 
-        return $this->container->get('application');
+        return $application;
     }
 
 }

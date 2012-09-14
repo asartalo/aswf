@@ -13,6 +13,8 @@ namespace Asar\Http\Resource;
 use Asar\Routing\Route;
 use Asar\Config\Config;
 use Asar\Http\Resource\Dispatcher as ResourceDispatcher;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Scope;
 
 /**
  * Creates resources.
@@ -24,16 +26,24 @@ class ResourceFactory
 
     private $config;
 
+    private $container;
+
     /**
      * Constructor
      *
-     * @param string $appPath the path to the application
-     * @param Config $config  an application configuration
+     * @param string             $appPath   the path to the application
+     * @param Config             $config    an application configuration
+     * @param ContainerInterface $container the DI container
      */
-    public function __construct($appPath, Config $config)
+    public function __construct(
+        $appPath,
+        Config $config,
+        ContainerInterface $container
+    )
     {
         $this->appPath = $appPath;
         $this->config = $config;
+        $this->container = $container;
     }
 
     /**
@@ -49,7 +59,9 @@ class ResourceFactory
             . '\\Resource\\' . $route->getName();
         $resource = null;
         if (class_exists($classReference)) {
-            $resource = new $classReference;
+            $this->container->enterScope('request');
+            $this->container->setParameter('request.resource.class', $classReference);
+            $resource = $this->container->get('request.resource');
         }
 
         return new ResourceDispatcher($resource);

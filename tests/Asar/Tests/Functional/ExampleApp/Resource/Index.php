@@ -12,22 +12,35 @@ namespace Asar\Tests\Functional\ExampleApp\Resource;
 
 use Asar\Http\Resource\GetInterface;
 use Asar\Http\Message\Request;
-use Asar\Http\Message\Response;
+use Asar\Content\Page;
 
 /**
  * The index resource (homepage) for ExampleApp
  */
 class Index implements GetInterface
 {
+    private $page;
+
+    /**
+     * @param Page $page a page object
+     *
+     * @inject request.page
+     */
+    public function __construct(Page $page)
+    {
+        $this->page = $page;
+    }
 
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return mixed
      */
     public function GET(Request $request)
     {
-        return new Response(array("content" => "Hello World!"));
+        $this->page->set('title', "Hello World!");
+
+        return $this->page->getResponse();
     }
 
 }

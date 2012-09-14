@@ -33,8 +33,11 @@ class ResourceFactoryTest extends TestCase
         $this->config  = new Config(
             array('name' => 'ExampleApp', 'namespace' => 'ExampleApp')
         );
+        $this->container = $this->quickMock(
+            'Symfony\Component\DependencyInjection\ContainerInterface'
+        );
         $this->factory = new ResourceFactory(
-            $this->appPath, $this->config
+            $this->appPath, $this->config, $this->container
         );
     }
 
@@ -54,6 +57,9 @@ class ResourceFactoryTest extends TestCase
      */
     public function testCreatesDispatcherThatWrapsResource()
     {
+        $this->container->expects($this->once())
+            ->method('get')
+            ->will($this->returnValue(new \ExampleApp\Resource\FooResource));
         $dispatcher = $this->factory->getResource(
             new Route('FooResource', array())
         );

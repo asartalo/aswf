@@ -36,7 +36,9 @@ class DispatcherTest extends TestCase
      */
     public function testDispatcherImplementsRequestHandler()
     {
-        $this->assertInstanceOf('Asar\Http\RequestHandlerInterface', new Dispatcher);
+        $this->assertInstanceOf(
+            'Asar\Http\RequestHandlerInterface', new Dispatcher
+        );
     }
 
     /**
@@ -46,7 +48,8 @@ class DispatcherTest extends TestCase
     {
         $dispatcher = new Dispatcher;
         $this->assertInstanceOf(
-            'Asar\Http\Message\Response', $dispatcher->handleRequest(new Request)
+            'Asar\Http\Message\Response',
+            $dispatcher->handleRequest(new Request)
         );
     }
 

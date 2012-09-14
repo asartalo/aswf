@@ -2,6 +2,9 @@ parameters:
   application.config.file: ''
   application.path: ''
 
+  request.resource.class: '' # loaded by resource factory
+  request.page.class: Asar\Content\Page
+
   application.class: Asar\Application\Application
   application.router.class: Asar\Routing\Router
   application.routeNodes.class: Asar\Routing\Node
@@ -62,5 +65,13 @@ services:
   application.resourceFactory:
     class: %application.resourceFactory.class%
     scope: application
-    arguments: [%application.path%, @application.config]
+    arguments: [%application.path%, @application.config, @service_container]
 
+  request.resource:
+    class: %request.resource.class%
+    scope: request
+    arguments: [@request.page]
+
+  request.page:
+    class: %request.page.class%
+    scope: request

@@ -15,8 +15,11 @@ namespace Asar\Tests;
  */
 class TempFilesManager
 {
-    private $temp_dir;
+    private $tempDir;
 
+    /**
+     * @param string $dir the temporary files directory
+     */
     public function __construct($dir)
     {
         if (!file_exists($dir)) {
@@ -25,47 +28,67 @@ class TempFilesManager
                 "does not exist."
             );
         }
-        $this->temp_dir = $dir;
+
+        $this->tempDir = $dir;
     }
 
-    public function getPath($file_name)
+    /**
+     * @param string $fileName
+     *
+     * @return string the full path to the file
+     */
+    public function getPath($fileName)
     {
-        return $this->temp_dir . DIRECTORY_SEPARATOR . $file_name;
+        return $this->tempDir . DIRECTORY_SEPARATOR . $fileName;
     }
 
+    /**
+     * @return string the temporary directory set
+     */
     public function getTempDirectory()
     {
-        return $this->temp_dir;
+        return $this->tempDir;
     }
 
-    public function newFile($file_name, $contents)
+    /**
+     * Creates a file with the filename and contents in the temp directory
+     *
+     * @param string $fileName the file name
+     * @param string $contents the contents of the file
+     */
+    public function newFile($fileName, $contents)
     {
-        if ($this->isfileNameInDirectory($file_name)) {
-            $this->createDirectoriesFirst($file_name);
+        if ($this->isfileNameInDirectory($fileName)) {
+            $this->createDirectoriesFirst($fileName);
         }
-        //echo "\n$file_name";
-        $file = fopen($this->getPath($file_name), 'w+');
+        $file = fopen($this->getPath($fileName), 'w+');
         fwrite($file, $contents);
         fclose($file);
     }
 
-    public function newDir($dir_name)
+
+    /**
+     * Creates a sub-directory in the temp directory
+     *
+     * @param string $dirName the name of the sub directory
+     */
+    public function newDir($dirName)
     {
-        $this->createDirectoriesFirst($dir_name, true);
+        $this->createDirectoriesFirst($dirName, true);
     }
 
-    private function isFileNameInDirectory($file_name)
+    private function isFileNameInDirectory($fileName)
     {
-        return strpos($file_name, '/') > -1;
+        return strpos($fileName, '/') > -1;
     }
 
-    private function createDirectoriesFirst($file_name, $include_tail = false)
+    private function createDirectoriesFirst($fileName, $includeTail = false)
     {
-        $dirs = explode('/', $file_name);
-        if (!$include_tail) {
+        $dirs = explode('/', $fileName);
+        if (!$includeTail) {
             array_pop($dirs);
         }
-        $prepend = $this->temp_dir;
+        $prepend = $this->tempDir;
         foreach ($dirs as $dir) {
             $prepend .= DIRECTORY_SEPARATOR . $dir;
             if (!file_exists($prepend)) {
@@ -74,17 +97,25 @@ class TempFilesManager
         }
     }
 
-    public function removeFile($file_name)
+    /**
+     * Deletes a file in the temporary directory
+     *
+     * @param string $fileName
+     */
+    public function removeFile($fileName)
     {
-        unlink($this->getPath($file_name));
+        unlink($this->getPath($fileName));
     }
 
+    /**
+     * Removes all files and directories inside the temp directory
+     */
     public function clearTempDirectory()
     {
-        $this->recursiveDelete($this->temp_dir, false);
+        $this->recursiveDelete($this->tempDir, false);
     }
 
-    private function recursiveDelete($directory, $this_too = true)
+    private function recursiveDelete($directory, $thisToo = true)
     {
         if (file_exists($directory) && is_dir($directory)) {
             $contents = scandir($directory);
@@ -100,7 +131,7 @@ class TempFilesManager
                     }
                 }
             }
-            if ($this_too) {
+            if ($thisToo) {
                 return rmdir($directory);
             }
         } else {

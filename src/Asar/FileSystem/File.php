@@ -43,7 +43,7 @@ use \Asar\FileSystem\Exception as FileException;
  * The following opens a file, writes a content on it, and then saves it:
  *
  * <code>
- *   $f = Asar\File::open('tehfile.ext')->write($thecontentstring)->save();
+ *   $f = Asar\File::open('thefile.ext')->write($thecontentstring)->save();
  * </code>
  *
  *

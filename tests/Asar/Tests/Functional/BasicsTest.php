@@ -38,4 +38,16 @@ class BasicsTest extends TestCase
         $this->assertEquals(200, $response->getStatus());
         $this->assertContains('Hello World!', $response->getContent());
     }
+
+    /**
+     * Resource uses template
+     */
+    public function testGetHomepageUsesRepresentation()
+    {
+        $response = $this->client->get($this->app, '/');
+        $this->assertEquals(
+            'text/html; charset=utf-8', $response->getHeader('Content-Type')
+        );
+        $this->assertContains('<h1>Hello World!</h1>', $response->getContent());
+    }
 }
