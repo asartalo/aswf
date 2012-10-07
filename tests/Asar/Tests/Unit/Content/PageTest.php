@@ -24,7 +24,10 @@ class PageTest extends TestCase
      */
     public function setUp()
     {
-        $this->page = new Page;
+        $this->assembler = $this->quickMock(
+            'Asar\Template\Engine\EngineInterface'
+        );
+        $this->page = new Page($this->assembler);
     }
 
     /**
@@ -41,10 +44,13 @@ class PageTest extends TestCase
     /**
      * Setting a content parameter
      */
-    public function testSettingContentParameterReturnsResponseWithContent()
+    public function testSettingContentParameterSetsRendererParameter()
     {
+        $this->assembler->expects($this->once())
+            ->method('set')
+            ->with('foo', 'Foo');
         $this->page->set('foo', 'Foo');
-        $this->assertContains('Foo', $this->page->getResponse()->getContent());
+
     }
 
     /**
@@ -64,7 +70,22 @@ class PageTest extends TestCase
     public function testSetsHtmlAndUtf8AsDefaultContentType()
     {
         $this->assertEquals(
-            'text/html; charset=utf-8', $this->page->getResponse()->getHeader('content-type')
+            'text/html; charset=utf-8',
+            $this->page->getResponse()->getHeader('content-type')
+        );
+    }
+
+    /**
+     * Uses assembler render as response content
+     */
+    public function testUsesRendererForResponseContent()
+    {
+        $this->assembler->expects($this->once())
+            ->method('render')
+            ->will($this->returnValue('FooBar'));
+        $this->assertEquals(
+            'FooBar',
+            $this->page->getResponse()->getContent()
         );
     }
 

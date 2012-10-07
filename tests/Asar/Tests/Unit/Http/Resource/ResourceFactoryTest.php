@@ -79,4 +79,20 @@ class ResourceFactoryTest extends TestCase
         $this->assertNull($dispatcher->getResource());
     }
 
+    /**
+     * Sets route to container
+     */
+    public function testSetsRouteToContainer()
+    {
+        $route = new Route('BarResource', array());
+        $this->container->expects($this->at(0))
+            ->method('set')
+            ->with('request.route', $route);
+        $this->container->expects($this->at(1))
+            ->method('set')
+            ->with('request.resource', null);
+        $dispatcher = $this->factory->getResource($route);
+        $dispatcher->getResource();
+    }
+
 }

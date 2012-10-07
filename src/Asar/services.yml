@@ -4,6 +4,8 @@ parameters:
 
   request.resource.class: '' # loaded by resource factory
   request.page.class: Asar\Content\Page
+  request.page.template: '' # loaded by template finder
+  request.route.class: Asar\Routing\Route
 
   application.class: Asar\Application\Application
   application.router.class: Asar\Routing\Router
@@ -75,3 +77,9 @@ services:
   request.page:
     class: %request.page.class%
     scope: request
+    arguments: []
+
+  request.route:
+    class: %request.route.class%
+    scope: request
+

@@ -15,16 +15,18 @@ use Asar\Template\Engine\Exception\TemplateFileNotFound;
 /**
  * A simple PHP-based template engine
  */
-class PhpEngine
+class PhpEngine implements EngineInterface
 {
     private $file;
+
+    private $templateParams = array();
 
     /**
      * Sets the template file
      *
      * @param string $file the template file
      */
-    public function setTemplateFile($file)
+    public function setTemplate($file)
     {
         if (!file_exists($file)) {
             throw new TemplateFileNotFound(
@@ -32,6 +34,17 @@ class PhpEngine
             );
         }
         $this->file = $file;
+    }
+
+    /**
+     * Sets a template parameter
+     *
+     * @param string $key   the template parameter key
+     * @param mixed  $value the template parameter value
+     */
+    public function set($key, $value)
+    {
+        $this->templateParams[$key] = $value;
     }
 
     /**
@@ -49,9 +62,9 @@ class PhpEngine
      *
      * @param array $templateParams the template parameters
      */
-    public function render(array $templateParams = array())
+    public function render()
     {
-        extract($templateParams);
+        extract($this->templateParams);
         ob_start();
         include $this->file;
 

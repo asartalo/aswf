@@ -56,8 +56,9 @@ class TempFilesManager
      * @param string $fileName the file name
      * @param string $contents the contents of the file
      */
-    public function newFile($fileName, $contents)
+    public function newFile($fileName, $contents = '')
     {
+        $fileName = ltrim($fileName, '/\\');
         if ($this->isfileNameInDirectory($fileName)) {
             $this->createDirectoriesFirst($fileName);
         }

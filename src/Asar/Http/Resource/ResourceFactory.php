@@ -63,6 +63,8 @@ class ResourceFactory
             $this->container->setParameter('request.resource.class', $classReference);
             $resource = $this->container->get('request.resource');
         }
+        $this->container->set('request.route', $route);
+        $this->container->set('request.resource', $resource);
 
         return new ResourceDispatcher($resource);
     }

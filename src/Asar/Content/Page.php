@@ -11,21 +11,23 @@
 namespace Asar\Content;
 
 use Asar\Http\Message\Response;
+use Asar\Template\Engine\EngineInterface;
 
 /**
  * An object representation of a web page
  */
 class Page
 {
-    private $contentParams = array();
-
     private $response;
+
+    private $engine;
 
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(EngineInterface $engine)
     {
+        $this->engine = $engine;
         $this->response = new Response;
     }
 
@@ -36,8 +38,7 @@ class Page
      */
     public function getResponse()
     {
-        $contents = implode(' ', $this->contentParams);
-        $this->response->setContent($contents);
+        $this->response->setContent($this->engine->render());
         $this->response->setHeader('content-type', 'text/html; charset=utf-8');
 
         return $this->response;
@@ -47,7 +48,7 @@ class Page
      * Sets a response header
      *
      * @param string $key   the response header key
-     * @param string $value the response header value
+     * @param mixed  $value the response header value
      */
     public function setHeader($key, $value)
     {
@@ -62,7 +63,7 @@ class Page
      */
     public function set($key, $value)
     {
-        $this->contentParams[$key] = $value;
+        $this->engine->set($key, $value);
     }
 
 }
