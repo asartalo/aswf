@@ -11,10 +11,7 @@
 namespace Asar\Application;
 
 use Asar\Http\RequestHandlerInterface as RequestHandler;
-use Asar\Routing\RouterInterface;
-use Asar\Http\Resource\Dispatcher;
 use Asar\Http\Message\Request;
-use Asar\Http\Message\Response;
 
 /**
  * A web application
@@ -22,15 +19,15 @@ use Asar\Http\Message\Response;
 class Application implements RequestHandler
 {
 
-    private $router;
+    private $helper;
 
 
     /**
-     * @param Router $router a request router
+     * @param RequestHelper $helper handles requests for the application
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(DispatchEntry $helper)
     {
-        $this->router = $router;
+        $this->helper = $helper;
     }
 
     /**
@@ -40,13 +37,7 @@ class Application implements RequestHandler
      */
     public function handleRequest(Request $request)
     {
-        if ($dispatcher = $this->router->route($request->getPath())) {
-            $response = $dispatcher->handleRequest($request);
-        } else {
-            $response = new Response(array('status' => 404));
-        }
-
-        return $response;
+        return $this->helper->dispatch($request);
     }
 
 }

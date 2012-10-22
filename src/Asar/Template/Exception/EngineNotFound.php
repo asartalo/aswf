@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Asar\Http\Resource\Exception;
+namespace Asar\Template\Exception;
 
-use \Asar\Http\Resource\Exception as ResourceException;
+use Asar\Exception;
 
 /**
  * Thrown when there is an undefined Method
  */
-class UndefinedMethod extends ResourceException
+class EngineNotFound extends Exception
 {
 
 }

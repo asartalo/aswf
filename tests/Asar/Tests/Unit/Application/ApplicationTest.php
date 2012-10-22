@@ -26,63 +26,34 @@ class ApplicationTest extends TestCase
      */
     public function setUp()
     {
-        $this->router = $this->quickMock(
-            'Asar\Routing\RouterInterface', array('route')
+        $this->dispatchEntry = $this->quickMock(
+            'Asar\Application\DispatchEntry', array('dispatch')
         );
-        $this->app = new Application($this->router);
+        $this->app = new Application($this->dispatchEntry);
     }
 
     /**
-     * Passes request path to router
+     * Passes request path to dispatchEntry
      */
     public function testPassesRequestPathToRouter()
     {
-        $this->router->expects($this->once())
-            ->method('route')
-            ->with('/foo');
-        $this->app->handleRequest(new Request(array('path' => '/foo')));
-    }
-
-    /**
-     * Passes request to resource found by router
-     */
-    public function testPassesRequestToResourceFoundByRouter()
-    {
-        $request = new Request(array('path' => '/foo'));
-        $resource = $this->quickMock('Asar\Http\RequestHandlerInterface');
-        $this->router->expects($this->once())
-            ->method('route')
-            ->will($this->returnValue($resource));
-        $resource->expects($this->once())
-            ->method('handleRequest')
-            ->with($request);
+        $this->dispatchEntry->expects($this->once())
+            ->method('dispatch')
+            ->with($request = new Request(array('path' => '/foo')));
         $this->app->handleRequest($request);
     }
 
     /**
-     * Returns response from resource found by router
+     * Returns response from dispatchEntry
      */
     public function testRetursResponseFromResourceFoundByRouter()
     {
-        $resource = $this->quickMock('Asar\Http\RequestHandlerInterface');
-        $this->router->expects($this->once())
-            ->method('route')
-            ->will($this->returnValue($resource));
-        $resource->expects($this->once())
-            ->method('handleRequest')
+        $this->dispatchEntry->expects($this->once())
+            ->method('dispatch')
             ->will($this->returnValue($response = new Response));
         $this->assertEquals(
             $response, $this->app->handleRequest(new Request)
         );
-    }
-
-    /**
-     * Returns 404 response status when router does not find resource
-     */
-    public function testReturns404StatusForUnknownResource()
-    {
-        $response = $this->app->handleRequest(new Request);
-        $this->assertEquals(404, $response->getStatus());
     }
 
 

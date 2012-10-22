@@ -11,23 +11,34 @@
 namespace Asar\Content;
 
 use Asar\Http\Message\Response;
-use Asar\Template\Engine\EngineInterface;
+use Asar\Http\Message\Request;
+use Asar\Routing\Route;
+use Asar\Template\TemplateAssembler;
 
 /**
  * An object representation of a web page
  */
 class Page
 {
+
+    private $assembler;
+
+    private $route;
+
+    private $request;
+
     private $response;
 
-    private $engine;
+    private $templateParams = array();
 
     /**
      * Constructor
      */
-    public function __construct(EngineInterface $engine)
+    public function __construct(TemplateAssembler $assembler, Route $route, Request $request)
     {
-        $this->engine = $engine;
+        $this->assembler = $assembler;
+        $this->route = $route;
+        $this->request = $request;
         $this->response = new Response;
     }
 
@@ -38,7 +49,15 @@ class Page
      */
     public function getResponse()
     {
-        $this->response->setContent($this->engine->render());
+        $template = $this->assembler->find(
+            $this->route->getName(),
+            array('type' => 'html', 'method' => $this->request->getMethod())
+        );
+        $content = '';
+        if ($template) {
+            $content = $template->render($this->templateParams);
+        }
+        $this->response->setContent($content);
         $this->response->setHeader('content-type', 'text/html; charset=utf-8');
 
         return $this->response;
@@ -63,7 +82,7 @@ class Page
      */
     public function set($key, $value)
     {
-        $this->engine->set($key, $value);
+        $this->templateParams[$key] = $value;
     }
 
 }

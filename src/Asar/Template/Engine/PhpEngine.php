@@ -22,51 +22,23 @@ class PhpEngine implements EngineInterface
     private $templateParams = array();
 
     /**
-     * Sets the template file
+     * Renders the template
      *
-     * @param string $file the template file
+     * @param string $file   the template file path
+     * @param array  $params the template parameters
+     *
+     * @return string the rendered template
      */
-    public function setTemplate($file)
+    public function render($file, $params = array())
     {
         if (!file_exists($file)) {
             throw new TemplateFileNotFound(
                 "The file '$file' passed to the template engine does not exist."
             );
         }
-        $this->file = $file;
-    }
-
-    /**
-     * Sets a template parameter
-     *
-     * @param string $key   the template parameter key
-     * @param mixed  $value the template parameter value
-     */
-    public function set($key, $value)
-    {
-        $this->templateParams[$key] = $value;
-    }
-
-    /**
-     * Returns the template file
-     *
-     * @return string the template file
-     */
-    public function getTemplateFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Renders the template
-     *
-     * @param array $templateParams the template parameters
-     */
-    public function render()
-    {
-        extract($this->templateParams);
+        extract($params);
         ob_start();
-        include $this->file;
+        include $file;
 
         return ob_get_clean();
     }

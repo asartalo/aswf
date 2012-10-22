@@ -26,73 +26,30 @@ class ResourceFactoryTest extends TestCase
      */
     public function setUp()
     {
-        if (!class_exists('ExampleApp\Resource\FooResource')) {
-            $this->createClassDefinition('ExampleApp\Resource\FooResource');
+        if (!class_exists($this->className = 'ExampleApp\Resource\FooResource')) {
+            $this->createClassDefinition($this->className);
         }
-        $this->appPath = '/path/to/application';
-        $this->config  = new Config(
-            array('name' => 'ExampleApp', 'namespace' => 'ExampleApp')
-        );
         $this->container = $this->quickMock(
             'Symfony\Component\DependencyInjection\ContainerInterface'
         );
-        $this->factory = new ResourceFactory(
-            $this->appPath, $this->config, $this->container
-        );
+        $this->factory = new ResourceFactory($this->container);
     }
 
     /**
-     * Returns a Request Handler
+     * Returns a resource from container
      */
-    public function testReturnsAResourceWrappedByResourceDispatcher()
+    public function testReturnsAResourceFromContainer()
     {
-        $this->assertInstanceOf(
-            'Asar\Http\RequestHandlerInterface',
-            $this->factory->getResource(new Route('FooResource', array()))
-        );
-    }
-
-    /**
-     * Creates dispatcher with resource
-     */
-    public function testCreatesDispatcherThatWrapsResource()
-    {
+        $this->container->expects($this->at(0))
+            ->method('setParameter')
+            ->with('request.resource.class', $this->className);
         $this->container->expects($this->once())
             ->method('get')
-            ->will($this->returnValue(new \ExampleApp\Resource\FooResource));
-        $dispatcher = $this->factory->getResource(
-            new Route('FooResource', array())
+            ->with('request.resource.default')
+            ->will($this->returnValue($resource = new \stdClass));
+        $this->assertSame(
+            $resource, $this->factory->getResource($this->className)
         );
-        $this->assertInstanceOf(
-            'ExampleApp\Resource\FooResource', $dispatcher->getResource()
-        );
-    }
-
-    /**
-     * Creates empty dispatcher when resource does not exist
-     */
-    public function testCreatesEmptyDispatcherWhenThereIsNoResourceFound()
-    {
-        $dispatcher = $this->factory->getResource(
-            new Route('BarResource', array())
-        );
-        $this->assertNull($dispatcher->getResource());
-    }
-
-    /**
-     * Sets route to container
-     */
-    public function testSetsRouteToContainer()
-    {
-        $route = new Route('BarResource', array());
-        $this->container->expects($this->at(0))
-            ->method('set')
-            ->with('request.route', $route);
-        $this->container->expects($this->at(1))
-            ->method('set')
-            ->with('request.resource', null);
-        $dispatcher = $this->factory->getResource($route);
-        $dispatcher->getResource();
     }
 
 }

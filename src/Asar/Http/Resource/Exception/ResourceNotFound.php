@@ -13,9 +13,9 @@ namespace Asar\Http\Resource\Exception;
 use \Asar\Http\Resource\Exception as ResourceException;
 
 /**
- * Thrown when there is an undefined Method
+ * Thrown when a resource is not found
  */
-class UndefinedMethod extends ResourceException
+class ResourceNotFound extends ResourceException
 {
 
 }

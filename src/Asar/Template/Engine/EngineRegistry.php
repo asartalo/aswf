@@ -48,4 +48,17 @@ class EngineRegistry
         return $this->engines[$type];
     }
 
+    /**
+     * Checks if an engine has been registered for a type
+     *
+     * @param string $type the registered type for the engine
+     *
+     * @return boolean whether the type has a registered engine or not
+     */
+    public function hasEngine($type)
+    {
+        return isset($this->engines[$type]);
+    }
+
+
 }

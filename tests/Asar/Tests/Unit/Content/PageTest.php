@@ -11,6 +11,9 @@
 namespace Asar\Tests\Unit\Content;
 
 use Asar\Tests\TestCase;
+use Asar\Http\Message\Response;
+use Asar\Http\Message\Request;
+use Asar\Routing\Route;
 use Asar\Content\Page;
 
 /**
@@ -24,10 +27,15 @@ class PageTest extends TestCase
      */
     public function setUp()
     {
-        $this->assembler = $this->quickMock(
-            'Asar\Template\Engine\EngineInterface'
+        $this->templateAssembler = $this->quickMock(
+            'Asar\Template\TemplateAssembler'
         );
-        $this->page = new Page($this->assembler);
+        $this->template = $this->quickMock(
+            'Asar\Template\TemplateAssembly'
+        );
+        $this->route = new Route('FooResource', array());
+        $this->request = new Request;
+        $this->page = new Page($this->templateAssembler, $this->route, $this->request);
     }
 
     /**
@@ -42,14 +50,35 @@ class PageTest extends TestCase
     }
 
     /**
+     * Uses template assembler to obtain template
+     */
+    public function testUsesTemplateAssembler()
+    {
+        $this->templateAssembler->expects($this->once())
+            ->method('find')
+            ->with('FooResource', array('type' => 'html', 'method' => 'GET'));
+        $this->page->getResponse();
+    }
+
+
+    private function assemblerReturnsTemplate()
+    {
+        $this->templateAssembler->expects($this->once())
+            ->method('find')
+            ->will($this->returnValue($this->template));
+    }
+
+    /**
      * Setting a content parameter
      */
-    public function testSettingContentParameterSetsRendererParameter()
+    public function testSettingContentParameterSetsTemplateParameter()
     {
-        $this->assembler->expects($this->once())
-            ->method('set')
-            ->with('foo', 'Foo');
+        $this->assemblerReturnsTemplate();
+        $this->template->expects($this->once())
+            ->method('render')
+            ->with(array('foo' => 'Foo'));
         $this->page->set('foo', 'Foo');
+        $this->page->getResponse();
 
     }
 
@@ -76,11 +105,12 @@ class PageTest extends TestCase
     }
 
     /**
-     * Uses assembler render as response content
+     * Uses template render output as response content
      */
     public function testUsesRendererForResponseContent()
     {
-        $this->assembler->expects($this->once())
+        $this->assemblerReturnsTemplate();
+        $this->template->expects($this->once())
             ->method('render')
             ->will($this->returnValue('FooBar'));
         $this->assertEquals(

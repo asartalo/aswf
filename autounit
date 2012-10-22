@@ -8,11 +8,19 @@
 # copy autounit to php project directory
 # run watchr autounit
 
-watch('tests/.*Test\.php') do |md|
+def phpunit(param)
+  system("phpunit --stop-on-failure #{param}")
+end
+
+def clearConsole
   puts "\e[H\e[2J"  #clear console
-  puts "Modified #{md[0]}\nRunning test..."
-  puts ""
-  system("phpunit #{md[0]}")
+end
+
+
+watch('tests/.*Test\.php') do |md|
+  clearConsole
+  puts "Modified #{md[0]}\nRunning test...\n"
+  phpunit(md[0])
 end
 
 # watch('tests/.*\.php') do |md|
@@ -22,17 +30,16 @@ end
 #   system("phpunit tests")
 # end
 
-watch('src/Asar/(.*)\.php') do |md|   # runs tests/ClassTest* whenever src/Class.php is changed
-  puts "\e[H\e[2J"  #clear console
+watch('src/Asar/(.*)\.(.*)') do |md|   # runs tests/ClassTest* whenever src/Class.php is changed
+  clearConsole
   puts "Modified #{md[0]}"
   testpath = 'tests/Asar/Tests/Unit/' + md[1].sub(/./) { |s| s.upcase } + 'Test.php'
-  if (File.exist?(testpath))
-    puts "Running #{testpath}..."
-    puts ""
-    system("phpunit #{testpath}")
+  if (md[2] == 'php' and File.exist?(testpath))
+    puts "Running #{testpath}...\n"
+    phpunit(testpath)
   else
-    puts "No unit test found for #{md[0]}\nRunning all tests..."
-    puts ""
-    system("phpunit tests")
+    puts "No unit test found for #{md[0]}\nRunning all tests...\n"
+    phpunit('tests')
   end
 end
+

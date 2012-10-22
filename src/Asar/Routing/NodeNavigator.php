@@ -41,7 +41,6 @@ class NodeNavigator
         array_shift($pathParts);
 
         $currentNode = $this->rootNode;
-
         $pathValues = array();
 
         foreach ($pathParts as $subspace) {

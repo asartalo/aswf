@@ -28,10 +28,7 @@ class RouterTest extends TestCase
         $this->navigator = $this->quickMock(
             'Asar\Routing\NodeNavigator', array('find')
         );
-        $this->resourceFactory = $this->quickMock(
-            'Asar\Http\Resource\ResourceFactory', array('getResource')
-        );
-        $this->router = new Router($this->navigator, $this->resourceFactory);
+        $this->router = new Router($this->navigator);
     }
 
     /**
@@ -39,33 +36,24 @@ class RouterTest extends TestCase
      */
     public function testRouting()
     {
-        $route = new Route('Index', array());
         $this->navigator->expects($this->once())
             ->method('find')
-            ->with('/')
-            ->will($this->returnValue($route));
-        $this->resourceFactory->expects($this->once())
-            ->method('getResource')
-            ->with($route);
+            ->with('/');
         $this->router->route('/');
     }
 
     /**
-     * Routing returns resource from resource factory
+     * Routing returns route from node navigator
      */
-    public function testRoutingPassesResourceFromResourceFactory()
+    public function testRoutingReturnsRouteFromNodeNavigator()
     {
-        $resource = new \stdClass;
         $this->navigator->expects($this->once())
             ->method('find')
             ->with('/')
             ->will(
-                $this->returnValue(new Route('Index', array()))
+                $this->returnValue($route = new Route('Index', array()))
             );
-        $this->resourceFactory->expects($this->once())
-            ->method('getResource')
-            ->will($this->returnValue($resource));
-        $this->assertSame($resource, $this->router->route('/'));
+        $this->assertSame($route, $this->router->route('/'));
     }
 
 }

@@ -50,4 +50,22 @@ class EngineRegistryTest extends TestCase
         $this->registry->getEngine('foo');
     }
 
+    /**
+     * Checks if engine has been registered returns false if it is not
+     */
+    public function testHasEngineReturnsFalseIfEngineHasNotBeenRegistered()
+    {
+        $this->assertFalse($this->registry->hasEngine('bar'));
+    }
+
+    /**
+     * Checks if engine has been registered returns true if it is
+     */
+    public function testHasEngineReturnsTrueIfEngineHasBeenRegistered()
+    {
+        $engine = $this->getMock('Asar\Template\Engine\EngineInterface');
+        $this->registry->register('bar', $engine);
+        $this->assertTrue($this->registry->hasEngine('bar'));
+    }
+
 }

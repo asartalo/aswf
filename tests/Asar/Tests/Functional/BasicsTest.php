@@ -30,6 +30,16 @@ class BasicsTest extends TestCase
     }
 
     /**
+     * Returns a 404 response when resource does not exist
+     */
+    public function testReturns404ResponseWhenResourceDoesNotExist()
+    {
+        $this->markTestIncomplete();
+        $response = $this->client->get($this->app, '/uknown');
+        $this->assertEquals(404, $response->getStatus());
+    }
+
+    /**
      * A simple test on getting the root resource
      */
     public function testGettingTheHomePage()

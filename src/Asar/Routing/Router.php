@@ -10,8 +10,6 @@
 
 namespace Asar\Routing;
 
-use Asar\Http\Resource\ResourceFactory;
-
 /**
  * Routes resource paths to resources
  */
@@ -19,20 +17,14 @@ class Router implements RouterInterface
 {
     private $navigator;
 
-    private $resourceFactory;
-
     /**
      * Constructor
      *
-     * @param NodeNavigator   $navigator       a map of routes to resources
-     * @param ResourceFactory $resourceFactory a resource factory
+     * @param NodeNavigator $navigator a map of routes to resources
      */
-    public function __construct(
-        NodeNavigator $navigator, ResourceFactory $resourceFactory
-    )
+    public function __construct(NodeNavigator $navigator)
     {
         $this->navigator = $navigator;
-        $this->resourceFactory = $resourceFactory;
     }
 
     /**
@@ -42,9 +34,7 @@ class Router implements RouterInterface
      */
     public function route($path)
     {
-        $route = $this->navigator->find($path);
-
-        return $this->resourceFactory->getResource($route);
+        return $this->navigator->find($path);
     }
 
 }

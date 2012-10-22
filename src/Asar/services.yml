@@ -2,7 +2,8 @@ parameters:
   application.config.file: ''
   application.path: ''
 
-  request.resource.class: '' # loaded by resource factory
+  request.response.class: Asar\Http\Message\Response
+  request.resourceDispatcher.class: Asar\Http\Resource\Dispatcher
   request.page.class: Asar\Content\Page
   request.page.template: '' # loaded by template finder
   request.route.class: Asar\Routing\Route
@@ -12,11 +13,18 @@ parameters:
   application.routeNodes.class: Asar\Routing\Node
   application.nodeNavigator.class: Asar\Routing\NodeNavigator
   application.resourceFactory.class: Asar\Http\Resource\ResourceFactory
+  application.resourceResolver.class: Asar\Http\Resource\ResourceResolver
+  application.templateAssembler.class: Asar\Template\TemplateAssembler
+  application.templateEngineRegistry.class: Asar\Template\Engine\EngineRegistry
+  application.dispatchEntry.class: Asar\Application\DispatchEntry
+  application.templateEngineRegistryHelper.class: Asar\Template\Engine\RegistryHelper
 
   asar.config.yamlImporter.class: Asar\Config\YamlImporter
   asar.config.config.class: Asar\Config\Config
-
+  asar.filesystem.utility.class: Asar\FileSystem\Utility
   asar.routing.nodesBuilder.class: Asar\Routing\NodeTreeBuilder
+  asar.templateEngine.php.class: Asar\Template\Engine\PhpEngine
+
 
 services:
   yaml.parser:
@@ -28,6 +36,22 @@ services:
 
   asar.routing.nodesBuilder:
     class: %asar.routing.nodesBuilder.class%
+
+  asar.filesystem.utility:
+    class: %asar.filesystem.utility.class%
+
+  asar.templateEngine.php:
+    class: %asar.templateEngine.php.class%
+
+  application:
+    class: %application.class%
+    scope: application
+    arguments: [@application.dispatchEntry]
+
+  application.dispatchEntry:
+    class: %application.dispatchEntry.class%
+    scope: application
+    arguments: [@service_container]
 
   application.config:
     class: %asar.config.config.class%
@@ -52,34 +76,110 @@ services:
   application.nodeNavigator:
     class: %application.nodeNavigator.class%
     scope: application
-    arguments: [@application.routeNodes]
-
-  application:
-    class: %application.class%
-    scope: application
-    arguments: [@application.router]
+    arguments:
+      - @application.routeNodes
 
   application.router:
     class: %application.router.class%
     scope: application
-    arguments: [@application.nodeNavigator, @application.resourceFactory]
+    arguments:
+      - @application.nodeNavigator
+
+  application.resourceResolver:
+    class: %application.resourceResolver.class%
+    scope: application
+    arguments:
+      - %application.path%
+      - @application.config
 
   application.resourceFactory:
     class: %application.resourceFactory.class%
     scope: application
-    arguments: [%application.path%, @application.config, @service_container]
+    arguments:
+      - @service_container
+
+  application.templateAssembler:
+    class: %application.templateAssembler.class%
+    scope: application
+    arguments:
+      - %application.path%
+      - @application.templateEngineRegistry
+      - @asar.filesystem.utility
+
+  application.templateEngineRegistry.pristine:
+    class: %application.templateEngineRegistry.class%
+    scope: application
+
+  application.templateEngineRegistry:
+    scope: application
+    factory_service: application.templateEngineRegistryHelper
+    factory_method: registerEngines
+    arguments:
+      - @application.template.enginesList
+
+  application.template.enginesList:
+    scope: application
+    factory_service: application.config
+    factory_method: get
+    arguments:
+      - template.engines
+
+  application.templateEngineRegistryHelper:
+    scope: application
+    class: %application.templateEngineRegistryHelper.class%
+    arguments:
+      - @application.templateEngineRegistry.pristine
+      - @service_container
 
   request.resource:
+    scope: request
+    factory_service: application.resourceFactory
+    factory_method: getResource
+    arguments:
+      - @request.resourceClass
+
+  request.resource.default:
     class: %request.resource.class%
     scope: request
-    arguments: [@request.page]
+    arguments:
+      - @request.page
 
-  request.page:
-    class: %request.page.class%
+  request.resourceClass:
     scope: request
-    arguments: []
+    factory_service: application.resourceResolver
+    factory_method: getResourceClassName
+    arguments:
+      - @request.route
+
+  request.response:
+    class: %request.response.class%
+    scope: request
+    factory_service: request.resourceDispatcher
+    factory_method: handleRequest
+    arguments: [@request.request]
+
+  request.resourceDispatcher:
+    class: %request.resourceDispatcher.class%
+    arguments: [@request.resource]
 
   request.route:
     class: %request.route.class%
     scope: request
+    factory_service: application.router
+    factory_method: route
+    arguments:
+      - @request.path
+
+  request.path:
+    scope: request
+    factory_service: request.request
+    factory_method: getPath
+
+  request.page:
+    class: %request.page.class%
+    scope: request
+    arguments:
+      - @application.templateAssembler
+      - @request.route
+      - @request.request
 

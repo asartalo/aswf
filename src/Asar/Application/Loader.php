@@ -47,13 +47,12 @@ class Loader
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
         $loader->load('services.yml');
 
+        $container->setParameter('application.path', dirname($configFile));
         $container->setParameter('application.config.file', $configFile);
         $container->addScope(new Scope('application'));
         if (!$container->hasScope('request')) {
             $container->addScope(new Scope('request', 'application'));
         }
-
-        // $container->register('container', $container);
 
         $appLoader = new self($container);
 

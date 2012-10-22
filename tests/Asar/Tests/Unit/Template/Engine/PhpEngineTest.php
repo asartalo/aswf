@@ -43,8 +43,7 @@ class PhpEngineTest extends TestCase
     function testEngineUsesTemplateFile()
     {
         $this->TFM->newFile('foo.php', 'Hello!');
-        $this->T->setTemplate($this->TFM->getPath('foo.php'));
-        $this->assertEquals('Hello!', $this->T->render());
+        $this->assertEquals('Hello!', $this->T->render($this->TFM->getPath('foo.php')));
     }
 
     /**
@@ -53,24 +52,12 @@ class PhpEngineTest extends TestCase
     function testEngineUsingPassedVariables()
     {
         $this->TFM->newFile('inc.php', '<p><?php echo $var ?></p>');
-        $this->T->setTemplate($this->TFM->getPath('inc.php'));
-        $this->T->set('var', 'Hello World!');
         $this->assertEquals(
             '<p>Hello World!</p>',
-            $this->T->render()
-        );
-    }
-
-    /**
-     * Can obtain template file
-     */
-    function testGettingTemplateFile()
-    {
-        $this->TFM->newFile('baz.php', '');
-        $this->T->setTemplate($this->TFM->getPath('baz.php'));
-        $this->assertEquals(
-            $this->TFM->getPath('baz.php'),
-            $this->T->getTemplateFile()
+            $this->T->render(
+                $this->TFM->getPath('inc.php'),
+                array('var' => 'Hello World!')
+            )
         );
     }
 
@@ -83,7 +70,7 @@ class PhpEngineTest extends TestCase
             'Asar\Template\Engine\Exception\TemplateFileNotFound',
             "The file 'missing.php' passed to the template engine does not exist."
         );
-        $this->T->setTemplate('missing.php');
+        $this->T->render('missing.php');
     }
 
 }

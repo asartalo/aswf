@@ -12,33 +12,39 @@ namespace Asar\Template;
 
 use Asar\FileSystem\Utility as FsUtility;
 use Asar\Routing\Route;
+use Asar\Template\Engine\EngineRegistry;
 use Asar\Template\Exception\TemplateFileNotFound;
+use Asar\Template\Exception\EngineNotFound;
+use Asar\Template\TemplateAssembly;
 
 /**
- * Finds template files
+ * Assembles templates
  */
-class TemplateFinder
+class TemplateAssembler
 {
     private $appPath;
+
+    private $registry;
 
     private $fsUtility;
 
     /**
      * Constructor
      */
-    public function __construct($appPath, FsUtility $fsUtility)
+    public function __construct($appPath, EngineRegistry $registry, FsUtility $fsUtility)
     {
         $this->appPath = $appPath;
+        $this->registry = $registry;
         $this->fsUtility = $fsUtility;
     }
 
     /**
-     * Find template files based on resource name, method and type
+     * Find template file based on resource name, method and type
      *
      * @param string $resourceName the resource name
      * @param array  $options      template file options
      *
-     * @return array template files found
+     * @return string the path to the template file
      */
     public function find($resourceName, array $options = array())
     {
@@ -57,7 +63,27 @@ class TemplateFinder
             );
         }
 
-        return $result;
+        return $this->matchTemplate($result);
+    }
+
+    private function matchTemplate($result)
+    {
+        $template = null;
+        foreach ($result as $file) {
+            $templateType = pathinfo($file, PATHINFO_EXTENSION);
+            if ($this->registry->hasEngine($templateType)) {
+                $template = new TemplateAssembly($file, $templateType, $this->registry->getEngine($templateType));
+                break;
+            }
+        }
+        if (!$template) {
+            $files = implode("', '", $result);
+            throw new EngineNotFound(
+                "There was no registered engines matched for '$files'"
+            );
+        }
+
+        return $template;
     }
 
 }

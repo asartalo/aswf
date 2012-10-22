@@ -22,51 +22,37 @@ use Symfony\Component\DependencyInjection\Scope;
 class ResourceFactory
 {
 
-    private $appPath;
-
-    private $config;
-
     private $container;
 
     /**
      * Constructor
      *
-     * @param string             $appPath   the path to the application
-     * @param Config             $config    an application configuration
      * @param ContainerInterface $container the DI container
      */
-    public function __construct(
-        $appPath,
-        Config $config,
-        ContainerInterface $container
-    )
+    public function __construct(ContainerInterface $container)
     {
-        $this->appPath = $appPath;
-        $this->config = $config;
         $this->container = $container;
     }
 
     /**
      * Gets resource based on class reference
      *
-     * @param Route $route the route to the resource
+     * @param string $classReference the resource class name
      *
      * @return object the resource
      */
-    public function getResource(Route $route)
+    public function getResource($classReference)
     {
-        $classReference = $this->config->get('namespace')
-            . '\\Resource\\' . $route->getName();
         $resource = null;
         if (class_exists($classReference)) {
-            $this->container->enterScope('request');
             $this->container->setParameter('request.resource.class', $classReference);
-            $resource = $this->container->get('request.resource');
+            $resource = $this->container->get('request.resource.default');
+            // TODO: check if this is necessary
+            // reverting...
+            $this->container->setParameter('request.resource.class', '');
         }
-        $this->container->set('request.route', $route);
-        $this->container->set('request.resource', $resource);
 
-        return new ResourceDispatcher($resource);
+        return $resource;
     }
 
 }
