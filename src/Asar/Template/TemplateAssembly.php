@@ -25,6 +25,10 @@ class TemplateAssembly
 
     /**
      * Constructor
+     *
+     * @param string          $file   the file path
+     * @param string          $type   the template type
+     * @param EngineInterface $engine the template engine
      */
     public function __construct($file, $type, EngineInterface $engine)
     {

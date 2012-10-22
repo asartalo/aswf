@@ -13,33 +13,52 @@ namespace Asar\Tests\Unit\Http\Message;
 use Asar\Http\Message\Response;
 use Asar\Tests\TestCase;
 
+/**
+ * Specifications for Asar\Http\Message\Response
+ */
 class ResponseTest extends TestCase
 {
 
+    /**
+     * Setup
+     */
     public function setUp()
     {
-        $this->R = new Response;
+        $this->response = new Response;
     }
 
+    /**
+     * Able to set status code
+     */
     public function testAbleToSetStatus()
     {
-        $this->R->setStatus(404);
+        $this->response->setStatus(404);
         $this->assertEquals(
-            404, $this->R->getStatus(),
+            404, $this->response->getStatus(),
             'Unable to set Status'
         );
     }
 
     /**
+     * Can get reason phrases based on status code
+     *
+     * @param integer $status       the response status code
+     * @param string  $reasonPhrase the expected reason phrase
+     *
      * @dataProvider dataStatusCodeMessages
      */
-    public function testGettingReasonPhrases($status, $reason_phrase)
+    public function testGettingReasonPhrases($status, $reasonPhrase)
     {
         $this->assertEquals(
-            $reason_phrase, Response::getReasonPhrase($status)
+            $reasonPhrase, Response::getReasonPhrase($status)
         );
     }
 
+    /**
+     * Status code reason phrases
+     *
+     * @return array test data for
+     */
     public function dataStatusCodeMessages()
     {
         return array(
@@ -93,26 +112,42 @@ class ResponseTest extends TestCase
     }
 
     /**
+     * Can obtain reason phrase from status summary
+     *
+     * @param int    $status       status codes
+     * @param string $reasonPhrase expected reason phrase
+     *
      * @dataProvider dataStatusCodeMessages
      */
-    public function testGetStatusMessagesFromStatusSummary($status, $reason_phrase)
+    public function testGetStatusMessagesFromStatusSummary($status, $reasonPhrase)
     {
-        $R = new Response(array('status' => $status));
-        $this->assertEquals($reason_phrase, $R->getStatusReasonPhrase());
+        $response = new Response(array('status' => $status));
+        $this->assertEquals($reasonPhrase, $response->getStatusReasonPhrase());
     }
 
+    /**
+     * Can set status on creation
+     */
     public function testSettingStatusOnCreation()
     {
-        $R = new Response(array('status' => 404));
-        $this->assertEquals(404, $R->getStatus());
+        $response = new Response(array('status' => 404));
+        $this->assertEquals(404, $response->getStatus());
     }
 
+    /**
+     * Default status code is 200
+     */
     public function testStatusDefaultsTo200OnCreation()
     {
-        $R = new Response();
-        $this->assertEquals(200, $R->getStatus());
+        $response = new Response();
+        $this->assertEquals(200, $response->getStatus());
     }
 
+    /**
+     * Can import data from raw HTTP Response string
+     *
+     * @param array $params creation options
+     */
     public function testImportingRawHttpResponseString($params = array())
     {
         $defaults = array(
@@ -132,17 +167,20 @@ class ResponseTest extends TestCase
             "Connection: close\r\n" .
             "Content-Type: text/plain\r\n\r\n" .
             $content;
-        $R = new Response;
-        $R->import($raw);
-        $this->assertEquals($status, $R->getStatus());
-        $headers = $R->getHeaders();
+        $response = new Response;
+        $response->import($raw);
+        $this->assertEquals($status, $response->getStatus());
+        $headers = $response->getHeaders();
         $this->assertEquals('text/plain', $headers['Content-Type']);
         $this->assertEquals($clength, $headers['Content-Length']);
         $this->assertEquals('Accept-Encoding', $headers['Vary']);
         $this->assertEquals('Apache/2.2.11', $headers['Server']);
-        $this->assertEquals($content, $R->getContent());
+        $this->assertEquals($content, $response->getContent());
     }
 
+    /**
+     * Imports raw HTTP Response string containing crlf sequence
+     */
     public function testImportRawHttpResponseWithContentContainingCrlfSequence()
     {
         $params = array(
@@ -151,6 +189,9 @@ class ResponseTest extends TestCase
         $this->testImportingRawHttpResponseString($params);
     }
 
+    /**
+     * Can import raw HTTP Response string with a different status code
+     */
     public function testImportRawHttpResponseWithADifferentStatusCode()
     {
         $this->testImportingRawHttpResponseString(array('status' => 201));

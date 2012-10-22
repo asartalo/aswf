@@ -22,17 +22,17 @@ class PhpEngineTest extends TestCase
     /**
      * Setup
      */
-    function setUp()
+    public function setUp()
     {
-        $this->TFM = $this->getTFM();
+        $this->tempFileManager = $this->getTFM();
         $this->clearTestTempDirectory();
-        $this->T = new PhpEngine;
+        $this->engine = new PhpEngine;
     }
 
     /**
      * Teardown
      */
-    function tearDown()
+    public function tearDown()
     {
         $this->clearTestTempDirectory();
     }
@@ -40,22 +40,22 @@ class PhpEngineTest extends TestCase
     /**
      * Engine uses template file
      */
-    function testEngineUsesTemplateFile()
+    public function testEngineUsesTemplateFile()
     {
-        $this->TFM->newFile('foo.php', 'Hello!');
-        $this->assertEquals('Hello!', $this->T->render($this->TFM->getPath('foo.php')));
+        $this->tempFileManager->newFile('foo.php', 'Hello!');
+        $this->assertEquals('Hello!', $this->engine->render($this->tempFileManager->getPath('foo.php')));
     }
 
     /**
      * Engine uses template variables
      */
-    function testEngineUsingPassedVariables()
+    public function testEngineUsingPassedVariables()
     {
-        $this->TFM->newFile('inc.php', '<p><?php echo $var ?></p>');
+        $this->tempFileManager->newFile('inc.php', '<p><?php echo $var ?></p>');
         $this->assertEquals(
             '<p>Hello World!</p>',
-            $this->T->render(
-                $this->TFM->getPath('inc.php'),
+            $this->engine->render(
+                $this->tempFileManager->getPath('inc.php'),
                 array('var' => 'Hello World!')
             )
         );
@@ -64,13 +64,13 @@ class PhpEngineTest extends TestCase
     /**
      * Throws exception when template file does not exist
      */
-    function testThrowsExceptionWhenSettingFileThatDoesNotExist()
+    public function testThrowsExceptionWhenSettingFileThatDoesNotExist()
     {
         $this->setExpectedException(
             'Asar\Template\Engine\Exception\TemplateFileNotFound',
             "The file 'missing.php' passed to the template engine does not exist."
         );
-        $this->T->render('missing.php');
+        $this->engine->render('missing.php');
     }
 
 }

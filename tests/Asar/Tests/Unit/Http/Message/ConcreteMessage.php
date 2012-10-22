@@ -8,15 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Asar\Tests;
+namespace Asar\Tests\Unit\Http\Message;
 
-use \Asar\Tests\Exception as TestsException;
+use Asar\Http\Message\Message;
 
 /**
- * General exceptions thrown by Asar\Tests\TempFilesManager
+ * A concrete implementation of Message for testing
  */
-class TempFilesManagerException extends TestsException
+class ConcreteMessage extends Message
 {
 
 }
-

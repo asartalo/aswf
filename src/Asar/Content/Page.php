@@ -33,6 +33,10 @@ class Page
 
     /**
      * Constructor
+     *
+     * @param TemplateAssembler $assembler the template assembler
+     * @param Route             $route     the request route
+     * @param Request           $request   the request
      */
     public function __construct(TemplateAssembler $assembler, Route $route, Request $request)
     {

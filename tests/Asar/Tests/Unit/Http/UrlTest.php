@@ -11,11 +11,20 @@
 namespace Asar\Tests\Unit\Http;
 
 use Asar\Http\Url;
+use Asar\Tests\TestCase;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+/**
+ * Specifications for the URL object
+ */
+class UrlTest extends TestCase
 {
 
     /**
+     * Can create a URL
+     *
+     * @param string $method   method to obtain data from URL object
+     * @param mixed  $expected expected value of data
+     *
      * @dataProvider dataCreatingAUrl
      */
     public function testCreatingAUrl($method, $expected)
@@ -28,6 +37,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Alternative creation of URL
+     *
+     * @param string $method   method to obtain data from URL object
+     * @param mixed  $expected expected value of data
+     *
      * @dataProvider dataCreatingAUrl
      */
     public function testAlternativeCreationOfUrl($method, $expected)
@@ -45,6 +59,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $url->$method());
     }
 
+    /**
+     * Data provider for creating a URL
+     *
+     * @return array test data
+     */
     public function dataCreatingAUrl()
     {
         return array(
@@ -65,6 +84,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests minimum URL form data required
+     *
+     * @param string $method   method to obtain data from URL object
+     * @param mixed  $expected expected value of data
+     *
      * @dataProvider dataMinimumAUrlForm
      */
     public function testMinimumUrlForm($method, $expected)
@@ -76,6 +100,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $url->$method());
     }
 
+    /**
+     * Data provider for minimum url form test
+     *
+     * @return array test data
+     */
     public function dataMinimumAUrlForm()
     {
         return array(
@@ -91,6 +120,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Default port for HTTPS is 443
+     */
     public function testDefaultPortForHttpsIs443()
     {
         $url = new Url('https://example.com');

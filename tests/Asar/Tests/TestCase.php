@@ -13,7 +13,8 @@ namespace Asar\Tests;
 /**
  * A helper class to wrap common test setups in one class for easier testing.
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase {
+abstract class TestCase extends \PHPUnit_Framework_TestCase
+{
 
     protected function quickMock($class, array $methods = array())
     {
@@ -30,13 +31,18 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
         return realpath(__DIR__ . '/../../') . '/data/fixtures';
     }
 
-    public function getTFM()
+    /**
+     * Returns the temp files manager
+     *
+     * @return TempFilesManager the temp files manager
+     */
+    public function getTfm()
     {
-        if (!isset($this->_TFM)) {
-            $this->_TFM = new TempFilesManager($this->getTempDir());
+        if (!isset($this->tempFilesManager)) {
+            $this->tempFilesManager = new TempFilesManager($this->getTempDir());
         }
 
-        return $this->_TFM;
+        return $this->tempFilesManager;
     }
 
     protected function clearTestTempDirectory()
@@ -60,9 +66,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
     }
 
     protected function createClassDefinitionStr(
-        $full_classname, $extends = '', $body = ''
-    ) {
-        $splitname = $this->splitFullClassName($full_classname);
+        $fullClassName, $extends = '', $body = ''
+    )
+    {
+        $splitname = $this->splitFullClassName($fullClassName);
         $extends = $extends ? " extends $extends" : '';
 
         return "
@@ -75,17 +82,18 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
     }
 
     protected function createClassDefinition(
-        $full_classname, $extends = '', $body = ''
-    ) {
-        $class_def = $this->createClassDefinitionStr(
-            $full_classname, $extends, $body
+        $fullClassName, $extends = '', $body = ''
+    )
+    {
+        $classDefinition = $this->createClassDefinitionStr(
+            $fullClassName, $extends, $body
         );
-        eval ($class_def);
+        eval ($classDefinition);
     }
 
-    protected function splitFullClassName($full_classname)
+    protected function splitFullClassName($fullClassName)
     {
-        $all = explode('\\', $full_classname);
+        $all = explode('\\', $fullClassName);
         $return['class'] = array_pop($all);
         $return['namespace'] = implode('\\', $all);
 

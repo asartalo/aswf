@@ -8,61 +8,76 @@
  * file that was distributed with this source code.
  */
 
-namespace Asar\Tests\Unit\Http;
+namespace Asar\Tests\Unit\Http\Message;
 
-use \Asar\Http\Message\Message;
+use Asar\Http\Message\Message;
+use Asar\Tests\TestCase;
 
 /**
- * A concrete implementation of Message for testing
+ * A specification for Asar\Http\Message\Message
  */
-class ConcreteMessage extends Message
+class MessageTest extends TestCase
 {
 
-}
-
-class MessageTest extends \Asar\Tests\TestCase {
-
+    /**
+     * Setup
+     */
     public function setUp()
     {
-        $this->M = new ConcreteMessage;
+        $this->message = new ConcreteMessage;
     }
 
+    /**
+     * Should be able to set content
+     */
     public function testShouldBeAbleToSetContent()
     {
-        $this->M->setContent(array('bar'=>'foo'));
+        $this->message->setContent(array('bar'=>'foo'));
         $this->assertEquals(
-            array('bar'=>'foo'), $this->M->getContent(),
+            array('bar'=>'foo'), $this->message->getContent(),
             'Unable to set content for Message object'
         );
     }
 
+    /**
+     * Message returns empty string as content by default
+     */
     public function testMessagReturnsEmptyStringAsContentByDefault()
     {
-        $this->assertSame('', $this->M->getContent());
+        $this->assertSame('', $this->message->getContent());
     }
 
+    /**
+     * Returns null for unknown headers
+     */
     public function testGettingUnknownHeaderReturnsNull()
     {
-        $this->assertNull($this->M->getHeader('foo'));
+        $this->assertNull($this->message->getHeader('foo'));
     }
 
+    /**
+     * Header field names should be case-insensitive
+     */
     public function testHeaderFieldNamesShouldBeCaseInsensitive()
     {
-        $this->M->setHeader('SoMe-fiEld-Name', 'Foo Bar');
+        $this->message->setHeader('SoMe-fiEld-Name', 'Foo Bar');
         $this->assertEquals(
-            'Foo Bar', $this->M->getHeader('somE-Field-nAmE'),
+            'Foo Bar', $this->message->getHeader('somE-Field-nAmE'),
             'Field names for headers should be case-insensitive.'
         );
     }
 
+    /**
+     * Can set multiple headers at once
+     */
     public function testMultipleSettingOfHeaderFields()
     {
-        $this->M->setHeaders(array(
+        $this->message->setHeaders(array(
             'A-Field' => 'goo',
             'Another-Field' => 'bar',
             'Some-Other-Field' => 'car'
         ));
-        $headers = $this->M->getHeaders();
+        $headers = $this->message->getHeaders();
         $this->assertEquals(
             'goo', $headers['A-Field'],
             'Header field was not found.'
@@ -77,12 +92,15 @@ class MessageTest extends \Asar\Tests\TestCase {
         );
     }
 
+    /**
+     * Header field names are converted to Dashed-Camel-Case
+     */
     public function testHeaderFieldNamesShouldBeConvertedToDashedCamelCase()
     {
-        $this->M->setHeader('afield', 'foo');
-        $this->M->setHeader('yet-aNotHEr-Field', 'bar');
-        $this->M->setHeader('And-yet-anOther', 'jar');
-        $headers = $this->M->getHeaders();
+        $this->message->setHeader('afield', 'foo');
+        $this->message->setHeader('yet-aNotHEr-Field', 'bar');
+        $this->message->setHeader('And-yet-anOther', 'jar');
+        $headers = $this->message->getHeaders();
         $this->assertTrue(
             array_key_exists('Afield', $headers),
             'Header field name was not converted to Dashed-Camel-Case.'
@@ -97,6 +115,9 @@ class MessageTest extends \Asar\Tests\TestCase {
         );
     }
 
+    /**
+     * Basic tests for setting HTTP headers
+     */
     public function testSettingMessageHeaders()
     {
         // Some common HTTP Message headers...
@@ -108,42 +129,54 @@ class MessageTest extends \Asar\Tests\TestCase {
             'Accept-Encoding' => 'gzip,deflate',
             'Host'      => 'somehost.com'
         );
-        $this->M->setHeaders($headers);
+        $this->message->setHeaders($headers);
         foreach ($headers as $key => $value) {
             $this->assertEquals(
-                $value, $this->M->getHeader($key),
+                $value, $this->message->getHeader($key),
                 "Unable to obtain $key request header."
             );
         }
     }
 
+    /**
+     * Setting a header to null will unset it
+     */
     public function testSettingHeaderToNullWillUnsetIt()
     {
-        $this->M->setHeader('Foo', 'bar');
-        $this->M->setHeader('Foo', null);
-        $this->assertFalse(array_key_exists('Foo', $this->M->getHeaders()));
+        $this->message->setHeader('Foo', 'bar');
+        $this->message->setHeader('Foo', null);
+        $this->assertFalse(array_key_exists('Foo', $this->message->getHeaders()));
     }
 
+    /**
+     * Can unset a header using method
+     */
     public function testMethodForUnsettingHeader()
     {
-        $this->M->setHeader('Foo', 'bar');
-        $this->M->unsetHeader('Foo');
-        $this->assertFalse(array_key_exists('Foo', $this->M->getHeaders()));
+        $this->message->setHeader('Foo', 'bar');
+        $this->message->unsetHeader('Foo');
+        $this->assertFalse(array_key_exists('Foo', $this->message->getHeaders()));
     }
 
-    public function testRequestSettingContentOnCreation()
+    /**
+     * Can set content on creation
+     */
+    public function testSettingContentOnCreation()
     {
-        $M = new ConcreteMessage(array('content' => 'foo bar'));
-        $this->assertEquals('foo bar', $M->getContent());
+        $message = new ConcreteMessage(array('content' => 'foo bar'));
+        $this->assertEquals('foo bar', $message->getContent());
     }
 
+    /**
+     * Can set request headers on creation
+     */
     public function testRequestSettingHeadersOnCreation()
     {
-        $M = new ConcreteMessage(
+        $message = new ConcreteMessage(
             array('headers' => array('foo' => 'Foo', 'bar' => 'Baz'))
         );
-        $this->assertEquals('Foo', $M->getHeader('foo'));
-        $this->assertEquals('Baz', $M->getHeader('bar'));
+        $this->assertEquals('Foo', $message->getHeader('foo'));
+        $this->assertEquals('Baz', $message->getHeader('bar'));
     }
 
 }

@@ -30,6 +30,10 @@ class TemplateAssembler
 
     /**
      * Constructor
+     *
+     * @param string         $appPath   the application path
+     * @param EngineRegistry $registry  the template engine registry
+     * @param FsUtility      $fsUtility file system utility
      */
     public function __construct($appPath, EngineRegistry $registry, FsUtility $fsUtility)
     {

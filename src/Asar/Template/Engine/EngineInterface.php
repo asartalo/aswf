@@ -10,6 +10,9 @@
 
 namespace Asar\Template\Engine;
 
+/**
+ * Renders templates
+ */
 interface EngineInterface
 {
 

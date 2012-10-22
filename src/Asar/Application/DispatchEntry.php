@@ -25,6 +25,8 @@ class DispatchEntry
 
     /**
      * Constructor
+     *
+     * @param ContainerInterface $container the DI container
      */
     public function __construct(ContainerInterface $container)
     {

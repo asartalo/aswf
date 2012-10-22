@@ -10,55 +10,77 @@
 
 namespace Asar\Tests\Unit\Http\Message;
 
-use \Asar\Http\Message\Request;
-use \Asar\Utilities\String;
+use Asar\Http\Message\Request;
+use Asar\Utilities\String;
+use Asar\Tests\TestCase;
 
-class RequestTest extends \Asar\Tests\TestCase
+/**
+ * Specification for Asar\Http\Message\Request
+ */
+class RequestTest extends TestCase
 {
 
+    /**
+     * Setup
+     */
     public function setUp()
     {
-        $this->R = new Request;
+        $this->request = new Request;
     }
 
+    /**
+     * Should be able to set path
+     */
     public function testRequestShouldBeAbleToSetPath()
     {
-        $this->R->setPath('/path/to/page');
+        $this->request->setPath('/path/to/page');
         $this->assertEquals(
-            '/path/to/page', $this->R->getPath(),
+            '/path/to/page', $this->request->getPath(),
             'Unable to set path on Request object'
         );
     }
 
+    /**
+     * Defaults to index/root path
+     */
     public function testRequestDefaultsToIndexPath()
     {
         $this->assertEquals(
-            '/', $this->R->getPath(),
+            '/', $this->request->getPath(),
             'Path does not default to index ("/").'
         );
     }
 
+    /**
+     * Should be able to set method
+     */
     public function testRequestShouldBeAbleToSetMethod()
     {
-        $this->R->setMethod('POST');
+        $this->request->setMethod('POST');
         $this->assertEquals(
-            'POST', $this->R->getMethod(),
+            'POST', $this->request->getMethod(),
             'Unable to set method on Request object'
         );
     }
 
+    /**
+     * Defaults to GET method on initialization
+     */
     public function testRequestShouldDefaultToGetMethodOnInitialization()
     {
         $this->assertEquals(
-            'GET', $this->R->getMethod(),
+            'GET', $this->request->getMethod(),
             'Method does not default to GET on Initialization'
         );
     }
 
+    /**
+     * Can set request parameters
+     */
     public function testSettingRequestParameters()
     {
-        $this->R->setParams(array('foo' => 'bar', 'fruit' => 'apple'));
-        $params = $this->R->getParams();
+        $this->request->setParams(array('foo' => 'bar', 'fruit' => 'apple'));
+        $params = $this->request->getParams();
         $this->assertEquals(
             'bar', $params['foo'],
             'Foo param in request params not found'
@@ -69,60 +91,86 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Should default to HTML for content-type
+     */
     public function testRequestShouldDefaultToHtmlContentType()
     {
         $this->assertEquals(
-            'text/html', $this->R->getHeader('Accept'),
+            'text/html', $this->request->getHeader('Accept'),
             'Content-type does not default to "text/html" on initialization.'
         );
     }
 
+    /**
+     * Can set content on creation
+     */
     public function testRequestSettingContentOnCreation()
     {
-        $R = new Request(array('content' => 'foo bar'));
-        $this->assertEquals('foo bar', $R->getContent());
+        $request = new Request(array('content' => 'foo bar'));
+        $this->assertEquals('foo bar', $request->getContent());
     }
 
+    /**
+     * Can set path on creation
+     */
     public function testRequestSettingPathOnCreation()
     {
-        $R = new Request(array('path' => '/foo'));
-        $this->assertEquals('/foo', $R->getPath());
+        $request = new Request(array('path' => '/foo'));
+        $this->assertEquals('/foo', $request->getPath());
     }
 
+    /**
+     * Can set request method on creation
+     */
     public function testRequestSettingMethodOnCreation()
     {
-        $R = new Request(array('method' => 'PUT'));
-        $this->assertEquals('PUT', $R->getMethod());
+        $request = new Request(array('method' => 'PUT'));
+        $this->assertEquals('PUT', $request->getMethod());
     }
 
+    /**
+     * Can set multiple properties on creation
+     */
     public function testSettingMultiplePropertiesOnCreation()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'method' => 'POST',
             'content' => 'churva',
             'headers' => array('foo' => 'bar')
         ));
-        $this->assertEquals('POST',   $R->getMethod());
-        $this->assertEquals('churva', $R->getContent());
-        $this->assertEquals('bar',    $R->getHeader('foo'));
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('churva', $request->getContent());
+        $this->assertEquals('bar', $request->getHeader('foo'));
     }
 
+    /**
+     * Can set request parameters on creation
+     */
     public function testSettingParamsCreation()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'params' => array('foo' => 'bar')
         ));
-        $this->assertEquals(array('foo' => 'bar'), $R->getParams());
+        $this->assertEquals(array('foo' => 'bar'), $request->getParams());
     }
 
+    /**
+     * Can get a single parameter
+     */
     public function testGettingASingleParameter()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'params' => array('foo' => 'bar')
         ));
-        $this->assertEquals('bar', $R->getParam('foo'));
+        $this->assertEquals('bar', $request->getParam('foo'));
     }
 
+    /**
+     * A request with URI set
+     *
+     * @return Request a request constructed with just URI data
+     */
     public function topicSettingUri()
     {
         return new Request(array(
@@ -130,6 +178,9 @@ class RequestTest extends \Asar\Tests\TestCase
         ));
     }
 
+    /**
+     * Able to obtain URI from request set with URI
+     */
     public function testSettingUri()
     {
         $this->assertEquals(
@@ -138,6 +189,9 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Able to set path from request set with URI
+     */
     public function testSettingUriSetsPath()
     {
         $this->assertEquals(
@@ -145,23 +199,34 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Getting a single parameter returns null when undefined
+     */
     public function testGettingASingleParameterDefaultsToNullForUndefinedValues()
     {
-        $R = new Request;
-        $this->assertSame(null, $R->getParam('foo'));
+        $request = new Request;
+        $this->assertSame(null, $request->getParam('foo'));
     }
 
+    /**
+     * HTTP request string test topic
+     *
+     * @return Request a regular request object
+     */
     protected function topicExportRawHttpRequestString()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'path'    => '/a/path/to/a/resource.html',
             'headers' => array('Accept' => 'text/html', 'Connection' => 'Close' )
         ));
 
-        return $R->export();
+        return $request->export();
     }
 
-    public function testExportRawHttpRequestStringStartsCorrectly()
+    /**
+     * Exported HTTP request string has a proper request line
+     */
+    public function testExportRawHttpRequestHasCorrectRequestLine()
     {
         $this->assertStringStartsWith(
             "GET /a/path/to/a/resource.html HTTP/1.1\r\n",
@@ -170,6 +235,9 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Exported HTTP request string has proper suffix
+     */
     public function testExportRawHttpRequestStringEndsCorrectly()
     {
         $this->assertStringEndsWith(
@@ -178,6 +246,9 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Exported HTTP request string sets correct headers
+     */
     public function testExportRawHttpRequestStringSetsCorrectHeaders()
     {
         $this->_testHeaders(
@@ -188,7 +259,10 @@ class RequestTest extends \Asar\Tests\TestCase
 
     /**
      * Creates a string formatted as HTTP header key used in regular expression
-     * @param string $value A string to convert
+     *
+     * @param string $key A string to convert
+     *
+     * @return string a matching header key
      */
     private function createMatchingHeaderKey($key)
     {
@@ -199,7 +273,10 @@ class RequestTest extends \Asar\Tests\TestCase
 
     /**
      * Creates a string suitable for regular expression
+     *
      * @param string $value A string to convert
+     *
+     * @return string a matching header value
      */
     private function createMatchingHeaderValue($value)
     {
@@ -208,6 +285,7 @@ class RequestTest extends \Asar\Tests\TestCase
 
     /**
      * Test wether headers are found on HTTP Message string and formatted correctly
+     *
      * @param array  $headers    Header-key value pairs
      * @param string $messageStr The HTTP Message string to test against
      */
@@ -227,7 +305,7 @@ class RequestTest extends \Asar\Tests\TestCase
 
     private function topicExportWithPostValues()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'method'  => 'POST',
             'path'    => '/post/processor',
             'content' => array(
@@ -235,9 +313,12 @@ class RequestTest extends \Asar\Tests\TestCase
             )
         ));
 
-        return $R->export();
+        return $request->export();
     }
 
+    /**
+     * Export with post values sets correct request line
+     */
     public function testExportWithPostValuesSetsCorrectRequestLine()
     {
         $this->assertStringStartsWith(
@@ -247,6 +328,9 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Export with POST values sets correct headers
+     */
     public function testExportWithPostValuesSetsCorrectHeaders()
     {
         $content = 'foo=bar&goo%5B%5D=jazz&good=bad%3D';
@@ -257,6 +341,9 @@ class RequestTest extends \Asar\Tests\TestCase
         $this->_testHeaders($headers, $this->topicExportWithPostValues());
     }
 
+    /**
+     * Export with POST values sets correct content
+     */
     public function testExportWithPostValuesSetsCorrectContent()
     {
         $content = 'foo=bar&goo%5B%5D=jazz&good=bad%3D';
@@ -268,14 +355,17 @@ class RequestTest extends \Asar\Tests\TestCase
 
     private function topicExportGet()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'path'    => '/a/get/path',
             'content' => array('foo' => 'bar')
         ));
 
-        return $R->export();
+        return $request->export();
     }
 
+    /**
+     * Exported GET request should have no POST-like headers
+     */
     public function testExportGetShouldHaveNoPostLikeHeader()
     {
         $str = $this->topicExportGet();
@@ -288,14 +378,20 @@ class RequestTest extends \Asar\Tests\TestCase
         );
     }
 
+    /**
+     * Expored GET should have no content
+     */
     public function testExportGetShouldHaveNoContent()
     {
         $this->assertNotContains("foo=bar\r\n\r\n", $this->topicExportGet());
     }
 
+    /**
+     * Exported request with parameters in URL encodes parameter values
+     */
     public function testExportRequestWithParamsUrlEncodesParamValues()
     {
-        $R = new Request(array(
+        $request = new Request(array(
             'path'    => '/handler',
             'params' => array(
                 'foo' => 'bar', 'goo[]' => 'jazz', 'good' => 'bad='
@@ -303,7 +399,7 @@ class RequestTest extends \Asar\Tests\TestCase
         ));
         $expected = 'foo=bar&' . urlencode('goo[]') . '=jazz&good=bad' .
             urlencode('=');
-        $str = $R->export();
+        $str = $request->export();
         $this->assertStringStartsWith(
             "GET /handler?$expected HTTP/1.1\r\n", $str, $str
         );

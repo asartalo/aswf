@@ -13,13 +13,22 @@ namespace Asar\Tests\Unit\Utility;
 use Asar\Utilities\String;
 use Asar\Tests\TestCase;
 
+/**
+ * Specification for the String utility class
+ */
 class StringTest extends TestCase
 {
 
-    private function _testFunction($method, $test_data)
+    /**
+     * Tests a string utility method
+     *
+     * @param string $method   the method to test
+     * @param array  $testData an array of test data and their transformations
+     */
+    public function exerciseMethod($method, $testData)
     {
         $failmsg = "Asar\Utilities\String::$method() did not return expected string.";
-        foreach ($test_data as $orig => $converted) {
+        foreach ($testData as $orig => $converted) {
             $this->assertEquals(
                 $converted,
                 call_user_func(array('Asar\Utilities\String', $method), $orig),
@@ -28,6 +37,9 @@ class StringTest extends TestCase
         }
     }
 
+    /**
+     * Can Dash-Camel-Case strings
+     */
     public function testDashCamelCase()
     {
         $tests = array(
@@ -37,9 +49,12 @@ class StringTest extends TestCase
             'foo'            => 'Foo',
             'BAR'            => 'Bar'
         );
-        $this->_testFunction('dashCamelCase', $tests);
+        $this->exerciseMethod('dashCamelCase', $tests);
     }
 
+    /**
+     * Can dashLowerCase words
+     */
     public function testDashLowerCase()
     {
         $tests = array(
@@ -50,9 +65,12 @@ class StringTest extends TestCase
             'foo'            => 'foo',
             'BAR'            => 'b-a-r',
         );
-        $this->_testFunction('dashLowerCase', $tests);
+        $this->exerciseMethod('dashLowerCase', $tests);
     }
 
+    /**
+     * Can CamelCase words
+     */
     public function testCamelCase()
     {
         $tests = array(
@@ -64,9 +82,12 @@ class StringTest extends TestCase
             'foo'            => 'Foo',
             'BAR'            => 'Bar'
         );
-        $this->_testFunction('camelCase', $tests);
+        $this->exerciseMethod('camelCase', $tests);
     }
 
+    /**
+     * Can check to see if string starts with substring
+     */
     public function testStartsWith()
     {
         $this->assertSame(true, String::startsWith('Rararara', 'R'));
@@ -74,6 +95,9 @@ class StringTest extends TestCase
         $this->assertSame(false, String::startsWith('Rararara', 'ar'));
     }
 
+    /**
+     * Can under_score words
+     */
     public function testUnderScore()
     {
         $tests = array(
@@ -85,6 +109,6 @@ class StringTest extends TestCase
             'foo'            => 'foo',
             'BAR Roo'        => 'bar_roo'
         );
-        $this->_testFunction('underScore', $tests);
+        $this->exerciseMethod('underScore', $tests);
     }
 }

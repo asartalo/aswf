@@ -10,25 +10,34 @@
 
 namespace Asar\Tests;
 
-use \Asar\Tests\TempFilesManager;
+use Asar\Tests\TempFilesManager;
 
+/**
+ * Specifications for Asar\Tests\TempFilesManager
+ */
 class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * Setup
+     */
     public function setUp()
     {
-        $this->tempdir_parent = realpath(__DIR__ . '/../../') . '/data';
-        $this->tempdir = $this->tempdir_parent . DIRECTORY_SEPARATOR . 'temp';
-        $this->TFM = new TempFilesManager($this->tempdir);
+        $this->tempdirParent = realpath(__DIR__ . '/../../') . '/data';
+        $this->tempdir = $this->tempdirParent . DIRECTORY_SEPARATOR . 'temp';
+        $this->tempFilesManager = new TempFilesManager($this->tempdir);
         $this->recursiveDelete($this->tempdir, false);
     }
 
+    /**
+     * Teardown
+     */
     public function tearDown()
     {
         $this->recursiveDelete($this->tempdir, false);
     }
 
-    private function recursiveDelete($folderPath, $this_too = true)
+    private function recursiveDelete($folderPath, $thisToo = true)
     {
         if (file_exists($folderPath) && is_dir($folderPath)) {
             $contents = scandir($folderPath);
@@ -42,7 +51,7 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
                     }
                 }
             }
-            if ($this_too) {
+            if ($thisToo) {
                 return rmdir($folderPath);
             }
         } else {
@@ -50,14 +59,20 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testInitializing()
+    /**
+     * Test initialization
+     */
+    public function testInitialization()
     {
         $this->assertContains(
-            realpath(__DIR__ . '/../../'), $this->tempdir_parent
+            realpath(__DIR__ . '/../../'), $this->tempdirParent
         );
-        $this->assertFileExists($this->tempdir_parent);
+        $this->assertFileExists($this->tempdirParent);
     }
 
+    /**
+     * Throws exception when temporary directory does not exist
+     */
     public function testInstatiationThrowsErrorWhenTempDirDoesNotExist()
     {
         $dir = 'foo_dir';
@@ -65,7 +80,7 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
             'Asar\Tests\TempFilesManagerException',
             "The directory specified ($dir) as temporary directory does not exist."
         );
-        $TFM = new TempFilesManager($dir);
+        $tempFilesManager = new TempFilesManager($dir);
     }
 
     private function getFilePath($file)
@@ -73,64 +88,88 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
         return $this->tempdir . DIRECTORY_SEPARATOR . $file;
     }
 
+    /**
+     * Adds files to temporary directory
+     */
     public function testAddingFilesToTemp()
     {
-        $this->TFM->newFile('foo.txt', 'bar');
-        $file_full_path = $this->getFilePath('foo.txt');
-        $this->assertFileExists($file_full_path);
-        $this->assertEquals('bar', file_get_contents($file_full_path));
+        $this->tempFilesManager->newFile('foo.txt', 'bar');
+        $fileFullPath = $this->getFilePath('foo.txt');
+        $this->assertFileExists($fileFullPath);
+        $this->assertEquals('bar', file_get_contents($fileFullPath));
     }
 
+    /**
+     * Adds files with directory paths
+     */
     public function testAddingFilesWithDirectoryPaths()
     {
         $file = 'foo/bar/baz.txt';
-        $this->TFM->newFile($file, 'foo bar baz');
+        $this->tempFilesManager->newFile($file, 'foo bar baz');
         $this->assertFileExists($this->getFilePath($file));
         $this->assertEquals(
             'foo bar baz', file_get_contents($this->getFilePath($file))
         );
     }
 
+    /**
+     * Creates directories in temporary directory
+     */
     public function testCreatingDirectories()
     {
         $dir = 'foo/bar/baz';
-        $this->TFM->newDir($dir);
+        $this->tempFilesManager->newDir($dir);
         $this->assertFileExists($this->getFilePath($dir));
     }
 
+    /**
+     * Can get full file path
+     */
     public function testGettingFullFilePath()
     {
         $files = array('foo.txt' => 'foo', 'bar/baz.txt' => 'bar baz');
         foreach ($files as $file => $contents) {
-            $this->TFM->newFile($file, $contents);
+            $this->tempFilesManager->newFile($file, $contents);
             $this->assertEquals(
-                $this->getFilePath($file), $this->TFM->getPath($file)
+                $this->getFilePath($file), $this->tempFilesManager->getPath($file)
             );
         }
     }
 
+    /**
+     * Can remove files in temporary directory
+     */
     public function testRemovingFilesInTemp()
     {
-        $this->TFM->newFile('file1', 'test');
-        $this->TFM->removeFile('file1');
+        $this->tempFilesManager->newFile('file1', 'test');
+        $this->tempFilesManager->removeFile('file1');
         $this->assertFileNotExists($this->getFilePath('file1'));
     }
 
     /**
+     * Clears temporary directory
+     *
+     * @param array $files list of files to be created and deleted
+     *
      * @dataProvider clearingTempDirTestData
      */
     public function testClearingTempDirectory($files)
     {
         foreach ($files as $file => $contents) {
-            $this->TFM->newFile($file, $contents);
+            $this->tempFilesManager->newFile($file, $contents);
             $this->assertFileExists($this->getFilePath($file));
         }
-        $this->TFM->clearTempDirectory();
+        $this->tempFilesManager->clearTempDirectory();
         foreach (array_keys($files) as $file) {
             $this->assertFileNotExists($this->getFilePath($file));
         }
     }
 
+    /**
+     * A list of files to be created and deleted
+     *
+     * @return array a list of files
+     */
     public function clearingTempDirTestData()
     {
         return array(
@@ -147,8 +186,11 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Can obtain temporary directory path
+     */
     public function testGettingTempDirectory()
     {
-        $this->assertEquals($this->tempdir, $this->TFM->getTempDirectory());
+        $this->assertEquals($this->tempdir, $this->tempFilesManager->getTempDirectory());
     }
 }
