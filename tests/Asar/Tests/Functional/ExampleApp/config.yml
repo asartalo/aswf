@@ -4,11 +4,6 @@ namespace: 'Asar\Tests\Functional\ExampleApp'
 
 services: 'Services...'
 
-template:
-    engines:
-        php: asar.templateEngine.php
-
-
 routes:
     root:
         classRef: 'Index'

@@ -24,21 +24,36 @@ class Config
 
     private $importers = array();
 
+    private $constants = array();
+
     /**
-     * @param mixed $config    the path to a configuration file or an array of
-     *                         configuration data
-     * @param array $importers a collection of config importers
-     *                         that implement Asar\ConfigImporterInterface
+     * @param mixed $config  the path to a configuration file or an array of
+     *                       configuration data
+     * @param array $options config options
      */
-    public function __construct($config, $importers = array())
+    public function __construct($config, $options = array())
     {
-        foreach ($importers as $importer) {
-            $this->setupImporter($importer);
+        if (isset($options['importers'])) {
+            foreach ($options['importers'] as $importer) {
+                $this->setupImporter($importer);
+            }
         }
+
+        if (isset($options['constants'])) {
+            foreach ($options['constants'] as $constant => $expansion) {
+                $this->constants['{' . $constant . '}'] = $expansion;
+            }
+        }
+
         if (is_array($config)) {
             $this->data = $config;
         } else {
-            $this->import($config);
+            $this->data = $this->import($config);
+        }
+
+        if (isset($options['extends']) && $options['extends'] instanceof Config) {
+            $parentConfig = $options['extends'];
+            $this->data = array_merge($parentConfig->getRaw(), $this->data);
         }
     }
 
@@ -51,7 +66,10 @@ class Config
     {
         foreach ($this->importers as $type => $importer) {
             if (preg_match("/\.$type\$/", $config)) {
-                $this->data = $importer->import(new File($config));
+                $data = $importer->import(new File($config));
+                if (is_array($data)) {
+                    return $data;
+                }
             }
         }
     }
@@ -78,22 +96,34 @@ class Config
      *
      * @return mixed the value of the config parameter
      */
+
     public function get($key)
     {
         if (isset($this->data[$key])) {
-            return $this->data[$key];
-        }
-        $path = explode('.', $key);
-        $value = $this->data;
-        foreach ($path as $subpath) {
-            if (isset($value[$subpath])) {
-                $value = $value[$subpath];
-            } else {
-                return;
+            $value = $this->data[$key];
+        } else {
+            $path = explode('.', $key);
+            $value = $this->data;
+            foreach ($path as $subpath) {
+                if (isset($value[$subpath])) {
+                    $value = $value[$subpath];
+                } else {
+                    return;
+                }
             }
+        }
+
+        if (is_string($value)) {
+            return $this->expandConstants($value);
         }
 
         return $value;
     }
+
+    private function expandConstants($string)
+    {
+        return strtr($string, $this->constants);
+    }
+
 
 }

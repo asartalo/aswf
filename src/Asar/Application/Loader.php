@@ -10,8 +10,9 @@
 
 namespace Asar\Application;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Asar\Utilities\Framework as FrameworkUtility;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Scope;
@@ -44,9 +45,15 @@ class Loader
     {
         $container = new ContainerBuilder();
 
-        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
+        $framework = new FrameworkUtility;
+
+        $loader = new YamlFileLoader(
+            $container, new FileLocator($framework->getResourcesPath())
+        );
+
         $loader->load('services.yml');
 
+        $container->set('asar.framework.utility', $framework);
         $container->setParameter('application.path', dirname($configFile));
         $container->setParameter('application.config.file', $configFile);
         $container->addScope(new Scope('application'));

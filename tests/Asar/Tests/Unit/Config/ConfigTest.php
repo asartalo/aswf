@@ -108,7 +108,7 @@ class ConfigTest extends TestCase
         $importer->expects($this->once())
             ->method('import')
             ->will($this->returnCallback(array($this, 'checkImporterImport')));
-        $config = new Config('bar.foo', array($importer));
+        $config = new Config('bar.foo', array( 'importers' => array($importer)));
         $this->assertEquals($data, $config->getRaw());
     }
 
@@ -125,6 +125,37 @@ class ConfigTest extends TestCase
         $this->assertEquals('bar.foo', $file->getFileName());
 
         return array('foo' => 'bar');
+    }
+
+    /**
+     * Can expand defined constants
+     */
+    public function testCanExpandDefinedConstants()
+    {
+        $constants = array('FOO' => 'fare only oars');
+        $data = array('bar' => '{FOO}');
+        $config = new Config($data, array('constants' => $constants));
+        $this->assertEquals('fare only oars', $config->get('bar'));
+    }
+
+    /**
+     * Can inherit other configurations
+     */
+    public function testInheritsOtherConfigurations()
+    {
+        $parentConfig = new Config(array('yyy' => 'bar'));
+        $config = new Config(array('aaa' => 111), array('extends' => $parentConfig));
+        $this->assertEquals('bar', $config->get('yyy'));
+    }
+
+    /**
+     * Can store non-string values
+     */
+    public function testCanStoreNonStringValues()
+    {
+        $config = new Config(array('list' => array(1, 2, 3), 'number' => 5));
+        $this->assertEquals(5, $config->get('number'));
+        $this->assertEquals(array(1, 2, 3), $config->get('list'));
     }
 
 }

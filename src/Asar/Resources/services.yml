@@ -43,6 +43,19 @@ services:
   asar.templateEngine.php:
     class: %asar.templateEngine.php.class%
 
+  asar.config.default:
+    class: %asar.config.config.class%
+    arguments:
+      - @asar.config.default.path
+      - importers: [@asar.config.yamlImporter]
+
+  asar.config.default.path:
+    factory_service: asar.framework.utility
+    factory_method: getResourcePath
+    arguments:
+      - 'config.default.yml'
+
+
   application:
     class: %application.class%
     scope: application
@@ -58,7 +71,8 @@ services:
     scope: application
     arguments:
       - %application.config.file%
-      - [@asar.config.yamlImporter]
+      - importers: [@asar.config.yamlImporter]
+        extends: @asar.config.default
 
   application.routes:
     scope: application
