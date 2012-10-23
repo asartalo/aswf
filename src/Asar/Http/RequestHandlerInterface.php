@@ -10,6 +10,8 @@
 
 namespace Asar\Http;
 
+use Asar\Http\Message\Request;
+
 /**
  * Handles a Requests and returns a Response
  */
@@ -21,5 +23,5 @@ interface RequestHandlerInterface
      *
      * @return Response A response object
      */
-    public function handleRequest(Message\Request $request);
+    public function handleRequest(Request $request);
 }

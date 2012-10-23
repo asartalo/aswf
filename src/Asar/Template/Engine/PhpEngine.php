@@ -17,9 +17,6 @@ use Asar\Template\Engine\Exception\TemplateFileNotFound;
  */
 class PhpEngine implements EngineInterface
 {
-    private $file;
-
-    private $templateParams = array();
 
     /**
      * Renders the template
