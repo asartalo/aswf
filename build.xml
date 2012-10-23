@@ -10,13 +10,18 @@
   <delete dir="${basedir}/build/coverage"/>
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
-  <delete dir="${basedir}/tests/data/temp"/>
 
   <mkdir dir="${basedir}/build/api"/>
   <mkdir dir="${basedir}/build/code-browser"/>
   <mkdir dir="${basedir}/build/coverage"/>
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
+  
+  <antcall target="cleantest"/>
+ </target>
+ 
+ <target name="cleantest" description="Clean up test temporary data directory">
+  <delete dir="${basedir}/tests/data/temp"/>
   <mkdir dir="${basedir}/tests/data/temp"/>
  </target>
 
