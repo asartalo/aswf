@@ -13,6 +13,7 @@ namespace Asar\Http\Resource;
 use Asar\Routing\Route;
 use Asar\Config\Config;
 use Asar\Http\Resource\Exception\ResourceNotFound;
+use Asar\Http\Resource\Exception\NoRouteFound;
 
 /**
  * Resolves routes to resource names
@@ -46,7 +47,7 @@ class ResourceResolver
     public function getResourceClassName(Route $route = null)
     {
         if (!$route) {
-            throw new ResourceNotFound(
+            throw new NoRouteFound(
                 "There was no route found."
             );
         }

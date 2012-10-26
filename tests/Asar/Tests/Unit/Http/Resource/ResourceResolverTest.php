@@ -72,7 +72,7 @@ class ResourceResolverTest extends TestCase
     public function testThrowsExceptionIfTheRouteIsNull()
     {
         $this->setExpectedException(
-            'Asar\Http\Resource\Exception\ResourceNotFound',
+            'Asar\Http\Resource\Exception\NoRouteFound',
             "There was no route found."
         );
         $this->resolver->getResourceClassName(null);
