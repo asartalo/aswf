@@ -10,12 +10,10 @@
 
 namespace Asar\Http\Resource\Exception;
 
-use \Asar\Http\Resource\Exception as ResourceException;
-
 /**
  * Thrown when route does not not match any routing path
  */
-class NoRouteFound extends ResourceException
+class NoRouteFound extends ResourceNotFound
 {
 
 }
