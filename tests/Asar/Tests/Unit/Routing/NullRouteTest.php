@@ -67,4 +67,14 @@ class NullRouteTest extends TestCase
 		$this->assertEmpty($this->nullRoute->getValues());
 	}
 
+	/**
+	 * Uses Generic resource as service name
+	 */
+	public function testUsesGenericResourceAsServiceName()
+	{
+		$this->assertEquals(
+			'asar.resource.generic.notfound', $this->nullRoute->getServiceName()
+		);
+	}
+
 }

@@ -20,5 +20,5 @@ interface PostInterface
     /**
      * @param Asar\Http\Message\Request $request
      */
-    function POST(Request $request);
+    public function POST(Request $request);
 }

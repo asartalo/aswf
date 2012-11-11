@@ -12,9 +12,8 @@ namespace Asar\Http\Resource;
 
 use Asar\Routing\Route;
 use Asar\Config\Config;
-use Asar\Http\Resource\Dispatcher as ResourceDispatcher;
+use Asar\Http\Resource\ResourceResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Scope;
 
 /**
  * Creates resources.
@@ -24,14 +23,17 @@ class ResourceFactory
 
     private $container;
 
+    private $resolver;
+
     /**
      * Constructor
      *
      * @param ContainerInterface $container the DI container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, ResourceResolver $resolver)
     {
         $this->container = $container;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -43,26 +45,28 @@ class ResourceFactory
      */
     public function getResource(Route $route)
     {
-        return $this->getResourceFromClassReference($route->getName());
+        return $this->getResourceFromClassReference(
+            $route->getServiceName(),
+            $this->resolver->getResourceClassName($route)
+        );
+
     }
 
     /**
      * Gets resource based on class reference
      *
+     * @param string $service        the name of the service for the container to use
      * @param string $classReference the resource class name
      *
      * @return object the resource
      */
-    private function getResourceFromClassReference($classReference)
+    private function getResourceFromClassReference($service, $classReference)
     {
-        $resource = null;
-        if (class_exists($classReference)) {
-            $this->container->setParameter('request.resource.class', $classReference);
-            $resource = $this->container->get('request.resource.default');
-            // TODO: check if this is necessary
-            // reverting...
-            $this->container->setParameter('request.resource.class', '');
-        }
+        $this->container->setParameter('request.resource.class', $classReference);
+        $resource = $this->container->get($service);
+        // TODO: check if this is necessary
+        // reverting...
+        $this->container->setParameter('request.resource.class', '');
 
         return $resource;
     }

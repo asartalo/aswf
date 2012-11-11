@@ -20,5 +20,5 @@ interface PutInterface
     /**
      * @param Request $request
      */
-    function PUT(Request $request);
+    public function PUT(Request $request);
 }

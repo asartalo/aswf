@@ -25,6 +25,8 @@ parameters:
   asar.routing.nodesBuilder.class: Asar\Routing\NodeTreeBuilder
   asar.templateEngine.php.class: Asar\Template\Engine\PhpEngine
 
+  asar.resource.generic.notfound.class: Asar\Http\Resource\Generic\NotFound
+
 
 services:
   yaml.parser:
@@ -42,6 +44,9 @@ services:
 
   asar.templateEngine.php:
     class: %asar.templateEngine.php.class%
+
+  asar.resource.generic.notfound:
+    class: %asar.resource.generic.notfound.class%
 
   asar.config.default:
     class: %asar.config.config.class%
@@ -111,6 +116,7 @@ services:
     scope: application
     arguments:
       - @service_container
+      - @application.resourceResolver
 
   application.templateAssembler:
     class: %application.templateAssembler.class%
@@ -150,7 +156,7 @@ services:
     factory_service: application.resourceFactory
     factory_method: getResource
     arguments:
-      - @request.resourceClass
+      - @request.route
 
   request.resource.default:
     class: %request.resource.class%

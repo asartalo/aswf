@@ -34,7 +34,6 @@ class BasicsTest extends TestCase
      */
     public function testReturns404ResponseWhenResourceDoesNotExist()
     {
-        $this->markTestIncomplete();
         $response = $this->client->get($this->app, '/uknown');
         $this->assertEquals(404, $response->getStatus());
     }

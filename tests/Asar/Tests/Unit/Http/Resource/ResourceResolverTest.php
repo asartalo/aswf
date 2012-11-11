@@ -45,37 +45,23 @@ class ResourceResolverTest extends TestCase
         $this->assertEquals(
             'ExampleApp\Resource\FooResource',
             $this->resolver->getResourceClassName(
-                new Route('FooResource', array())
+                new Route('/', 'FooResource', array())
             )
         );
     }
 
     /**
-     * Throws exception if the resource class name does not exist
+     * Returns null if the resource class name does not exist
      *
      * TODO: This should be a different exception?
      */
     public function testThrowsExceptionIfTheResourceClassNameDoesNotExist()
     {
-        $this->setExpectedException(
-            'Asar\Http\Resource\Exception\ResourceNotFound',
-            "Unable to find resource with class name 'ExampleApp\Resource\BarResource'."
+        $this->assertNull(
+            $this->resolver->getResourceClassName(
+                new Route('/', 'BarResource', array())
+            )
         );
-        $this->resolver->getResourceClassName(
-            new Route('BarResource', array())
-        );
-    }
-
-    /**
-     * Throws exception if the resource class name does not exist
-     */
-    public function testThrowsExceptionIfTheRouteIsNull()
-    {
-        $this->setExpectedException(
-            'Asar\Http\Resource\Exception\NoRouteFound',
-            "There was no route found."
-        );
-        $this->resolver->getResourceClassName(null);
     }
 
 }

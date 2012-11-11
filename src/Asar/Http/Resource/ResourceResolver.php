@@ -44,19 +44,12 @@ class ResourceResolver
      *
      * @return string the resource class name
      */
-    public function getResourceClassName(Route $route = null)
+    public function getResourceClassName(Route $route)
     {
-        if (!$route) {
-            throw new NoRouteFound(
-                "There was no route found."
-            );
-        }
         $classReference = $this->config->get('namespace')
             . '\\Resource\\' . $route->getName();
         if (!class_exists($classReference)) {
-            throw new ResourceNotFound(
-                "Unable to find resource with class name '$classReference'."
-            );
+            return;
         }
 
         return $classReference;

@@ -21,7 +21,7 @@ class NullRoute extends Route
 	 */
 	public function __construct($path)
 	{
-		parent::__construct($path, '', array());
+		parent::__construct($path, '', array(), 'asar.resource.generic.notfound');
 	}
 
 	/**

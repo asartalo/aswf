@@ -21,18 +21,24 @@ class Route
 
     private $values = array();
 
+    private $serviceName = 'request.resource.default';
+
     /**
      * Construct
      *
-     * @param string $path   the input path
-     * @param string $name   the resource name
-     * @param array  $values the values of the paths
+     * @param string  $path    the input path
+     * @param string  $name    the resource name
+     * @param array   $values  the values of the paths
+     * @param service $service (optional) the service definition name
      */
-    public function __construct($path, $name, array $values)
+    public function __construct($path, $name, array $values, $service = '')
     {
         $this->path = $path;
         $this->name = $name;
         $this->values = $values;
+        if ($service) {
+            $this->serviceName = $service;
+        }
     }
 
     /**
@@ -73,6 +79,16 @@ class Route
     public function isNull()
     {
         return false;
+    }
+
+    /**
+     * Get the service name
+     *
+     * @return string the service name
+     */
+    public function getServiceName()
+    {
+        return $this->serviceName;
     }
 
 }

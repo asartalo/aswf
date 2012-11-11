@@ -51,7 +51,7 @@ class RouterTest extends TestCase
             ->method('find')
             ->with('/')
             ->will(
-                $this->returnValue($route = new Route('Index', array()))
+                $this->returnValue($route = new Route('/foo', 'Index', array()))
             );
         $this->assertSame($route, $this->router->route('/'));
     }

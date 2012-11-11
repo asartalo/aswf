@@ -33,7 +33,7 @@ class PageTest extends TestCase
         $this->template = $this->quickMock(
             'Asar\Template\TemplateAssembly'
         );
-        $this->route = new Route('FooResource', array());
+        $this->route = new Route('/', 'FooResource', array());
         $this->request = new Request;
         $this->page = new Page($this->templateAssembler, $this->route, $this->request);
     }

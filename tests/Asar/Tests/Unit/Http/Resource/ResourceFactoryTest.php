@@ -14,6 +14,7 @@ use Asar\Tests\TestCase;
 use Asar\Http\Resource\ResourceFactory;
 use Asar\Config\Config;
 use Asar\Routing\Route;
+use Asar\Routing\NullRoute;
 use stdClass;
 
 /**
@@ -27,13 +28,14 @@ class ResourceFactoryTest extends TestCase
      */
     public function setUp()
     {
-        if (!class_exists($this->className = 'ExampleApp\Resource\FooResource')) {
-            $this->createClassDefinition($this->className);
-        }
+        $this->className = 'ExampleApp\Resource\FooResource';
         $this->container = $this->quickMock(
             'Symfony\Component\DependencyInjection\ContainerInterface'
         );
-        $this->factory = new ResourceFactory($this->container);
+        $this->resourceResolver = $this->quickMock(
+            'Asar\Http\Resource\ResourceResolver'
+        );
+        $this->factory = new ResourceFactory($this->container, $this->resourceResolver);
     }
 
     /**
@@ -41,6 +43,11 @@ class ResourceFactoryTest extends TestCase
      */
     public function testReturnsAResourceFromContainer()
     {
+        $route = new Route('/', $this->className, array());
+        $this->resourceResolver->expects($this->once())
+            ->method('getResourceClassName')
+            ->with($route)
+            ->will($this->returnValue($this->className));
         $this->container->expects($this->at(0))
             ->method('setParameter')
             ->with('request.resource.class', $this->className);
@@ -48,7 +55,21 @@ class ResourceFactoryTest extends TestCase
             ->method('get')
             ->with('request.resource.default')
             ->will($this->returnValue($resource = new stdClass));
-        $route = new Route('/', $this->className, array());
+        $this->assertSame(
+            $resource, $this->factory->getResource($route)
+        );
+    }
+
+    /**
+     * Returns a not found resource when given a NullRoute
+     */
+    public function testReturnsNotFoundResourceWhenGivenANullRoute()
+    {
+        $route = new NullRoute('/', $this->className, array());
+        $this->container->expects($this->once())
+            ->method('get')
+            ->with('asar.resource.generic.notfound')
+            ->will($this->returnValue($resource = new stdClass));
         $this->assertSame(
             $resource, $this->factory->getResource($route)
         );

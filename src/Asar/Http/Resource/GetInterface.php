@@ -20,5 +20,5 @@ interface GetInterface
     /**
      * @param Asar\Http\Message\Request $request
      */
-    function GET(Request $request);
+    public function GET(Request $request);
 }

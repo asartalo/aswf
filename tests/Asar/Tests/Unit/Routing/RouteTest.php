@@ -65,4 +65,12 @@ class RouteTest extends TestCase
         $this->assertFalse($this->route->isNull());
     }
 
+    /**
+     * Has default service name set
+     */
+    public function testHasDefaultServiceName()
+    {
+        $this->assertEquals('request.resource.default', $this->route->getServiceName());
+    }
+
 }
