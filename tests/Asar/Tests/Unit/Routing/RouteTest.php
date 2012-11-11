@@ -49,4 +49,12 @@ class RouteTest extends TestCase
         $this->assertEquals('ResourceClassReference', $this->route->getName());
     }
 
+    /**
+     * Is not null
+     */
+    public function testIsNotNull()
+    {
+        $this->assertFalse($this->route->isNull());
+    }
+
 }

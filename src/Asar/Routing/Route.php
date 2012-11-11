@@ -51,4 +51,14 @@ class Route
         return $this->values;
     }
 
+    /**
+     * See if this is null. Default is false.
+     *
+     * @return boolean whether this route is null or not
+     */
+    public function isNull()
+    {
+        return false;
+    }
+
 }
