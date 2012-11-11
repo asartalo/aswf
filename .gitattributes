@@ -1,0 +1,17 @@
+# Auto detect text files and perform LF normalization
+* text=lf
+
+# php files
+*.php text
+*.yml text
+*.css text
+*.js text
+*.html text
+*.txt text
+*.md text
+
+# Standard to msysgit
+*.png binary
+*.jpg binary
+*.zip binary
+*.gz binary
