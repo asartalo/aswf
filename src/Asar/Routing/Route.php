@@ -15,6 +15,8 @@ namespace Asar\Routing;
  */
 class Route
 {
+    private $path;
+
     private $name;
 
     private $values = array();
@@ -22,13 +24,25 @@ class Route
     /**
      * Construct
      *
+     * @param string $path   the input path
      * @param string $name   the resource name
      * @param array  $values the values of the paths
      */
-    public function __construct($name, array $values)
+    public function __construct($path, $name, array $values)
     {
+        $this->path = $path;
         $this->name = $name;
         $this->values = $values;
+    }
+
+    /**
+     * Get the original path
+     *
+     * @return string the route's original input path
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**

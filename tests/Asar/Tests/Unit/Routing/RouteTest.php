@@ -24,21 +24,21 @@ class RouteTest extends TestCase
      */
     public function setUp()
     {
+        $this->path = '/foo/Bar/EndPoint';
         $this->pathValues = array(
             'foo' => 'foo',
             'bar' => 'Bar',
             'baz' => 'EndPoint'
         );
-        $this->route = new Route('ResourceClassReference', $this->pathValues);
+        $this->route = new Route($this->path, 'ResourceClassReference', $this->pathValues);
     }
 
-
     /**
-     * Can have path values
+     * Get get original path
      */
-    public function testRouteHasPathValues()
+    public function testCanGetOriginalPath()
     {
-        $this->assertEquals($this->pathValues, $this->route->getValues());
+        $this->assertEquals($this->path, $this->route->getPath());
     }
 
     /**
@@ -47,6 +47,14 @@ class RouteTest extends TestCase
     public function testGetName()
     {
         $this->assertEquals('ResourceClassReference', $this->route->getName());
+    }
+
+    /**
+     * Can have path values
+     */
+    public function testRouteHasPathValues()
+    {
+        $this->assertEquals($this->pathValues, $this->route->getValues());
     }
 
     /**

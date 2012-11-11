@@ -36,8 +36,7 @@ class NodeNavigator
      */
     public function find($path)
     {
-        $path = rtrim($path, '/');
-        $pathParts = explode('/', $path);
+        $pathParts = explode('/', rtrim($path, '/'));
         array_shift($pathParts);
 
         $currentNode = $this->rootNode;
@@ -49,11 +48,11 @@ class NodeNavigator
                 $pathValues[$foundNode->getName()] = $subspace;
                 $currentNode = $foundNode;
             } else {
-                return;
+                return new NullRoute($path);
             }
         }
 
-        return new Route($currentNode->getClassReference(), $pathValues);
+        return new Route($path, $currentNode->getClassReference(), $pathValues);
     }
 
 }

@@ -35,13 +35,25 @@ class ResourceFactory
     }
 
     /**
+     * Gets resource based on route
+     *
+     * @param Route $route the route
+     *
+     * @return object the resource
+     */
+    public function getResource(Route $route)
+    {
+        return $this->getResourceFromClassReference($route->getName());
+    }
+
+    /**
      * Gets resource based on class reference
      *
      * @param string $classReference the resource class name
      *
      * @return object the resource
      */
-    public function getResource($classReference)
+    private function getResourceFromClassReference($classReference)
     {
         $resource = null;
         if (class_exists($classReference)) {

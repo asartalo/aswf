@@ -14,6 +14,7 @@ use Asar\Tests\TestCase;
 use Asar\Http\Resource\ResourceFactory;
 use Asar\Config\Config;
 use Asar\Routing\Route;
+use stdClass;
 
 /**
  * Specifications for Asar\Http\Resource\ResourceFactory
@@ -46,9 +47,10 @@ class ResourceFactoryTest extends TestCase
         $this->container->expects($this->once())
             ->method('get')
             ->with('request.resource.default')
-            ->will($this->returnValue($resource = new \stdClass));
+            ->will($this->returnValue($resource = new stdClass));
+        $route = new Route('/', $this->className, array());
         $this->assertSame(
-            $resource, $this->factory->getResource($this->className)
+            $resource, $this->factory->getResource($route)
         );
     }
 

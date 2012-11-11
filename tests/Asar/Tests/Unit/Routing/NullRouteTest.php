@@ -24,7 +24,7 @@ class NullRouteTest extends TestCase
 	 */
 	public function setup()
 	{
-		$this->nullRoute = new NullRoute;
+		$this->nullRoute = new NullRoute('/foo');
 	}
 
 	/**
@@ -41,6 +41,14 @@ class NullRouteTest extends TestCase
 	public function testIsARoute()
 	{
 		$this->assertInstanceOf('Asar\Routing\Route', $this->nullRoute);
+	}
+
+	/**
+	 * Can get original input path
+	 */
+	public function testCanGetOriginalPath()
+	{
+		$this->assertEquals('/foo', $this->nullRoute->getPath());
 	}
 
 	/**

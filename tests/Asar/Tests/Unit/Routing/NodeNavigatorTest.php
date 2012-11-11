@@ -42,7 +42,7 @@ class NodeNavigatorTest extends TestCase
     public function testGetRootNode()
     {
         $this->assertEquals(
-            new Route('RootResource', array()),
+            new Route('/', 'RootResource', array()),
             $this->navigator->find('/')
         );
     }
@@ -53,7 +53,7 @@ class NodeNavigatorTest extends TestCase
     public function testGetChildNode()
     {
         $this->assertEquals(
-            new Route('FooResource', array('foo' => 'foo')),
+            new Route('/foo', 'FooResource', array('foo' => 'foo')),
             $this->navigator->find('/foo')
         );
     }
@@ -65,6 +65,7 @@ class NodeNavigatorTest extends TestCase
     {
         $this->assertEquals(
             new Route(
+                '/foo/fooChild',
                 'FooChildResource',
                 array('foo' => 'foo', 'fooChild' => 'fooChild')
             ),
@@ -73,11 +74,22 @@ class NodeNavigatorTest extends TestCase
     }
 
     /**
-     * Returns null when no node is found
+     * Returns null route when no node is found
      */
-    public function testReturnsNullForNotFoundNode()
+    public function testReturnsNullRouteForNotFoundNode()
     {
-        $this->assertNull($this->navigator->find('/foo/fooooo'));
+        $this->assertTrue($this->navigator->find('/foo/fooooo')->isNull());
+    }
+
+    /**
+     * Passes path to null route
+     */
+    public function testPassesPathToNullRoute()
+    {
+        $this->assertEquals(
+            '/foo/bar/baz',
+            $this->navigator->find('/foo/bar/baz')->getPath()
+        );
     }
 
 }

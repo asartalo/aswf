@@ -19,9 +19,9 @@ class NullRoute extends Route
 	/**
 	 * Constructor
 	 */
-	public function __construct()
+	public function __construct($path)
 	{
-
+		parent::__construct($path, '', array());
 	}
 
 	/**
