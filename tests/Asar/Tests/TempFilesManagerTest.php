@@ -23,8 +23,8 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->tempdirParent = realpath(__DIR__ . '/../../') . '/data';
-        $this->tempdir = $this->tempdirParent . DIRECTORY_SEPARATOR . 'temp';
+        $this->tempdirParent = realpath(__DIR__ . '/../../') . $this->getOsPath('/data');
+        $this->tempdir = $this->tempdirParent . $this->getOsPath('/temp');
         $this->tempFilesManager = new TempFilesManager($this->tempdir);
         $this->recursiveDelete($this->tempdir, false);
     }
@@ -39,6 +39,7 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
 
     private function recursiveDelete($folderPath, $thisToo = true)
     {
+        $folderPath = $this->getOsPath($folderPath);
         if (file_exists($folderPath) && is_dir($folderPath)) {
             $contents = scandir($folderPath);
             foreach ($contents as $value) {
@@ -83,11 +84,6 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
         $tempFilesManager = new TempFilesManager($dir);
     }
 
-    private function getFilePath($file)
-    {
-        return $this->tempdir . DIRECTORY_SEPARATOR . $file;
-    }
-
     /**
      * Adds files to temporary directory
      */
@@ -117,7 +113,7 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreatingDirectories()
     {
-        $dir = 'foo/bar/baz';
+        $dir = 'foo/bar/baz'; 
         $this->tempFilesManager->newDir($dir);
         $this->assertFileExists($this->getFilePath($dir));
     }
@@ -192,5 +188,19 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
     public function testGettingTempDirectory()
     {
         $this->assertEquals($this->tempdir, $this->tempFilesManager->getTempDirectory());
+    }
+
+    private function getOsPath($path)
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
+
+        return $path;
+    }
+
+    private function getFilePath($file)
+    {
+        return $this->tempdir . DIRECTORY_SEPARATOR . $this->getOsPath($file);
     }
 }

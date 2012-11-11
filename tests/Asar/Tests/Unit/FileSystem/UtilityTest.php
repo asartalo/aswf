@@ -56,11 +56,12 @@ class UtilityTest extends TestCase
         $this->tfm->newFile('foo/Four.txt');
         $this->tfm->newFile('foo.Five.txt');
         $result = $this->utility->findFilesThatStartWith(
-            $this->tfm->getTempDirectory() . '/foo/pre'
+            $this->tfm->getTempDirectory() . $this->getOsPath('/foo/pre')
         );
         foreach ($correctFiles as $file) {
             $this->assertContains(
-                $this->tfm->getTempDirectory() . '/' . $file, $result
+                $this->tfm->getTempDirectory() . DIRECTORY_SEPARATOR
+                . $this->getOsPath($file), $result
             );
         }
     }

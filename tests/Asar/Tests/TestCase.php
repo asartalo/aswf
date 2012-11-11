@@ -23,12 +23,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function getTempDir()
     {
-        return realpath(__DIR__ . '/../../') . '/data/temp';
+        return realpath(__DIR__ . '/../../') . $this->getOsPath('/data/temp');
     }
 
     protected function getFixturesDir()
     {
-        return realpath(__DIR__ . '/../../') . '/data/fixtures';
+        return realpath(__DIR__ . '/../../') . $this->getOsPath('/data/fixtures');
     }
 
     /**
@@ -98,6 +98,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $return['namespace'] = implode('\\', $all);
 
         return $return;
+    }
+
+    protected function getOsPath($path)
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
+
+        return $path;
     }
 
 }

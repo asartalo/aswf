@@ -39,7 +39,7 @@ class TempFilesManager
      */
     public function getPath($fileName)
     {
-        return $this->tempDir . DIRECTORY_SEPARATOR . $fileName;
+        return $this->getOsPath("{$this->tempDir}/{$fileName}");
     }
 
     /**
@@ -58,11 +58,11 @@ class TempFilesManager
      */
     public function newFile($fileName, $contents = '')
     {
-        $fileName = ltrim($fileName, '/\\');
+        $fileName = $this->getOsPath(ltrim($fileName, '/\\'));
         if ($this->isfileNameInDirectory($fileName)) {
             $this->createDirectoriesFirst($fileName);
         }
-        $file = fopen($this->getPath($fileName), 'w+');
+        $file = fopen($this->getPath($fileName), 'w+b');
         fwrite($file, $contents);
         fclose($file);
     }
@@ -75,17 +75,17 @@ class TempFilesManager
      */
     public function newDir($dirName)
     {
-        $this->createDirectoriesFirst($dirName, true);
+        $this->createDirectoriesFirst($this->getOsPath($dirName), true);
     }
 
     private function isFileNameInDirectory($fileName)
     {
-        return strpos($fileName, '/') > -1;
+        return strpos($fileName, DIRECTORY_SEPARATOR) > -1;
     }
 
     private function createDirectoriesFirst($fileName, $includeTail = false)
     {
-        $dirs = explode('/', $fileName);
+        $dirs = explode(DIRECTORY_SEPARATOR, $fileName);
         if (!$includeTail) {
             array_pop($dirs);
         }
@@ -118,13 +118,14 @@ class TempFilesManager
 
     private function recursiveDelete($directory, $thisToo = true)
     {
+        $directory = $this->getOsPath($directory);
         if (file_exists($directory) && is_dir($directory)) {
             $contents = scandir($directory);
             foreach ($contents as $value) {
                 if ($value == "." || $value == ".." || $value == '.svn') {
                     continue;
                 } else {
-                    $value = $directory . "/" . $value;
+                    $value = $directory . DIRECTORY_SEPARATOR . $value;
                     if (is_dir($value)) {
                         $this->recursiveDelete($value);
                     } elseif (is_file($value)) {
@@ -138,5 +139,21 @@ class TempFilesManager
         } else {
              return false;
         }
+    }
+
+    /**
+     * Normalize file paths based on operating system
+     *
+     * @param string $path the raw path
+     *
+     * @return string an OS-specific path
+     */
+    protected function getOsPath($path)
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
+
+        return $path;
     }
 }
