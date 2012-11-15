@@ -113,7 +113,7 @@ class TempFilesManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreatingDirectories()
     {
-        $dir = 'foo/bar/baz'; 
+        $dir = 'foo/bar/baz';
         $this->tempFilesManager->newDir($dir);
         $this->assertFileExists($this->getFilePath($dir));
     }

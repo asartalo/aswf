@@ -16,22 +16,24 @@ namespace Asar\Routing;
 class NullRoute extends Route
 {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct($path)
-	{
-		parent::__construct($path, '', array(), 'asar.resource.generic.notfound');
-	}
+    /**
+     * Constructor
+     *
+     * @param string $path the input path
+     */
+    public function __construct($path)
+    {
+        parent::__construct($path, '', array(), 'asar.resource.generic.notfound');
+    }
 
-	/**
-	 * Signifies that this is null
-	 *
-	 * @return boolean always true because this is a null route
-	 */
-	public function isNull()
-	{
-		return true;
-	}
+    /**
+     * Signifies that this is null
+     *
+     * @return boolean always true because this is a null route
+     */
+    public function isNull()
+    {
+        return true;
+    }
 
 }

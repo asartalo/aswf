@@ -26,7 +26,11 @@ class NotFound extends StandardResource
     }
 
     /**
-     * @param Asar\Http\Message\Request $request
+     * Handle GET requests
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function GET(Request $request)
     {
@@ -34,7 +38,11 @@ class NotFound extends StandardResource
     }
 
     /**
-     * @param Asar\Http\Message\Request $request
+     * Handle POST requests
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function POST(Request $request)
     {
@@ -42,7 +50,11 @@ class NotFound extends StandardResource
     }
 
     /**
+     * Handle PUT requests
+     *
      * @param Request $request
+     *
+     * @return Response
      */
     public function PUT(Request $request)
     {
@@ -50,7 +62,11 @@ class NotFound extends StandardResource
     }
 
     /**
-     * @param Asar\Http\Message\Request $request
+     * Handle DELETE requests
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function DELETE(Request $request)
     {

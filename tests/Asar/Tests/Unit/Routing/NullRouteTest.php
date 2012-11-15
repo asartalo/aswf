@@ -19,62 +19,62 @@ use Asar\Routing\NullRoute;
 class NullRouteTest extends TestCase
 {
 
-	/**
-	 * Setup
-	 */
-	public function setup()
-	{
-		$this->nullRoute = new NullRoute('/foo');
-	}
+    /**
+     * Setup
+     */
+    public function setup()
+    {
+        $this->nullRoute = new NullRoute('/foo');
+    }
 
-	/**
-	 * Is Null
-	 */
-	public function testIsNull()
-	{
-		$this->assertTrue($this->nullRoute->isNull());
-	}
+    /**
+     * Is Null
+     */
+    public function testIsNull()
+    {
+        $this->assertTrue($this->nullRoute->isNull());
+    }
 
-	/**
-	 * Is a Route
-	 */
-	public function testIsARoute()
-	{
-		$this->assertInstanceOf('Asar\Routing\Route', $this->nullRoute);
-	}
+    /**
+     * Is a Route
+     */
+    public function testIsARoute()
+    {
+        $this->assertInstanceOf('Asar\Routing\Route', $this->nullRoute);
+    }
 
-	/**
-	 * Can get original input path
-	 */
-	public function testCanGetOriginalPath()
-	{
-		$this->assertEquals('/foo', $this->nullRoute->getPath());
-	}
+    /**
+     * Can get original input path
+     */
+    public function testCanGetOriginalPath()
+    {
+        $this->assertEquals('/foo', $this->nullRoute->getPath());
+    }
 
-	/**
-	 * Has no name
-	 */
-	public function testHasNoName()
-	{
-		$this->assertEquals('', $this->nullRoute->getName());
-	}
+    /**
+     * Has no name
+     */
+    public function testHasNoName()
+    {
+        $this->assertEquals('', $this->nullRoute->getName());
+    }
 
-	/**
-	 * Has no values
-	 */
-	public function testHasNoValues()
-	{
-		$this->assertEmpty($this->nullRoute->getValues());
-	}
+    /**
+     * Has no values
+     */
+    public function testHasNoValues()
+    {
+        $this->assertEmpty($this->nullRoute->getValues());
+    }
 
-	/**
-	 * Uses Generic resource as service name
-	 */
-	public function testUsesGenericResourceAsServiceName()
-	{
-		$this->assertEquals(
-			'asar.resource.generic.notfound', $this->nullRoute->getServiceName()
-		);
-	}
+    /**
+     * Uses Generic resource as service name
+     */
+    public function testUsesGenericResourceAsServiceName()
+    {
+        $this->assertEquals(
+            'asar.resource.generic.notfound', $this->nullRoute->getServiceName()
+        );
+    }
 
 }

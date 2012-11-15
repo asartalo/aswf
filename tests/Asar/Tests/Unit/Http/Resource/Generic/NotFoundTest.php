@@ -20,24 +20,24 @@ use Asar\Tests\TestCase;
 class NotFoundTest extends TestCase
 {
 
-	/**
-	 * Setup
-	 */
-	public function setUp()
-	{
-		$this->notFound = new NotFound;
-	}
+    /**
+     * Setup
+     */
+    public function setUp()
+    {
+        $this->notFound = new NotFound;
+    }
 
-	/**
-	 * Always returns a 404 response status
-	 */
-	public function testReturns404ResponseStatus()
-	{
-		$methods = array('GET', 'POST', 'PUT', 'DELETE');
-		foreach ($methods as $method) {
-			$request = new Request(array('method' => $method));
-			$this->assertEquals(404, $this->notFound->$method($request)->getStatus());
-		}
-	}
+    /**
+     * Always returns a 404 response status
+     */
+    public function testReturns404ResponseStatus()
+    {
+        $methods = array('GET', 'POST', 'PUT', 'DELETE');
+        foreach ($methods as $method) {
+            $request = new Request(array('method' => $method));
+            $this->assertEquals(404, $this->notFound->$method($request)->getStatus());
+        }
+    }
 
 }

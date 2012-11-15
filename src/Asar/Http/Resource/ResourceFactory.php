@@ -29,6 +29,7 @@ class ResourceFactory
      * Constructor
      *
      * @param ContainerInterface $container the DI container
+     * @param ResourceResolver   $resolver  a resource name resolver
      */
     public function __construct(ContainerInterface $container, ResourceResolver $resolver)
     {
