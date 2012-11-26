@@ -24,6 +24,8 @@ parameters:
   asar.filesystem.utility.class: Asar\FileSystem\Utility
   asar.routing.nodesBuilder.class: Asar\Routing\NodeTreeBuilder
   asar.templateEngine.php.class: Asar\Template\Engine\PhpEngine
+  asar.responseExporter.class: Asar\Http\Message\ResponseExporter
+  asar.requestFactory.class: Asar\Http\Message\RequestFactory
 
   asar.resource.generic.notfound.class: Asar\Http\Resource\Generic\NotFound
 
@@ -59,6 +61,12 @@ services:
     factory_method: getResourcePath
     arguments:
       - 'config.default.yml'
+
+  asar.responseExporter:
+    class: %asar.responseExporter.class%
+
+  asar.requestFactory:
+    class: %asar.requestFactory.class%
 
 
   application:

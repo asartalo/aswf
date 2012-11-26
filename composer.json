@@ -11,7 +11,7 @@
         "symfony/config": "2.1.*"
     },
     "require-dev": {
-        "guzzle/http": "3.0.*"
+        "guzzle/guzzle": "3.0.*"
     },
     "authors" : [
         {

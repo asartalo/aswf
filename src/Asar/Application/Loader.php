@@ -37,11 +37,25 @@ class Loader
     /**
      * Bootstraps an application based on the configuration
      *
-     * @param string $configFile the configuration file
+     * @param string $configFile an application configuration file
      *
      * @return Asar\Application\Application
      */
     public static function load($configFile)
+    {
+        $appLoader = self::getAppLoader($configFile);
+
+        return $appLoader->loadApplication();
+    }
+
+    /**
+     * Gets apploader
+     *
+     * @param string $configFile an application configuration file
+     *
+     * @return Loader
+     */
+    public static function getAppLoader($configFile)
     {
         $container = new ContainerBuilder();
 
@@ -61,9 +75,7 @@ class Loader
             $container->addScope(new Scope('request', 'application'));
         }
 
-        $appLoader = new self($container);
-
-        return $appLoader->loadApplication();
+        return new self($container);
     }
 
     /**
@@ -77,6 +89,49 @@ class Loader
         $application = $this->container->get('application');
 
         return $application;
+    }
+
+    /**
+     * Returns the container
+     *
+     * @return ContainerBuilder
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+
+    /**
+     * Run an app based on environment variables
+     *
+     * @param string $configFile an application configuration file
+     * @param array  $server     server variable typically $_SERVER
+     * @param array  $get        request parameters typically $_GET
+     * @param array  $post       request post parameters typically $_POST
+     * @param array  $files      request files typically $_FILES
+     * @param array  $session    session variables typically $_SESSION
+     * @param array  $cookie     cookie parameters typically $_COOKIE
+     * @param array  $env        environment variables typically $_ENV
+     */
+    public static function runApp(
+        $configFile, $server, $get, $post, $files, $session,
+        $cookie, $env
+    )
+    {
+        $appLoader = self::getAppLoader($configFile);
+        $container = $appLoader->getContainer();
+        $responseExporter = $container->get('asar.responseExporter');
+        $requestFactory = $container->get('asar.requestFactory');
+
+        $app = $appLoader->loadApplication();
+        $responseExporter->exportResponse(
+            $app->handleRequest(
+                $requestFactory->createRequestFromEnvironment(
+                    $server, $get, $post, $files, $session, $cookie, $env
+                )
+            )
+        );
     }
 
 }
