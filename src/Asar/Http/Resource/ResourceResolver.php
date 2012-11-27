@@ -48,9 +48,6 @@ class ResourceResolver
     {
         $classReference = $this->config->get('namespace')
             . '\\Resource\\' . $route->getName();
-        if (!class_exists($classReference)) {
-            return;
-        }
 
         return $classReference;
     }

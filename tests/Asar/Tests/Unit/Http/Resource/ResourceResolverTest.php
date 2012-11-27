@@ -50,18 +50,4 @@ class ResourceResolverTest extends TestCase
         );
     }
 
-    /**
-     * Returns null if the resource class name does not exist
-     *
-     * TODO: This should be a different exception?
-     */
-    public function testThrowsExceptionIfTheResourceClassNameDoesNotExist()
-    {
-        $this->assertNull(
-            $this->resolver->getResourceClassName(
-                new Route('/', 'BarResource', array())
-            )
-        );
-    }
-
 }

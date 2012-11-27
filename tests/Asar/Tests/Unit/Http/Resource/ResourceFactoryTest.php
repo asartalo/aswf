@@ -28,7 +28,9 @@ class ResourceFactoryTest extends TestCase
      */
     public function setUp()
     {
-        $this->className = 'ExampleApp\Resource\FooResource';
+        if (!class_exists($this->className = 'ExampleApp\Resource\FooResource')) {
+            $this->createClassDefinition($this->className);
+        }
         $this->container = $this->quickMock(
             'Symfony\Component\DependencyInjection\ContainerInterface'
         );
@@ -73,6 +75,23 @@ class ResourceFactoryTest extends TestCase
         $this->assertSame(
             $resource, $this->factory->getResource($route)
         );
+    }
+
+    /**
+     * Throws an exception when a class specified in a route does not exit
+     */
+    public function testThrowExceptionForNonExistentClassName()
+    {
+        $route = new Route('/foo', 'UnknownClass', array());
+        $this->resourceResolver->expects($this->once())
+            ->method('getResourceClassName')
+            ->will($this->returnValue('UnknownClass'));
+
+        $this->setExpectedException(
+            'Asar\Http\Resource\Exception\UnknownResourceClass',
+            "Unable to find Resource with classname 'UnknownClass'."
+        );
+        $this->factory->getResource($route);
     }
 
 }

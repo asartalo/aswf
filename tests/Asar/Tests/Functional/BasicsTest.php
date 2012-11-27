@@ -59,4 +59,14 @@ class BasicsTest extends TestCase
         );
         $this->assertContains('<h1>Hello World!</h1>', $response->getContent());
     }
+
+    /**
+     * Retrieves another page (blog index)
+     */
+    public function testGetBlogIndexPage()
+    {
+        $response = $this->client->get($this->app, '/blog');
+        $this->assertEquals(200, $response->getStatus());
+        $this->assertContains('<h1>The Blog</h1>', $response->getContent());
+    }
 }

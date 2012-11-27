@@ -13,6 +13,7 @@ namespace Asar\Http\Resource;
 use Asar\Routing\Route;
 use Asar\Config\Config;
 use Asar\Http\Resource\ResourceResolver;
+use Asar\Http\Resource\Exception\UnknownResourceClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -46,9 +47,14 @@ class ResourceFactory
      */
     public function getResource(Route $route)
     {
+        $classReference = $this->resolver->getResourceClassName($route);
+        if (!$route->isNull() && !class_exists($classReference)) {
+            throw new UnknownResourceClass("Unable to find Resource with classname '$classReference'.");
+        }
+
         return $this->getResourceFromClassReference(
             $route->getServiceName(),
-            $this->resolver->getResourceClassName($route)
+            $classReference
         );
 
     }

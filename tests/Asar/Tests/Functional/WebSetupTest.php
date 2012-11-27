@@ -35,7 +35,7 @@ class WebSetupTest extends TestCase
     {
         $request = $this->client->get('/');
         $response = $request->send();
-        $this->assertContains('Hello World!', $response->getBody()->__toString());
+        $this->assertContains('<h1>Hello World!</h1>', $response->getBody()->__toString());
     }
 
     private function checkWebSetup()
