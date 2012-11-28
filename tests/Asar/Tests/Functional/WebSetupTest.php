@@ -29,13 +29,23 @@ class WebSetupTest extends TestCase
     }
 
     /**
-     * Test that the php setup is working
+     * Test that the web setup is working
      */
     public function testBasicWebSetupWorking()
     {
         $request = $this->client->get('/');
         $response = $request->send();
         $this->assertContains('<h1>Hello World!</h1>', $response->getBody()->__toString());
+    }
+
+    /**
+     * Test that we can access other pages
+     */
+    public function testCanAccessOtherPage()
+    {
+        $request = $this->client->get('/blog');
+        $response = $request->send();
+        $this->assertContains('<h1>The Blog</h1>', $response->getBody()->__toString());
     }
 
     private function checkWebSetup()
