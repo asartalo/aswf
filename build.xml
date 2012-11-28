@@ -16,10 +16,10 @@
   <mkdir dir="${basedir}/build/coverage"/>
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
-  
+
   <antcall target="cleantest"/>
  </target>
- 
+
  <target name="cleantest" description="Clean up test temporary data directory">
   <delete dir="${basedir}/tests/data/temp"/>
   <mkdir dir="${basedir}/tests/data/temp"/>
@@ -27,7 +27,7 @@
 
  <target name="composer" description="Update dependencies using composer">
   <exec executable="composer.phar" failonerror="true">
-    <arg line="update" />
+    <arg line="update --dev" />
   </exec>
  </target>
 
