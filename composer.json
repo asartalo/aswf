@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        //"ezyang/htmlpurifier": "dev-master",
         "symfony/dependency-injection": "2.1.*",
         "symfony/yaml": "2.1.*",
         "symfony/config": "2.1.*"
