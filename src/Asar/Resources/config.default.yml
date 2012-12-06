@@ -1,4 +1,7 @@
 
+output:
+    encoding: UTF-8
+    doctype: html5
 
 template:
     engines:
