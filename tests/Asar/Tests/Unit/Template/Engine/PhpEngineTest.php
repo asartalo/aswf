@@ -116,6 +116,22 @@ class PhpEngineTest extends TestCase
         $this->engine->render($this->tempFileManager->getPath('inc.php'), array());
     }
 
+    /**
+     * Template can use another template as layout
+     */
+    public function testTemplateCanUseAnotherTemplateAsLayout()
+    {
+        $this->tempFileManager->newFile('layout.php', '<p><?php echo $content ?></p>');
+        $this->tempFileManager->newFile('inc.php', '<?php $this->layout("layout.php"); echo $var; ?>');
+        $this->assertEquals(
+            '<p>Layout!</p>',
+            $this->engine->render(
+                $this->tempFileManager->getPath('inc.php'),
+                array('var' => 'Layout!')
+            )
+        );
+    }
+
 
 
 }

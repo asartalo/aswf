@@ -69,4 +69,18 @@ class BasicsTest extends TestCase
         $this->assertEquals(200, $response->getStatus());
         $this->assertContains('<h1>The Blog</h1>', $response->getContent());
     }
+
+    /**
+     * Pages can use layouts
+     */
+    public function testIndexPageHasLayout()
+    {
+        $response = $this->client->get($this->app, '/');
+        $this->assertStringStartsWith(
+            '<!DOCTYPE html>', $response->getContent()
+        );
+        $this->assertStringEndsWith(
+            '</html>', $response->getContent()
+        );
+    }
 }

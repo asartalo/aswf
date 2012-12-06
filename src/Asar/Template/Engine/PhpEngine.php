@@ -10,8 +10,6 @@
 
 namespace Asar\Template\Engine;
 
-use Asar\Template\Engine\Exception\TemplateFileNotFound;
-use Asar\Template\Engine\Exception\UnknownHelperMethod;
 
 /**
  * A simple PHP-based template engine
@@ -31,16 +29,16 @@ class PhpEngine implements EngineInterface
      */
     public function render($file, $params = array())
     {
-        if (!file_exists($file)) {
-            throw new TemplateFileNotFound(
-                "The file '$file' passed to the template engine does not exist."
+        $template = new PhpEngineObject($this, $file, $this->helpers, $params);
+        $output = $template->render();
+        if ($template->hasLayout()) {
+            $output = $this->render(
+                $template->getLayout(),
+                array_merge($params, array('content' => $output))
             );
         }
-        extract($params);
-        ob_start();
-        include $file;
 
-        return ob_get_clean();
+        return $output;
     }
 
     /**
@@ -52,23 +50,6 @@ class PhpEngine implements EngineInterface
     public function addHelper($helperName, $callback)
     {
         $this->helpers[$helperName] = $callback;
-    }
-
-    /**
-     * Calls helpers when one the helper is defined
-     *
-     * @param string $method    the helper method name that was called
-     * @param array  $arguments the arguments passed to the method
-     *
-     * @return mixed whatever the callback returns
-     */
-    public function __call($method, $arguments)
-    {
-        if (!isset($this->helpers[$method])) {
-            throw new UnknownHelperMethod("The helper method '$method' is not defined.");
-        }
-
-        return call_user_func_array($this->helpers[$method], $arguments);
     }
 
 }
