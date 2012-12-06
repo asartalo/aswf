@@ -25,4 +25,12 @@ interface EngineInterface
      * @return string the rendered template
      */
     public function render($file, $params = array());
+
+    /**
+     * Adds a helper
+     *
+     * @param string   $helperName the method name for the method to be called
+     * @param callback $callback   the method to be called
+     */
+    public function addHelper($helperName, $callback);
 }

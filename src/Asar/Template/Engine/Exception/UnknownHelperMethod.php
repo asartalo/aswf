@@ -13,9 +13,9 @@ namespace Asar\Template\Engine\Exception;
 use Asar\Exception;
 
 /**
- * Thrown when there is an unregistered template engine
+ * Thrown when there is an undefined helper method
  */
-class UnregisteredEngine extends Exception
+class UnknownHelperMethod extends Exception
 {
 
 }
