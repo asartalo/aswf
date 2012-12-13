@@ -33,7 +33,7 @@ class LoaderTest extends TestCase
         );
         $this->config = new Config($this->configData);
         $this->container = $this->quickMock(
-            'Symfony\Component\DependencyInjection\ContainerInterface'
+            'Dimple\Container'
         );
     }
 

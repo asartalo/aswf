@@ -31,9 +31,7 @@ class ResourceFactoryTest extends TestCase
         if (!class_exists($this->className = 'ExampleApp\Resource\FooResource')) {
             $this->createClassDefinition($this->className);
         }
-        $this->container = $this->quickMock(
-            'Symfony\Component\DependencyInjection\ContainerInterface'
-        );
+        $this->container = $this->quickMock('Dimple\Container');
         $this->resourceResolver = $this->quickMock(
             'Asar\Http\Resource\ResourceResolver'
         );
@@ -51,7 +49,7 @@ class ResourceFactoryTest extends TestCase
             ->with($route)
             ->will($this->returnValue($this->className));
         $this->container->expects($this->at(0))
-            ->method('setParameter')
+            ->method('offsetSet')
             ->with('request.resource.class', $this->className);
         $this->container->expects($this->once())
             ->method('get')

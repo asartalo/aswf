@@ -11,8 +11,7 @@
 namespace Asar\Template\Engine;
 
 use Asar\Template\Engine\EngineRegistry;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Dimple\Container;
 
 /**
  * Registers template engines
@@ -27,10 +26,10 @@ class RegistryHelper
     /**
      * Constructor
      *
-     * @param EngineRgistry      $registry  template engine registry
-     * @param ContainerInterface $container the dependency injection container
+     * @param EngineRgistry $registry  template engine registry
+     * @param Container     $container the dependency injection container
      */
-    public function __construct(EngineRegistry $registry, ContainerInterface $container)
+    public function __construct(EngineRegistry $registry, Container $container)
     {
         $this->registry = $registry;
         $this->container = $container;

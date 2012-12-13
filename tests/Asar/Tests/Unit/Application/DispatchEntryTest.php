@@ -14,8 +14,7 @@ use Asar\Tests\TestCase;
 use Asar\Application\DispatchEntry;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Scope;
+use Dimple\Container;
 
 /**
  * Specifications for Asar\Application\DispatchEntry
@@ -28,9 +27,7 @@ class DispatchEntryTest extends TestCase
      */
     public function setUp()
     {
-        $this->container = $this->quickMock(
-            'Symfony\Component\DependencyInjection\ContainerInterface'
-        );
+        $this->container = $this->quickMock('Dimple\Container');
         $this->dispatchEntry = new DispatchEntry($this->container);
     }
 
@@ -51,8 +48,8 @@ class DispatchEntryTest extends TestCase
     public function testDipatchSetsRequestAsService()
     {
         $this->container->expects($this->at(1))
-            ->method('set')
-            ->with('request.request', $request = new Request, 'request');
+            ->method('offsetSet')
+            ->with('request.request', $request = new Request);
         $this->dispatchEntry->dispatch($request);
     }
 

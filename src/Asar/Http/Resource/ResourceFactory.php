@@ -14,7 +14,7 @@ use Asar\Routing\Route;
 use Asar\Config\Config;
 use Asar\Http\Resource\ResourceResolver;
 use Asar\Http\Resource\Exception\UnknownResourceClass;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Dimple\Container;
 
 /**
  * Creates resources.
@@ -29,10 +29,10 @@ class ResourceFactory
     /**
      * Constructor
      *
-     * @param ContainerInterface $container the DI container
+     * @param Container          $container the DI container
      * @param ResourceResolver   $resolver  a resource name resolver
      */
-    public function __construct(ContainerInterface $container, ResourceResolver $resolver)
+    public function __construct(Container $container, ResourceResolver $resolver)
     {
         $this->container = $container;
         $this->resolver = $resolver;
@@ -69,11 +69,11 @@ class ResourceFactory
      */
     private function getResourceFromClassReference($service, $classReference)
     {
-        $this->container->setParameter('request.resource.class', $classReference);
+        $this->container['request.resource.class'] = $classReference;
         $resource = $this->container->get($service);
         // TODO: check if this is necessary
         // reverting...
-        $this->container->setParameter('request.resource.class', '');
+        $this->container['request.resource.class'] = '';
 
         return $resource;
     }

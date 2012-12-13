@@ -2,13 +2,12 @@
     "name": "asar/asar-web-framework",
     "type": "library",
     "description": "A Resource-Oriented Web Framework.",
-    "minimum-stability": "RC",
+    "minimum-stability": "alpha",
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "symfony/dependency-injection": "2.1.*",
         "symfony/yaml": "2.1.*",
-        "symfony/config": "2.1.*"
+        "asartalo/dimple": "dev-master"
     },
     "require-dev": {
         "guzzle/guzzle": "3.0.*"

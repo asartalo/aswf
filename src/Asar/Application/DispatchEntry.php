@@ -12,8 +12,7 @@ namespace Asar\Application;
 
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Scope;
+use Dimple\Container;
 
 /**
  * A helper for dispatching requests
@@ -28,7 +27,7 @@ class DispatchEntry
      *
      * @param ContainerInterface $container the DI container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -43,7 +42,7 @@ class DispatchEntry
     public function dispatch(Request $request)
     {
         $this->container->enterScope('request');
-        $this->container->set('request.request', $request, 'request');
+        $this->container['request.request'] = $request;
         $response = $this->container->get('request.response');
         $this->container->leaveScope('request');
 

@@ -11,11 +11,7 @@
 namespace Asar\Application;
 
 use Asar\Utilities\Framework as FrameworkUtility;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Scope;
+use Dimple\Container;
 
 /**
  * A loader for Asar applications bootstrapping them to life
@@ -29,7 +25,7 @@ class Loader
      *
      * @param ContainerInterface $container the DI container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -57,23 +53,18 @@ class Loader
      */
     public static function getAppLoader($configFile)
     {
-        $container = new ContainerBuilder();
+        //$container = new ContainerBuilder();
 
         $framework = new FrameworkUtility;
 
-        $loader = new YamlFileLoader(
-            $container, new FileLocator($framework->getResourcesPath())
-        );
-
-        $loader->load('services.yml');
-
-        $container->set('asar.framework.utility', $framework);
-        $container->setParameter('application.path', dirname($configFile));
-        $container->setParameter('application.config.file', $configFile);
-        $container->addScope(new Scope('application'));
-        if (!$container->hasScope('request')) {
-            $container->addScope(new Scope('request', 'application'));
-        }
+        $servicesFile = $framework->getResourcePath('services.php');
+        $container = new Container(function($c) use ($servicesFile) {
+            include $servicesFile;
+        });
+        
+        $container['asar.framework.utility'] = $framework;
+        $container['application.path'] = dirname($configFile);
+        $container['application.config.file'] = $configFile;
 
         return new self($container);
     }
@@ -87,6 +78,7 @@ class Loader
     {
         $this->container->enterScope('application');
         $application = $this->container->get('application');
+        //$this->container->leaveScope('application');
 
         return $application;
     }
