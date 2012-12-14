@@ -7,7 +7,7 @@
     "require": {
         "php": ">=5.3.0",
         "symfony/yaml": "2.1.*",
-        "asartalo/dimple": "dev-master"
+        "asar/dimple": "dev-master"
     },
     "require-dev": {
         "guzzle/guzzle": "3.0.*"
