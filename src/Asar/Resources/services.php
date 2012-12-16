@@ -1,5 +1,7 @@
 <?php
 
+$c = $container;
+
 // Define scopes first
 $c->createScope('application');
 $c->createScope('request', 'application');

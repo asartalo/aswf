@@ -58,9 +58,7 @@ class Loader
         $framework = new FrameworkUtility;
 
         $servicesFile = $framework->getResourcePath('services.php');
-        $container = new Container(function($c) use ($servicesFile) {
-            include $servicesFile;
-        });
+        $container = new Container($servicesFile);
 
         $container['asar.framework.utility'] = $framework;
         $container['application.path'] = dirname($configFile);
