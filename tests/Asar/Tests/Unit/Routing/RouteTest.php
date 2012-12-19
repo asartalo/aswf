@@ -66,11 +66,20 @@ class RouteTest extends TestCase
     }
 
     /**
-     * Has default service name set
+     * Has default service ID set
      */
     public function testHasDefaultServiceName()
     {
-        $this->assertEquals('request.resource.default', $this->route->getServiceName());
+        $this->assertEquals('request.resource.default', $this->route->getServiceId());
+    }
+
+    /**
+     * Can set service ID
+     */
+    public function testCanSetServiceId()
+    {
+        $route = new Route($this->path, 'ResourceClassReference', $this->pathValues, 'foo');
+        $this->assertEquals('foo', $route->getServiceId());
     }
 
 }

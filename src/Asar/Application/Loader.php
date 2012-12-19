@@ -64,6 +64,9 @@ class Loader
         $container['application.path'] = dirname($configFile);
         $container['application.config.file'] = $configFile;
 
+        // Load application services
+        $container->extend(dirname($configFile) . DIRECTORY_SEPARATOR . 'services.php');
+
         return new self($container);
     }
 

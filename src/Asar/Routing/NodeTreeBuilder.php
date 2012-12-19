@@ -35,14 +35,17 @@ class NodeTreeBuilder
     {
         $nodes = array();
         foreach ($nodeArray as $nodeName => $properties) {
-            $options = array();
-            if (isset($properties['require'])) {
-                $options['require'] = $properties['require'];
-            }
             if (!isset($properties['classRef'])) {
                 throw new NoclassReferenceException(
                     "The node '$nodeName' does not include a classRef."
                 );
+            }
+            $options = array();
+            if (isset($properties['require'])) {
+                $options['require'] = $properties['require'];
+            }
+            if (isset($properties['serviceId'])) {
+                $options['serviceId'] = $properties['serviceId'];
             }
             $node = new Node($nodeName, $properties['classRef'], $options);
             if (isset($properties['nodes'])) {

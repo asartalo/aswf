@@ -53,7 +53,7 @@ class ResourceFactory
         }
 
         return $this->getResourceFromClassReference(
-            $route->getServiceName(),
+            $route->getServiceId(),
             $classReference
         );
 

@@ -92,4 +92,26 @@ class ResourceFactoryTest extends TestCase
         $this->factory->getResource($route);
     }
 
+    /**
+     * Uses container instantiation if route service is defined
+     */
+    public function testInstantiatesThroughContainerIfRouteServiceIsDefined()
+    {
+        $route = new Route('/', $this->className, array(), 'exampleapp.resource.Foo');
+        $this->resourceResolver->expects($this->once())
+            ->method('getResourceClassName')
+            ->with($route)
+            ->will($this->returnValue($this->className));
+        $this->container->expects($this->at(0))
+            ->method('offsetSet')
+            ->with('request.resource.class', $this->className);
+        $this->container->expects($this->once())
+            ->method('get')
+            ->with('exampleapp.resource.Foo')
+            ->will($this->returnValue($resource = new stdClass));
+        $this->assertSame(
+            $resource, $this->factory->getResource($route)
+        );
+    }
+
 }

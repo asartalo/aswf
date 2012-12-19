@@ -28,7 +28,7 @@ class NodeNavigatorTest extends TestCase
     {
         $root = new Node('root', 'RootResource');
         $child1 = new Node('foo', 'FooResource');
-        $child2 = new Node('bar', 'BarResource');
+        $child2 = new Node('bar', 'BarResource', array('serviceId' => 'barService'));
         $grandchild1 = new Node('fooChild', 'FooChildResource');
         $child1->addNode($grandchild1);
         $root->addNodes(array($child1, $child2));
@@ -55,6 +55,17 @@ class NodeNavigatorTest extends TestCase
         $this->assertEquals(
             new Route('/foo', 'FooResource', array('foo' => 'foo')),
             $this->navigator->find('/foo')
+        );
+    }
+
+    /**
+     * Can get route to second child node with service ID
+     */
+    public function testGetRouteWithServiceId()
+    {
+        $this->assertEquals(
+            new Route('/bar', 'BarResource', array('bar' => 'bar'), 'barService'),
+            $this->navigator->find('/bar')
         );
     }
 

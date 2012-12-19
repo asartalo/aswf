@@ -1,4 +1,4 @@
-name: 'ExampleApp'
+name: ExampleApp
 
 namespace: 'Asar\Tests\Functional\ExampleApp'
 
@@ -6,13 +6,14 @@ services: 'Services...'
 
 routes:
     root:
-        classRef: 'Index'
+        classRef: Index
         nodes:
             blog:
-                classRef: 'Blog'
+                classRef: Blog
+                serviceId: exampleapp.resource.blog #see services.php
                 nodes:
                     archive:
-                        classRef: 'BlogArchive'
+                        classRef: BlogArchive
                         nodes:
                             year:
                                 classRef: 'BlogArchive\Year'

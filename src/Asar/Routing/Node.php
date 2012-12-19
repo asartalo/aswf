@@ -20,6 +20,8 @@ class Node
 
     private $classReference;
 
+    private $serviceId;
+
     private $requires;
 
     private $nodes = array();
@@ -46,6 +48,9 @@ class Node
         $this->classReference = $classReference;
         if (isset($options['require']) && is_string($options['require'])) {
             $this->requires = '/' . $options['require'] . '/';
+        }
+        if (isset($options['serviceId']) && is_string($options['serviceId'])) {
+            $this->serviceId = $options['serviceId'];
         }
     }
 
@@ -104,13 +109,23 @@ class Node
     }
 
     /**
-     * Return's the node's class reference
+     * Returns the node's class reference
      *
      * @return string the class reference
      */
     public function getClassReference()
     {
         return $this->classReference;
+    }
+
+    /**
+     * Returns the node's service ID if set
+     *
+     * @return string the service ID
+     */
+    public function getServiceId()
+    {
+        return $this->serviceId;
     }
 
     /**

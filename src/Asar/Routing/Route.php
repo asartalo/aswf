@@ -21,7 +21,7 @@ class Route
 
     private $values = array();
 
-    private $serviceName = 'request.resource.default';
+    private $serviceId = 'request.resource.default';
 
     /**
      * Construct
@@ -37,7 +37,7 @@ class Route
         $this->name = $name;
         $this->values = $values;
         if ($service) {
-            $this->serviceName = $service;
+            $this->serviceId = $service;
         }
     }
 
@@ -86,9 +86,9 @@ class Route
      *
      * @return string the service name
      */
-    public function getServiceName()
+    public function getServiceId()
     {
-        return $this->serviceName;
+        return $this->serviceId;
     }
 
 }

@@ -35,7 +35,8 @@ class NodeTreeBuilderTest extends TestCase
                         'require'      => '^\d+$',
                     ),
                     'bar' => array(
-                        'classRef' => 'BarResource'
+                        'classRef' => 'BarResource',
+                        'serviceId' => 'service.BarResource'
                     )
                 )
             )
@@ -70,6 +71,16 @@ class NodeTreeBuilderTest extends TestCase
         );
         $this->assertEquals(
             'BarResource', $this->rootNode->get('bar')->getClassReference()
+        );
+    }
+
+    /**
+     * Builds nodes with service ID specified
+     */
+    public function testBuildsNodesWithServiceIdSpecified()
+    {
+        $this->assertEquals(
+            'service.BarResource', $this->rootNode->get('bar')->getServiceId()
         );
     }
 

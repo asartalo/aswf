@@ -52,7 +52,10 @@ class NodeNavigator
             }
         }
 
-        return new Route($path, $currentNode->getClassReference(), $pathValues);
+        return new Route(
+            $path, $currentNode->getClassReference(), $pathValues,
+            $currentNode->getServiceId()
+        );
     }
 
 }

@@ -81,6 +81,15 @@ class NodeTest extends TestCase
     }
 
     /**
+     * Can have a service id
+     */
+    public function testNodesCanHaveServiceIds()
+    {
+        $node = new Node('foo', 'FooResource', array('serviceId' => 'fooService'));
+        $this->assertEquals('fooService', $node->getServiceId());
+    }
+
+    /**
      * A node matches its name
      */
     public function testMatchesItsName()
