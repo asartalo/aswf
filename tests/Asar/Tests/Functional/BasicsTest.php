@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Functional;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Client;
 use Asar\Application\Loader;
 

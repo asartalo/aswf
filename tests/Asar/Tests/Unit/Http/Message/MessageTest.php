@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Http\Message;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Message\Message;
-use Asar\Tests\TestCase;
 
 /**
  * A specification for Asar\Http\Message\Message

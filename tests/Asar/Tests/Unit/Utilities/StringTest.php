@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Utility;
 
+use Asar\TestHelper\TestCase;
 use Asar\Utilities\String;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for the String utility class

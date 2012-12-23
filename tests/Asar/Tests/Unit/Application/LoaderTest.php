@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Application;
 
+use Asar\TestHelper\TestCase;
 use Asar\Application\Loader;
-use Asar\Tests\TestCase;
 use Asar\Config\Config;
 
 /**

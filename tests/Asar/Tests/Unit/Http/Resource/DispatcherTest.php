@@ -10,10 +10,10 @@
 
 namespace Asar\Tests\Unit\Http\Resource;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Resource\Dispatcher;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for Asar\Http\Resource\Dispatcher

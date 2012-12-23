@@ -10,9 +10,9 @@
 
 namespace Asar\Tests\Unit\Http\Message;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Message\Request;
 use Asar\Utilities\String;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for Asar\Http\Message\Request

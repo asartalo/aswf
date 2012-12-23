@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Http\Message;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Message\RequestFactory;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for Asar\Http\Message\RequestFactory

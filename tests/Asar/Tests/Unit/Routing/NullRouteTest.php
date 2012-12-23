@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit\Routing;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Routing\NullRoute;
 
 /**

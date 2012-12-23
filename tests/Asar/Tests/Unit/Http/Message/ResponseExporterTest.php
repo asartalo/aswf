@@ -10,9 +10,9 @@
 
 namespace Asar\Tests\Unit\Http\Message;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Message\Response;
 use Asar\Http\Message\ResponseExporter;
-use Asar\Tests\TestCase;
 
 /**
  * A specification for ResponseExporter

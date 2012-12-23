@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit\Template;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Routing\Route;
 use Asar\Template\Engine\EngineRegistry;
 use Asar\Template\TemplateAssembler;

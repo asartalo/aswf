@@ -10,6 +10,8 @@
         "asar/dimple": "dev-master"
     },
     "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "asar/asar-test-helper": "dev-master",
         "guzzle/guzzle": "3.0.*"
     },
     "authors" : [

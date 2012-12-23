@@ -10,4 +10,11 @@
 
 $srcPath = realpath(__DIR__ . '/../src');
 $vendorPath = realpath(__DIR__ . '/../vendor');
+$testDataPath = realpath(__DIR__) . DIRECTORY_SEPARATOR . 'data';
+$testTempPath = $testDataPath . DIRECTORY_SEPARATOR . 'temp';
+if (!file_exists($testTempPath)) {
+    mkdir($testTempPath);
+}
+define('ASAR_TESTHELPER_TEMPDIRECTORY', $testTempPath);
+
 require_once $vendorPath . '/autoload.php';

@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Utility;
 
+use Asar\TestHelper\TestCase;
 use Asar\Utilities\Framework;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for the Framework utility class

@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit\Template\Helper;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Template\Helper\Output;
 
 // Asar\Template\Engine\EngineInterface;

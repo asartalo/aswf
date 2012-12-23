@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
 use Asar\Client;

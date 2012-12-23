@@ -10,8 +10,7 @@
 
 namespace Asar\Tests\Unit\FileSystem;
 
-use Asar\Tests\TestCase;
-
+use Asar\TestHelper\TestCase;
 use Asar\FileSystem\File;
 
 /**

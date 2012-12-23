@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit\Http\Resource;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Http\Resource\ResourceResolver;
 use Asar\Config\Config;
 use Asar\Routing\Route;

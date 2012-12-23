@@ -10,7 +10,7 @@
 
 namespace Asar\Tests\Unit\Config;
 
-use Asar\Tests\TestCase;
+use Asar\TestHelper\TestCase;
 use Asar\Config\Config;
 use Asar\FileSystem\File;
 

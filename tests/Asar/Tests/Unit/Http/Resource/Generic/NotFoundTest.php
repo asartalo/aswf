@@ -10,9 +10,9 @@
 
 namespace Asar\Tests\Unit\Http\Resource\Generic;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Resource\Generic\NotFound;
 use Asar\Http\Message\Request;
-use Asar\Tests\TestCase;
 
 /**
  * Specification for Asar\Http\Resource\Generic\NotFound

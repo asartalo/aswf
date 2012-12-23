@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Functional;
 
+use Asar\TestHelper\TestCase;
 use Guzzle\Http\Client;
-use Asar\Tests\TestCase;
 
 /**
  * Tests actual web setup

@@ -10,8 +10,8 @@
 
 namespace Asar\Tests\Unit\Http;
 
+use Asar\TestHelper\TestCase;
 use Asar\Http\Url;
-use Asar\Tests\TestCase;
 
 /**
  * Specifications for the URL object
