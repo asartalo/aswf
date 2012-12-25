@@ -6,6 +6,6 @@ php:
 
 before_script:
     - ant cleantest
-    - composer install
+    - composer install --dev
 
 script: phpunit --coverage-text
