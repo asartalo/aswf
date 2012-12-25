@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.3.0",
         "symfony/yaml": "2.1.*",
+        "asar/asar-fs": "0.1",
         "asar/dimple": "dev-master"
     },
     "require-dev": {
