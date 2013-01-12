@@ -81,12 +81,19 @@ class Page
     /**
      * Sets a content parameter
      *
-     * @param string $key   the content parameter key
+     * @param mixed  $var   the content parameter key or an associative
+     *                      array of parameter keys and values
      * @param string $value the content parameter value
      */
-    public function set($key, $value)
+    public function set($var, $value = null)
     {
-        $this->templateParams[$key] = $value;
+        if (is_array($var)) {
+            foreach ($var as $key => $value) {
+                $this->templateParams[$key] = $value;
+            }
+        } else {
+            $this->templateParams[$var] = $value;
+        }
     }
 
 }

@@ -83,6 +83,20 @@ class PageTest extends TestCase
     }
 
     /**
+     * Alternative setting of content parameters
+     */
+    public function testSettingContentParameterUsingAssociativeArray()
+    {
+        $this->assemblerReturnsTemplate();
+        $this->template->expects($this->once())
+            ->method('render')
+            ->with(array('foo' => 'Foo'));
+        $this->page->set(array('foo' => 'Foo'));
+        $this->page->getResponse();
+
+    }
+
+    /**
      * Can set response header
      */
     public function testSettingResponseHeader()
