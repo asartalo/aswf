@@ -177,11 +177,6 @@ $c['request.resource.default'] = function($c) {
     return new $c['request.resource.class']($c['request.page']);
 };
 
-$c['request.resourceClass'] = function($c) {
-    $service = $c['application.resourceResolver'];
-    return $service->getResourceClassName($c['request.route']);
-};
-
 $c['request.response'] = function($c) {
     $service = $c['request.resourceDispatcher'];
     return $service->handleRequest($c['request.request']);
