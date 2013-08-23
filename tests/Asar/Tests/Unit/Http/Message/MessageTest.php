@@ -40,6 +40,17 @@ class MessageTest extends TestCase
     }
 
     /**
+     * getBody() aliases getContent()
+     */
+    public function testGetBodyAliasesGetContent()
+    {
+        $this->message->setContent(array('bar'=>'foo'));
+        $this->assertEquals(
+            $this->message->getContent(), $this->message->getBody()
+        );
+    }
+
+    /**
      * Message returns empty string as content by default
      */
     public function testMessagReturnsEmptyStringAsContentByDefault()

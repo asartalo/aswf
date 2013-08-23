@@ -127,6 +127,16 @@ abstract class Message
         return $this->content;
     }
 
+    /**
+     * Alias of getContent()
+     *
+     * @return string $content
+     */
+    public function getBody()
+    {
+        return $this->getContent();
+    }
+
     private function dashCamelCase($string)
     {
         return str_replace(' ', '-', $this->ucwordsLower($string));
