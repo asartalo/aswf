@@ -4,7 +4,8 @@ $c = $container;
 
 // Define scopes first
 $c->createScope('application');
-$c->createScope('request', 'application');
+$c->createScope('session', 'application');
+$c->createScope('request', 'session');
 
 $c['serviceContainer'] = $c;
 
@@ -32,6 +33,10 @@ $c['application.templateAssembler.class'] = 'Asar\Template\TemplateAssembler';
 $c['application.templateEngineRegistry.class'] = 'Asar\Template\Engine\EngineRegistry';
 $c['application.dispatchEntry.class'] = 'Asar\Application\DispatchEntry';
 $c['application.templateEngineRegistryHelper.class'] = 'Asar\Template\Engine\RegistryHelper';
+
+$c['session.store.service'] = 'session.arrayStore';
+$c['session.store.class'] = 'Asar\Session\ArrayStore';
+$c['session.defaultStore.class'] = 'Asar\Session\DefaultStore';
 
 $c['request.response.class'] = 'Asar\Http\Message\Response';
 $c['request.resourceDispatcher.class'] = 'Asar\Http\Resource\Dispatcher';
@@ -162,6 +167,22 @@ $c['application.templateEngineRegistryHelper'] = function($c) {
 };
 
 
+// Define services in session scope
+$c->scope('session');
+
+$c['session.store'] = function($c) {
+    return $c[$c['session.store.service']];;
+};
+
+$c['session.arrayStore'] = function($c) {
+    return new $c['session.store.class'](array());
+};
+
+$c['session.defaultStore'] = function($c) {
+    return new $c['session.defaultStore.class'];
+};
+
+
 // Define services in request scope
 $c->scope('request');
 
@@ -173,9 +194,7 @@ $c['request.resource'] = function($c) {
     return $service->getResource($c['request.route']);
 };
 
-$c['request.resource.default'] = function($c) {
-    return new $c['request.resource.class']($c['request.page']);
-};
+$c['request.resource.default'] = $c->auto('request.resource.class');
 
 $c['request.response'] = function($c) {
     $service = $c['request.resourceDispatcher'];

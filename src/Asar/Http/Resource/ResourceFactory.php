@@ -47,14 +47,14 @@ class ResourceFactory
      */
     public function getResource(Route $route)
     {
-        $classReference = $this->resolver->getResourceClassName($route);
-        if (!$route->isNull() && !class_exists($classReference)) {
-            throw new UnknownResourceClass("Unable to find Resource with classname '$classReference'.");
+        $className = $this->resolver->getResourceClassName($route);
+        if (!$route->isNull() && !class_exists($className)) {
+            throw new UnknownResourceClass("Unable to find Resource with classname '$className'.");
         }
 
-        return $this->getResourceFromClassReference(
+        return $this->getResourceFromClassName(
             $route->getServiceId(),
-            $classReference
+            $className
         );
 
     }
@@ -62,14 +62,14 @@ class ResourceFactory
     /**
      * Gets resource based on class reference
      *
-     * @param string $service        the name of the service for the container to use
-     * @param string $classReference the resource class name
+     * @param string $service   the name of the service for the container to use
+     * @param string $className the resource class name
      *
      * @return object the resource
      */
-    private function getResourceFromClassReference($service, $classReference)
+    private function getResourceFromClassName($service, $className)
     {
-        $this->container['request.resource.class'] = $classReference;
+        $this->container['request.resource.class'] = $className;
         $resource = $this->container->get($service);
         // TODO: check if this is necessary
         // reverting...

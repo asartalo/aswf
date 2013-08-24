@@ -19,3 +19,10 @@ routes:
                                 classRef: 'BlogArchive\Year'
                                 require: '/\d{4}/'
 
+            session:
+                classRef: Session
+                nodes:
+                    start:
+                        classRef: SessionStart
+                    next:
+                        classRef: SessionNext

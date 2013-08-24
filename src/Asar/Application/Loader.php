@@ -103,17 +103,18 @@ class Loader
      * @param array  $get        request parameters typically $_GET
      * @param array  $post       request post parameters typically $_POST
      * @param array  $files      request files typically $_FILES
-     * @param array  $session    session variables typically $_SESSION
      * @param array  $cookie     cookie parameters typically $_COOKIE
      * @param array  $env        environment variables typically $_ENV
      */
     public static function runApp(
-        $configFile, $server, $get, $post, $files, $session,
+        $configFile, $server, $get, $post, $files,
         $cookie, $env
     )
     {
         $appLoader = self::getAppLoader($configFile);
         $container = $appLoader->getContainer();
+        // This uses PHP's default session handling
+        $container['session.store.service'] = 'session.defaultStore';
         $responseExporter = $container->get('asar.responseExporter');
         $requestFactory = $container->get('asar.requestFactory');
 
@@ -121,7 +122,7 @@ class Loader
         $responseExporter->exportResponse(
             $app->handleRequest(
                 $requestFactory->createRequestFromEnvironment(
-                    $server, $get, $post, $files, $session, $cookie, $env
+                    $server, $get, $post, $files, $cookie, $env
                 )
             )
         );
