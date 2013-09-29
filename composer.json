@@ -9,7 +9,7 @@
         "symfony/yaml": "2.1.*",
         "asar/asar-fs": "0.1",
         "asar/asar-config": "0.1",
-        "asar/dimple": "0.2"
+        "asar/dimple": ">=0.2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
