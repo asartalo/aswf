@@ -29,7 +29,7 @@ class Page
 
     private $response;
 
-    private $templateParams = array();
+    private $contents = array();
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ class Page
         );
         $content = '';
         if ($template) {
-            $content = $template->render($this->templateParams);
+            $content = $template->render($this->contents);
         }
         $this->response->setContent($content);
         $this->response->setHeader('content-type', 'text/html; charset=utf-8');
@@ -89,10 +89,10 @@ class Page
     {
         if (is_array($var)) {
             foreach ($var as $key => $value) {
-                $this->templateParams[$key] = $value;
+                $this->contents[$key] = $value;
             }
         } else {
-            $this->templateParams[$var] = $value;
+            $this->contents[$var] = $value;
         }
     }
 
