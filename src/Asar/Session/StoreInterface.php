@@ -57,4 +57,9 @@ interface StoreInterface
      */
     public function delete($key);
 
+    /**
+     * Destroys a session
+     */
+    public function destroy();
+
 }
