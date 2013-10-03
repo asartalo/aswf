@@ -80,4 +80,13 @@ class ArrayStoreTest extends TestCase
         $this->assertFalse($this->store->has('foo'));
     }
 
+    /**
+     * Can be destroyed
+     */
+    public function testDestroy()
+    {
+        $this->store->destroy();
+        $this->assertFalse($this->store->has('foo'));
+    }
+
 }

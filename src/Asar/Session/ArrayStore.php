@@ -85,4 +85,12 @@ class ArrayStore implements StoreInterface
         $this->remove($key);
     }
 
+    /**
+     * Destroys a session
+     */
+    public function destroy()
+    {
+        array_splice($this->storage, 0);
+    }
+
 }
