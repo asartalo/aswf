@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Asar\Tests\Functional\ExampleApp\Resource;
+namespace Asar\Tests\Functional\ExampleApp\Resource\Session;
 
 use Asar\Http\Resource\GetInterface;
 use Asar\Http\Message\Request;
@@ -16,9 +16,9 @@ use Asar\Session\StoreInterface as SessionStore;
 use Asar\Content\Page;
 
 /**
- * Session starts here
+ * Another page for session testing
  */
-class SessionStart implements GetInterface
+class Next implements GetInterface
 {
     private $page;
     private $session;
@@ -43,25 +43,16 @@ class SessionStart implements GetInterface
      */
     public function GET(Request $request)
     {
-        if (!$this->session->has('random')) {
-            $this->session->set('random', $this->generateRandomString());
+        $random = '';
+        if ($this->session->has('random')) {
+            $random = $this->session->get('random');
         }
         $this->page->set(array(
             'title' => "Session Testing Start",
-            'random' => $this->session->get('random')
+            'random' => $random
         ));
 
         return $this->page->getResponse();
-    }
-
-    /**
-     * Generates a random string
-     *
-     * @return String
-     */
-    private function generateRandomString()
-    {
-        return substr(md5(rand()), 0, 20);
     }
 
 

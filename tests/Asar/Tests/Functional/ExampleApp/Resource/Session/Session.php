@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Asar\Tests\Functional\ExampleApp\Resource;
+namespace Asar\Tests\Functional\ExampleApp\Resource\Session;
 
 use Asar\Http\Resource\GetInterface;
 use Asar\Http\Message\Request;

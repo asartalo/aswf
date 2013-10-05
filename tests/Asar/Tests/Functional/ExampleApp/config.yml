@@ -20,9 +20,9 @@ routes:
                                 require: '/\d{4}/'
 
             session:
-                classRef: Session
+                classRef: Session\Session
                 nodes:
                     start:
-                        classRef: SessionStart
+                        classRef: Session\Start
                     next:
-                        classRef: SessionNext
+                        classRef: Session\Next

@@ -56,6 +56,24 @@ class TemplateAssemblerTest extends TestCase
     }
 
     /**
+     * Finds template file based on resource name, method, and prefix
+     */
+    public function testMatchesFilenamesBasedOnCorrectDirectorySyntax()
+    {
+        // TODO: Find a way to fix this
+        $this->setExpectedException('Asar\Template\Exception\EngineNotFound'); // workaround
+        $filePrefix = '/foo/Namespace/Representation/Foo/Resource.GET.html';
+        $this->resourceName = 'Foo\Resource';
+        $this->fileSystemUtility->expects($this->once())
+            ->method('findFilesThatStartWith')
+            ->with($filePrefix)
+            ->will($this->returnValue(array($filePrefix . '.php')));
+        $this->templateFinder->find(
+            $this->resourceName, array('type' => 'html', 'method' => 'GET')
+        );
+    }
+
+    /**
      * Finds files but with empty options searches default values
      */
     public function testFindsFilesButWithEmptyOptionsSearchesWithDefaults()

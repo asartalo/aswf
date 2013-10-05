@@ -56,8 +56,8 @@ class TemplateAssembler
         $type = isset($options['type']) ? $type = $options['type'] : 'html';
 
         $result = $this->fsUtility->findFilesThatStartWith(
-            $this->appPath . '/Representation/'. $resourceName . '.' .
-            $method . '.' . $type
+            $this->appPath . '/Representation/'. $this->pathize($resourceName) .
+            '.' . $method . '.' . $type
         );
 
         if (empty($result)) {
@@ -68,6 +68,11 @@ class TemplateAssembler
         }
 
         return $this->matchTemplate($result);
+    }
+
+    private function pathize($resourceName)
+    {
+        return str_replace('\\', '/', $resourceName);
     }
 
     private function matchTemplate($result)
