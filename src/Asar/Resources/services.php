@@ -215,6 +215,11 @@ $c['request.path'] = function($c) {
     return $service->getPath();
 };
 
+$c['request.route.pathValues'] = function($c) {
+    $route = $c['request.route'];
+    return $route->getValues();
+};
+
 $c['request.page'] = function($c) {
     return new $c['request.page.class'](
         $c['application.templateAssembler'],
