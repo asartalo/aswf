@@ -48,7 +48,7 @@ class RequestFactoryTest extends TestCase
     {
         $server = array();
         $server['REQUEST_METHOD'] = 'DELETE';
-        $server['REQUEST_URI']  = '/foo';
+        $server['REQUEST_URI']  = '/foo?foo=bar&boo=far';
 
         $get = array(
             'foo' => 'bar',

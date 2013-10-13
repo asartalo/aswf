@@ -29,7 +29,8 @@ class RequestFactory extends Message
     {
         $options = array();
         $options['method'] = $this->getIfExists('REQUEST_METHOD', $server);
-        $options['path'] = $this->getIfExists('REQUEST_URI', $server);
+        $parsedUrl = parse_url($this->getIfExists('REQUEST_URI', $server));
+        $options['path'] = $parsedUrl['path'];
         $options['params'] = $params;
         if ($options['method'] === 'POST') {
             $options['content'] = $post;
