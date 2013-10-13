@@ -20,5 +20,7 @@ guard 'phpunit', cli: '--colors', tests_path: 'tests', all_after_pass: true do
       all_tests
     end
   end
-  watch(%r{^tests/.+\.(php|yml)}) { |m| all_tests unless m[0].match /.+Test.php/ }
+  watch(%r{^tests/.+\.(php|yml)}) do |m|
+    all_tests unless m[0].match(/.+Test.php/) || m[0].match(%r{^tests/data/temp/.+})
+  end
 end
