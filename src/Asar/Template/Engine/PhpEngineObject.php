@@ -53,16 +53,33 @@ class PhpEngineObject
     /**
      * Renders the template
      *
+     * @param string $file   a partial template
+     * @param array  $params partial template parameters
+     *
      * @return string the rendered template
      */
-    public function render()
+    public function render($file = null, array $params = array())
     {
+        if ($file) {
+            return $this->renderPartial($file, $params);
+        }
+
         extract($this->params);
         ob_start();
         include $this->template;
         $output = ob_get_clean();
 
         return $output;
+    }
+
+    protected function renderPartial($file, $params)
+    {
+        $filePath = dirname($this->template) . DIRECTORY_SEPARATOR . $file;
+        $partial = new self(
+            $this->engine, $filePath, $this->helpers, $params
+        );
+
+        return $partial->render();
     }
 
     /**

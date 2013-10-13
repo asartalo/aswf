@@ -132,6 +132,21 @@ class PhpEngineTest extends TestCase
         );
     }
 
+    /**
+     * Rendering a partial template
+     */
+    public function testTemplateCanRenderAnotherTemplateInsideIt()
+    {
+        $this->tempFileManager->newFile('sub.php', '<p><?php echo $foo ?></p>');
+        $this->tempFileManager->newFile('inc.php', '<?php echo $this->render("sub.php", array("foo" => "Hello")); ?>');
+        $this->assertEquals(
+            '<p>Hello</p>',
+            $this->engine->render(
+                $this->tempFileManager->getPath('inc.php')
+            )
+        );
+    }
+
 
 
 }
