@@ -8,7 +8,7 @@ def all_tests
 end
 
 # Install phpunit-guard to make this work
-guard 'phpunit', cli: '--colors', tests_path: 'tests', all_after_pass: true do
+guard 'phpunit2', cli: '--colors', command: "./phpunit", tests_path: 'tests', all_after_pass: true do
   watch(%r{^.+Test\.php$})
 
   # Watch library files and run their tests
