@@ -31,6 +31,10 @@ class TemplateAssemblerTest extends TestCase
             array('setCurrentDirectory', 'findFilesThatStartWith')
         );
         $this->registry = new EngineRegistry;
+        // Register a php template Engine
+        $this->registry->register(
+            'php', $this->quickMock('Asar\Template\Engine\EngineInterface')
+        );
         $this->appPath = '/foo/Namespace';
         $this->resourceName = 'FooResource';
         $this->templateFinder = new TemplateAssembler(
@@ -38,55 +42,37 @@ class TemplateAssemblerTest extends TestCase
         );
     }
 
+    private function commonFindingTemplate(array $testParameters)
+    {
+        $this->fileSystemUtility->expects($this->once())
+            ->method('findFilesThatStartWith')
+            ->with($testParameters['filePrefix'])
+            ->will($this->returnValue(array($testParameters['filePrefix'] . '.php')));
+        $this->templateFinder->find($testParameters['resourceName'], $testParameters['options']);
+    }
+
     /**
      * Finds template file based on resource name, method, and prefix
      */
     public function testFindsFilesBasedOnResourceName()
     {
-        // TODO: Find a way to fix this
-        $this->setExpectedException('Asar\Template\Exception\EngineNotFound'); // workaround
-        $filePrefix = '/foo/Namespace/Representation/FooResource.GET.html';
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue(array($filePrefix . '.php')));
-        $this->templateFinder->find(
-            $this->resourceName, array('type' => 'html', 'method' => 'GET')
-        );
+        $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'html', 'method' => 'GET'),
+            'filePrefix'   => '/foo/Namespace/Representation/FooResource.GET.html'
+        ));
     }
 
     /**
-     * Finds template file based on resource name, method, and prefix
+     * Finds template file based on resource name, method, <dot>, and prefix
      */
     public function testMatchesFilenamesBasedOnCorrectDirectorySyntax()
     {
-        // TODO: Find a way to fix this
-        $this->setExpectedException('Asar\Template\Exception\EngineNotFound'); // workaround
-        $filePrefix = '/foo/Namespace/Representation/Foo/Resource.GET.html';
-        $this->resourceName = 'Foo\Resource';
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue(array($filePrefix . '.php')));
-        $this->templateFinder->find(
-            $this->resourceName, array('type' => 'html', 'method' => 'GET')
-        );
-    }
-
-    /**
-     * Finds files but with empty options searches default values
-     */
-    public function testFindsFilesButWithEmptyOptionsSearchesWithDefaults()
-    {
-        // TODO: Find a way to fix this
-        $this->setExpectedException('Asar\Template\Exception\EngineNotFound'); // workaround
-        $options = array();
-        $filePrefix = '/foo/Namespace/Representation/FooResource.GET.html';
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue($files = array($filePrefix . '.php')));
-        $this->templateFinder->find($this->resourceName, $options);
+        $this->commonFindingTemplate(array(
+            'resourceName' => 'Foo\Resource',
+            'options'      => array('type' => 'html', 'method' => 'GET'),
+            'filePrefix'   => '/foo/Namespace/Representation/Foo/Resource.GET.html'
+        ));
     }
 
     /**
@@ -94,15 +80,11 @@ class TemplateAssemblerTest extends TestCase
      */
     public function testFindsFilesWithDifferentOptions()
     {
-        // TODO: Find a way to fix this
-        $this->setExpectedException('Asar\Template\Exception\EngineNotFound'); // workaround
-        $options = array('type' => 'xml', 'method' => 'POST');
-        $filePrefix = '/foo/Namespace/Representation/FooResource.POST.xml';
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue($files = array($filePrefix . '.php')));
-        $this->templateFinder->find($this->resourceName, $options);
+        $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'xml', 'method' => 'POST'),
+            'filePrefix'   => '/foo/Namespace/Representation/FooResource.POST.xml'
+        ));
     }
 
     /**
@@ -127,11 +109,11 @@ class TemplateAssemblerTest extends TestCase
     {
         $options = array('type' => 'xml', 'method' => 'POST');
         $filePrefix = '/foo/Namespace/Representation/FooResource.POST.xml';
-        $files = array($filePrefix . '.php', $filePrefix . '.foo');
+        $foundFiles = array($filePrefix . '.php', $filePrefix . '.foo');
         $this->fileSystemUtility->expects($this->once())
             ->method('findFilesThatStartWith')
             ->with($filePrefix)
-            ->will($this->returnValue($files));
+            ->will($this->returnValue($foundFiles));
         $this->registry->register('foo', $engine = $this->quickMock('Asar\Template\Engine\EngineInterface'));
         $template = $this->templateFinder->find($this->resourceName, $options);
         $this->assertEquals($engine, $template->getEngine());
@@ -144,7 +126,7 @@ class TemplateAssemblerTest extends TestCase
     {
         $options = array('type' => 'xml', 'method' => 'POST');
         $filePrefix = '/foo/Namespace/Representation/FooResource.POST.xml';
-        $files = array($file = $filePrefix . '.foo', $filePrefix . '.php');
+        $foundFiles = array($filePrefix . '.foo', $filePrefix . '.bar');
         $this->setExpectedException(
             'Asar\Template\Exception\EngineNotFound',
             "There was no registered engines matched "
@@ -152,7 +134,7 @@ class TemplateAssemblerTest extends TestCase
         $this->fileSystemUtility->expects($this->once())
             ->method('findFilesThatStartWith')
             ->with($filePrefix)
-            ->will($this->returnValue($files));
+            ->will($this->returnValue($foundFiles));
         $this->templateFinder->find($this->resourceName, $options);
     }
 

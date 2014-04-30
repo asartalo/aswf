@@ -50,19 +50,20 @@ class TemplateAssembler
      *
      * @return string the path to the template file
      */
-    public function find($resourceName, array $options = array())
+    public function find($resourceName, array $options)
     {
-        $method = isset($options['method']) ? $options['method'] : 'GET';
-        $type = isset($options['type']) ? $type = $options['type'] : 'html';
+        $method = $options['method'];
+        $type = $options['type'];
+        $templateRootPath = $this->appPath . '/Representation/';
 
         $result = $this->fsUtility->findFilesThatStartWith(
-            $this->appPath . '/Representation/'. $this->pathize($resourceName) .
+            $templateRootPath . $this->pathize($resourceName) .
             '.' . $method . '.' . $type
         );
 
         if (empty($result)) {
             throw new TemplateFileNotFound(
-                "No template file found in '{$this->appPath}/Representation/' " .
+                "No template file found in '{$templateRootPath}' " .
                 "for resource '$resourceName' with method '$method' and type '$type'."
             );
         }
@@ -77,22 +78,17 @@ class TemplateAssembler
 
     private function matchTemplate($result)
     {
-        $template = null;
         foreach ($result as $file) {
             $templateType = pathinfo($file, PATHINFO_EXTENSION);
             if ($this->registry->hasEngine($templateType)) {
-                $template = new TemplateAssembly($file, $templateType, $this->registry->getEngine($templateType));
-                break;
+                return new TemplateAssembly($file, $templateType, $this->registry->getEngine($templateType));
             }
         }
-        if (!$template) {
-            $files = implode("', '", $result);
-            throw new EngineNotFound(
-                "There was no registered engines matched for '$files'"
-            );
-        }
-
-        return $template;
+        // We did not find any template
+        $files = implode("', '", $result);
+        throw new EngineNotFound(
+            "There was no registered engines matched for '$files'"
+        );
     }
 
 }
