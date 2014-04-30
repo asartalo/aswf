@@ -12,6 +12,7 @@ namespace Asar\Tests\Unit\Routing;
 
 use Asar\TestHelper\TestCase;
 use Asar\Routing\Router;
+use Asar\Routing\Node;
 use Asar\Routing\Route;
 
 /**
@@ -21,39 +22,85 @@ class RouterTest extends TestCase
 {
 
     /**
-     * Test setup
+     * Setup
      */
     public function setUp()
     {
-        $this->navigator = $this->quickMock(
-            'Asar\Routing\NodeNavigator', array('find')
+        $root = new Node('root', 'RootResource');
+        $child1 = new Node('foo', 'FooResource');
+        $child2 = new Node('bar', 'BarResource', array('serviceId' => 'barService'));
+        $grandchild1 = new Node('fooChild', 'FooChildResource');
+        $child1->addNode($grandchild1);
+        $root->addNodes(array($child1, $child2));
+
+        $this->router = new Router($root);
+    }
+
+    /**
+     * Can get root node
+     */
+    public function testGetRootNode()
+    {
+        $this->assertEquals(
+            new Route('/', 'RootResource', array()),
+            $this->router->route('/')
         );
-        $this->router = new Router($this->navigator);
     }
 
     /**
-     * Test basic routing to root path
+     * Can get child node
      */
-    public function testRouting()
+    public function testGetChildNode()
     {
-        $this->navigator->expects($this->once())
-            ->method('find')
-            ->with('/');
-        $this->router->route('/');
+        $this->assertEquals(
+            new Route('/foo', 'FooResource', array('foo' => 'foo')),
+            $this->router->route('/foo')
+        );
     }
 
     /**
-     * Routing returns route from node navigator
+     * Can get route to second child node with service ID
      */
-    public function testRoutingReturnsRouteFromNodeNavigator()
+    public function testGetRouteWithServiceId()
     {
-        $this->navigator->expects($this->once())
-            ->method('find')
-            ->with('/')
-            ->will(
-                $this->returnValue($route = new Route('/foo', 'Index', array()))
-            );
-        $this->assertSame($route, $this->router->route('/'));
+        $this->assertEquals(
+            new Route('/bar', 'BarResource', array('bar' => 'bar'), 'barService'),
+            $this->router->route('/bar')
+        );
+    }
+
+    /**
+     * Can get grandchild node
+     */
+    public function testGetGrandchildNode()
+    {
+        $this->assertEquals(
+            new Route(
+                '/foo/fooChild',
+                'FooChildResource',
+                array('foo' => 'foo', 'fooChild' => 'fooChild')
+            ),
+            $this->router->route('/foo/fooChild')
+        );
+    }
+
+    /**
+     * Returns null route when no node is found
+     */
+    public function testReturnsNullRouteForNotFoundNode()
+    {
+        $this->assertTrue($this->router->route('/foo/fooooo')->isNull());
+    }
+
+    /**
+     * Passes path to null route
+     */
+    public function testPassesPathToNullRoute()
+    {
+        $this->assertEquals(
+            '/foo/bar/baz',
+            $this->router->route('/foo/bar/baz')->getPath()
+        );
     }
 
 }

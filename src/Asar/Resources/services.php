@@ -118,12 +118,8 @@ $c['application.routeNodes'] = function($c) {
     return $service->build($c['application.routes']);
 };
 
-$c['application.nodeNavigator'] = function($c) {
-    return new $c['application.nodeNavigator.class']($c['application.routeNodes']);
-};
-
 $c['application.router'] = function($c) {
-    return new $c['application.router.class']($c['application.nodeNavigator']);
+    return new $c['application.router.class']($c['application.routeNodes']);
 };
 
 $c['application.resourceResolver'] = function($c) {
