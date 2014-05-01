@@ -57,12 +57,7 @@ class Dispatcher implements RequestHandlerInterface
      */
     public function handleRequest(Request $request)
     {
-        if ($this->resource) {
-            return $this->callResourceMethod($request, $request->getMethod());
-        }
-        $response = new Response(array('status' => 404));
-
-        return $response;
+        return $this->callResourceMethod($request, $request->getMethod());
     }
 
     protected function callResourceMethod($request, $method)

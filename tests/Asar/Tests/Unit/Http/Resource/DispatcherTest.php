@@ -54,15 +54,6 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * Returns 404 response for empty dispatchers
-     */
-    public function testReturns404ResponseWhenThereIsNoResourcePassed()
-    {
-        $dispatcher = new Dispatcher;
-        $this->assertEquals(404, $dispatcher->handleRequest(new Request)->getStatus());
-    }
-
-    /**
      * Available request methods
      *
      * These are common HTTP methods and are used in the tests.

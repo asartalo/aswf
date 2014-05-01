@@ -39,6 +39,18 @@ class BasicsTest extends TestCase
     }
 
     /**
+     * Displays 404 template contents for 404 response
+     */
+    public function testDisplays404TemplateFor404Response()
+    {
+        $response = $this->client->get($this->app, '/notfound');
+        $this->assertContains(
+            "This is not the page you are looking for",
+            $response->getContent()
+        );
+    }
+
+    /**
      * A simple test on getting the root resource
      */
     public function testGettingTheHomePage()

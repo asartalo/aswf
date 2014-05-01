@@ -11,7 +11,6 @@
 namespace Asar\Tests\Unit\Template;
 
 use Asar\TestHelper\TestCase;
-use Asar\Routing\Route;
 use Asar\Template\Engine\EngineRegistry;
 use Asar\Template\TemplateAssembler;
 
@@ -26,9 +25,9 @@ class TemplateAssemblerTest extends TestCase
      */
     public function setUp()
     {
-        $this->fileSystemUtility = $this->getMock(
-            'Asar\FileSystem\Utility',
-            array('setCurrentDirectory', 'findFilesThatStartWith')
+        $this->templateLocator = $this->quickMock(
+            'Asar\Template\TemplateLocator',
+            array('find')
         );
         $this->registry = new EngineRegistry;
         // Register a php template Engine
@@ -38,41 +37,55 @@ class TemplateAssemblerTest extends TestCase
         $this->appPath = '/foo/Namespace';
         $this->resourceName = 'FooResource';
         $this->templateFinder = new TemplateAssembler(
-            $this->appPath, $this->registry, $this->fileSystemUtility
+            $this->appPath, $this->registry, $this->templateLocator
         );
     }
 
     private function commonFindingTemplate(array $testParameters)
     {
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($testParameters['filePrefix'])
-            ->will($this->returnValue(array($testParameters['filePrefix'] . '.php')));
-        $this->templateFinder->find($testParameters['resourceName'], $testParameters['options']);
+        $this->templateLocator->expects($this->atLeastOnce())
+            ->method('find')
+            ->with($testParameters['resourceName'], $testParameters['options'])
+            ->will($this->returnValue($testParameters['foundFiles']));
+        return $this->templateFinder->find(
+            $testParameters['resourceName'], $testParameters['options']
+        );
     }
 
-    /**
-     * Finds template file based on resource name, method, and prefix
-     */
-    public function testFindsFilesBasedOnResourceName()
+    private function checkGeneratedTemplateAssembly()
     {
-        $this->commonFindingTemplate(array(
+        return $this->commonFindingTemplate(array(
             'resourceName' => $this->resourceName,
-            'options'      => array('type' => 'html', 'method' => 'GET'),
-            'filePrefix'   => '/foo/Namespace/Representation/FooResource.GET.html'
+            'options'      => array('type' => 'html', 'method' => 'GET', 'status' => 200),
+            'foundFiles'   => array('FooResource.GET.html.haml', 'FooResource.GET.html.php')
         ));
     }
 
     /**
-     * Finds template file based on resource name, method, <dot>, and prefix
+     * Creates TemplateAssembly based on matching template file
      */
-    public function testMatchesFilenamesBasedOnCorrectDirectorySyntax()
+    public function testCreatesTemplateAssemblyBasedOnResourceName()
     {
-        $this->commonFindingTemplate(array(
-            'resourceName' => 'Foo\Resource',
-            'options'      => array('type' => 'html', 'method' => 'GET'),
-            'filePrefix'   => '/foo/Namespace/Representation/Foo/Resource.GET.html'
-        ));
+        $templateAssembly = $this->checkGeneratedTemplateAssembly();
+        $this->assertEquals('FooResource.GET.html.php', $templateAssembly->getFile());
+    }
+
+    /**
+     * Creates TemplateAssembly with matched engine
+     */
+    public function testCreatesTemplateAssemblyWithMatchingEngine()
+    {
+        $templateAssembly = $this->checkGeneratedTemplateAssembly();
+        $this->assertEquals($this->registry->getEngine('php'), $templateAssembly->getEngine());
+    }
+
+    /**
+     * Creates TemplateAssembly with matching type
+     */
+    public function testCreatesTemplateAssemblyWithMatchingType()
+    {
+        $templateAssembly = $this->checkGeneratedTemplateAssembly();
+        $this->assertEquals('php', $templateAssembly->getType());
     }
 
     /**
@@ -80,11 +93,38 @@ class TemplateAssemblerTest extends TestCase
      */
     public function testFindsFilesWithDifferentOptions()
     {
-        $this->commonFindingTemplate(array(
+        $assembly = $this->commonFindingTemplate(array(
             'resourceName' => $this->resourceName,
-            'options'      => array('type' => 'xml', 'method' => 'POST'),
-            'filePrefix'   => '/foo/Namespace/Representation/FooResource.POST.xml'
+            'options'      => array('type' => 'xml', 'method' => 'POST', 'status' => 201),
+            'foundFiles'   => array('FooResource.POST.xml.php')
         ));
+        $this->assertEquals('FooResource.POST.xml.php', $assembly->getFile());
+    }
+
+    /**
+     * Finds template files with matching status code
+     */
+    public function testFindsFilesWithMatchingStatusCode()
+    {
+        $assembly = $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'html', 'method' => 'GET', 'status' => 200),
+            'foundFiles'   => array('FooResource.200.html.php')
+        ));
+        $this->assertEquals('FooResource.200.html.php', $assembly->getFile());
+    }
+
+    /**
+     * Finding template files prioritizes status code
+     */
+    public function testFindingFilesPrioritizesStatusCodeOverMethodTemplate()
+    {
+        $assembly = $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'html', 'method' => 'GET', 'status' => 200),
+            'foundFiles'   => array('FooResource.200.html.php', 'FooResource.GET.html.php')
+        ));
+        $this->assertEquals('FooResource.200.html.php', $assembly->getFile());
     }
 
     /**
@@ -96,27 +136,30 @@ class TemplateAssemblerTest extends TestCase
             'Asar\Template\Exception\TemplateFileNotFound',
             "No template file found in '/foo/Namespace/Representation/' for resource 'FooResource' with method 'PUT' and type 'json'."
         );
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->will($this->returnValue(array()));
-        $this->templateFinder->find($this->resourceName, array('method' => 'PUT', 'type' => 'json'));
+        $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'json', 'method' => 'PUT', 'status' => 200),
+            'foundFiles'   => array()
+        ));
     }
 
     /**
-     * Matches files with those on registry
+     * Matches files with those with engine on registry
      */
-    public function testMatchesFilesOnRegistry()
+    public function testMatchesFilesWithEngineOnRegistry()
     {
-        $options = array('type' => 'xml', 'method' => 'POST');
         $filePrefix = '/foo/Namespace/Representation/FooResource.POST.xml';
         $foundFiles = array($filePrefix . '.php', $filePrefix . '.foo');
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue($foundFiles));
-        $this->registry->register('foo', $engine = $this->quickMock('Asar\Template\Engine\EngineInterface'));
-        $template = $this->templateFinder->find($this->resourceName, $options);
-        $this->assertEquals($engine, $template->getEngine());
+        $engine = $this->quickMock('Asar\Template\Engine\EngineInterface');
+
+        $this->registry->register('foo', $engine);
+
+        $assembly = $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'xml', 'method' => 'POST', 'status' => 200),
+            'foundFiles'   => $foundFiles
+        ));
+        $this->assertEquals($engine, $assembly->getEngine());
     }
 
     /**
@@ -124,18 +167,17 @@ class TemplateAssemblerTest extends TestCase
      */
     public function testThrowsExceptionWhenThereIsNoMatchingEngine()
     {
-        $options = array('type' => 'xml', 'method' => 'POST');
         $filePrefix = '/foo/Namespace/Representation/FooResource.POST.xml';
         $foundFiles = array($filePrefix . '.foo', $filePrefix . '.bar');
         $this->setExpectedException(
             'Asar\Template\Exception\EngineNotFound',
             "There was no registered engines matched "
         );
-        $this->fileSystemUtility->expects($this->once())
-            ->method('findFilesThatStartWith')
-            ->with($filePrefix)
-            ->will($this->returnValue($foundFiles));
-        $this->templateFinder->find($this->resourceName, $options);
+        $assembly = $this->commonFindingTemplate(array(
+            'resourceName' => $this->resourceName,
+            'options'      => array('type' => 'xml', 'method' => 'POST', 'status' => 200),
+            'foundFiles'   => $foundFiles
+        ));
     }
 
 

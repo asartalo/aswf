@@ -53,18 +53,31 @@ class Page
      */
     public function getResponse()
     {
-        $template = $this->assembler->find(
-            $this->route->getName(),
-            array('type' => 'html', 'method' => $this->request->getMethod())
-        );
         $content = '';
-        if ($template) {
+        if ($template = $this->getTemplate()) {
             $content = $template->render($this->contents);
         }
         $this->response->setContent($content);
         $this->response->setHeader('content-type', 'text/html; charset=utf-8');
 
         return $this->response;
+    }
+
+    /**
+     * Retrieves the template used
+     *
+     * @return Asar\Template\TemplateAssembly
+     */
+    public function getTemplate()
+    {
+        return $this->assembler->find(
+            $this->route->getName(),
+            array(
+                'type' => 'html',
+                'method' => $this->request->getMethod(),
+                'status' => $this->response->getStatus()
+            )
+        );
     }
 
     /**
@@ -76,6 +89,16 @@ class Page
     public function setHeader($key, $value)
     {
         $this->response->setHeader($key, $value);
+    }
+
+    /**
+     * Sets a response status
+     *
+     * @param integer $statusCode the response status code
+     */
+    public function setStatus($statusCode)
+    {
+        $this->response->setStatus($statusCode);
     }
 
     /**

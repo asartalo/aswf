@@ -10,8 +10,6 @@
 
 namespace Asar\Template;
 
-use Asar\FileSystem\Utility as FsUtility;
-use Asar\Routing\Route;
 use Asar\Template\Engine\EngineRegistry;
 use Asar\Template\Exception\TemplateFileNotFound;
 use Asar\Template\Exception\EngineNotFound;
@@ -26,20 +24,20 @@ class TemplateAssembler
 
     private $registry;
 
-    private $fsUtility;
+    private $templateLocator;
 
     /**
      * Constructor
      *
-     * @param string         $appPath   the application path
-     * @param EngineRegistry $registry  the template engine registry
-     * @param FsUtility      $fsUtility file system utility
+     * @param string          $appPath   the application path
+     * @param EngineRegistry  $registry  the template engine registry
+     * @param TemplateLocator $fsUtility file system utility
      */
-    public function __construct($appPath, EngineRegistry $registry, FsUtility $fsUtility)
+    public function __construct($appPath, EngineRegistry $registry, TemplateLocator $templateLocator)
     {
         $this->appPath = $appPath;
         $this->registry = $registry;
-        $this->fsUtility = $fsUtility;
+        $this->templateLocator = $templateLocator;
     }
 
     /**
@@ -54,12 +52,10 @@ class TemplateAssembler
     {
         $method = $options['method'];
         $type = $options['type'];
+        $status = isset($options['status']) ? $options['status'] : 200;
         $templateRootPath = $this->appPath . '/Representation/';
 
-        $result = $this->fsUtility->findFilesThatStartWith(
-            $templateRootPath . $this->pathize($resourceName) .
-            '.' . $method . '.' . $type
-        );
+        $result = $this->templateLocator->find($resourceName, $options);
 
         if (empty($result)) {
             throw new TemplateFileNotFound(
@@ -68,20 +64,15 @@ class TemplateAssembler
             );
         }
 
-        return $this->matchTemplate($result);
+        return $this->matchTemplate($result, $type, $method, $status);
     }
 
-    private function pathize($resourceName)
-    {
-        return str_replace('\\', '/', $resourceName);
-    }
-
-    private function matchTemplate($result)
+    private function matchTemplate($result, $type, $method, $status)
     {
         foreach ($result as $file) {
-            $templateType = pathinfo($file, PATHINFO_EXTENSION);
-            if ($this->registry->hasEngine($templateType)) {
-                return new TemplateAssembly($file, $templateType, $this->registry->getEngine($templateType));
+            $engineType = pathinfo($file, PATHINFO_EXTENSION);
+            if ($this->registry->hasEngine($engineType)) {
+                return new TemplateAssembly($file, $engineType, $this->registry->getEngine($engineType));
             }
         }
         // We did not find any template

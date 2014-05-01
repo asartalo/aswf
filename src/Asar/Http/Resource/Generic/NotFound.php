@@ -11,17 +11,39 @@
 namespace Asar\Http\Resource\Generic;
 
 use Asar\Http\Resource\StandardResource;
+use Asar\Content\Page;
 use Asar\Http\Message\Request;
 use Asar\Http\Message\Response;
+use Asar\Template\Exception\TemplateFileNotFound;
 
 /**
  * A generic resource for unknown resources (404)
  */
 class NotFound extends StandardResource
 {
+    private $page;
+
+    /**
+     * @param Page $page a page object
+     *
+     * @inject request.page
+     */
+    public function __construct(Page $page)
+    {
+        $this->page = $page;
+    }
 
     private function getResponse()
     {
+        try {
+            $this->page->setStatus(404);
+            $response = $this->page->getResponse();
+            if ($response) {
+                return $response;
+            }
+        } catch(TemplateFileNotFound $e) {
+            // Do nothing
+        }
         return new Response(array('status' => 404));
     }
 

@@ -29,6 +29,7 @@ $c['application.routeNodes.class'] = 'Asar\Routing\Node';
 $c['application.nodeNavigator.class'] = 'Asar\Routing\NodeNavigator';
 $c['application.resourceFactory.class'] = 'Asar\Http\Resource\ResourceFactory';
 $c['application.resourceResolver.class'] = 'Asar\Http\Resource\ResourceResolver';
+$c['application.templateLocator.class'] = 'Asar\Template\TemplateLocator';
 $c['application.templateAssembler.class'] = 'Asar\Template\TemplateAssembler';
 $c['application.templateEngineRegistry.class'] = 'Asar\Template\Engine\EngineRegistry';
 $c['application.dispatchEntry.class'] = 'Asar\Application\DispatchEntry';
@@ -65,7 +66,7 @@ $c['asar.templateEngine.php'] = function($c) {
 };
 
 $c['asar.resource.generic.notfound'] = function($c) {
-    return new $c['asar.resource.generic.notfound.class'];
+    return new $c['asar.resource.generic.notfound.class']($c['request.page']);
 };
 
 $c['asar.config.default'] = function($c) {
@@ -134,11 +135,18 @@ $c['application.resourceFactory'] = function($c) {
     );
 };
 
+$c['application.templateLocator'] = function($c) {
+    return new $c['application.templateLocator.class'](
+        $c['application.path'],
+        $c['asar.filesystem.utility']
+    );
+};
+
 $c['application.templateAssembler'] = function($c) {
     return new $c['application.templateAssembler.class'](
         $c['application.path'],
         $c['application.templateEngineRegistry'],
-        $c['asar.filesystem.utility']
+        $c['application.templateLocator']
     );
 };
 

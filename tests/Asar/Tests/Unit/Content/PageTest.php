@@ -56,7 +56,10 @@ class PageTest extends TestCase
     {
         $this->templateAssembler->expects($this->once())
             ->method('find')
-            ->with('FooResource', array('type' => 'html', 'method' => 'GET'));
+            ->with(
+                'FooResource',
+                array('type' => 'html', 'method' => 'GET', 'status' => 200)
+            );
         $this->page->getResponse();
     }
 
@@ -66,6 +69,15 @@ class PageTest extends TestCase
         $this->templateAssembler->expects($this->once())
             ->method('find')
             ->will($this->returnValue($this->template));
+    }
+
+    /**
+     * Retrieves the template
+     */
+    public function testGetTemplate()
+    {
+        $this->assemblerReturnsTemplate();
+        $this->assertSame($this->template, $this->page->getTemplate());
     }
 
     /**
@@ -105,6 +117,15 @@ class PageTest extends TestCase
         $this->assertEquals(
             'bar', $this->page->getResponse()->getHeader('foo')
         );
+    }
+
+    /**
+     * Can set response status
+     */
+    public function testSettingResponseStatus()
+    {
+        $this->page->setStatus(404);
+        $this->assertEquals(404, $this->page->getResponse()->getStatus());
     }
 
     /**
