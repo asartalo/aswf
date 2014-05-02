@@ -34,7 +34,11 @@ class PhpEngine implements EngineInterface
         if ($template->hasLayout()) {
             $output = $this->render(
                 $template->getLayout(),
-                array_merge($params, array('content' => $output))
+                array_merge(
+                    $params,
+                    $template->getLayoutParameters(),
+                    array('content' => $output)
+                )
             );
         }
 

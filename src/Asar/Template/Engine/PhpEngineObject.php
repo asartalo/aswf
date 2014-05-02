@@ -27,6 +27,8 @@ class PhpEngineObject
 
     private $layout;
 
+    private $layoutParams = array();
+
     private $helpers = array();
 
     /**
@@ -86,10 +88,22 @@ class PhpEngineObject
      * Sets a layout template
      *
      * @param string $template the template file to use as layout
+     * @param array  $params   optional template parameters for the layout
      */
-    protected function layout($template)
+    protected function layout($template, $params = array())
     {
         $this->layout = $this->getFullTemplatePath($template);
+        $this->layoutParams = $params;
+    }
+
+    /**
+     * Returns the layout parameters
+     *
+     * @return array the layout template parameters
+     */
+    public function getLayoutParameters()
+    {
+        return $this->layoutParams;
     }
 
     /**
