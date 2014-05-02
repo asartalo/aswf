@@ -64,10 +64,10 @@ class TemplateAssembler
             );
         }
 
-        return $this->matchTemplate($result, $type, $method, $status);
+        return $this->matchTemplate($result);
     }
 
-    private function matchTemplate($result, $type, $method, $status)
+    private function matchTemplate($result)
     {
         foreach ($result as $file) {
             $engineType = pathinfo($file, PATHINFO_EXTENSION);
