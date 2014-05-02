@@ -52,7 +52,6 @@ class TemplateAssembler
     {
         $method = $options['method'];
         $type = $options['type'];
-        $status = isset($options['status']) ? $options['status'] : 200;
         $templateRootPath = $this->appPath . '/Representation/';
 
         $result = $this->templateLocator->find($resourceName, $options);
