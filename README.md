@@ -1,7 +1,7 @@
 Asar Web Framework
 ==================
 
-[![Build Status](https://secure.travis-ci.org/asartalo/aswf.png)](http://travis-ci.org/asartalo/aswf)
+[![Build Status](https://secure.travis-ci.org/asartalo/aswf.png)](http://travis-ci.org/asartalo/aswf) [![Code Climate](https://codeclimate.com/github/asartalo/aswf/badges/gpa.svg)](https://codeclimate.com/github/asartalo/aswf) [![Test Coverage](https://codeclimate.com/github/asartalo/aswf/badges/coverage.svg)](https://codeclimate.com/github/asartalo/aswf)
 
 A resource-oriented web application framework for PHP.
 
