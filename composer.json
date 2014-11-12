@@ -14,7 +14,8 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "asar/asar-test-helper": "dev-master",
-        "guzzle/guzzle": "3.0.*"
+        "guzzle/guzzle": "3.0.*",
+        "codeclimate/php-test-reporter": "dev-master"
     },
     "authors" : [
         {
