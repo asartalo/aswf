@@ -5,8 +5,15 @@ php:
     - 5.4
     - 5.3
 
+addons:
+  code_climate:
+    repo_token: ade7336404a259f79aa4e0aeb43d9d844e8e2bb3a3739598dc62e323ad05208d
+
 before_script:
     - ant cleantest
     - composer install --dev
+    
+after_script:
+  - vendor/bin/test-reporter
 
 script: phpunit --coverage-text
